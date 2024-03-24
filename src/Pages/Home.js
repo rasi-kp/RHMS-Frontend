@@ -4,7 +4,7 @@ import HomeM from '../Component/home/home';
 import FooterH from '../Component/home/footer'
 function Home() {
   return (
-    <div>
+    <div>//hello
        <Navbar/>
        <HomeM/>
        <FooterH/>
