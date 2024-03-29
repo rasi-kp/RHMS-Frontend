@@ -1,15 +1,15 @@
 import React from 'react'
 import Navbar from  '../Component/home/Navbar';
-import HomeM from '../Component/home/home';
+import Login1 from '../Component/login/login';
 import FooterH from '../Component/home/footer'
-function Home() {
+function Login() {
   return (
     <div>
        <Navbar/>
-       <HomeM/>
+       <Login1/>
        <FooterH/>
     </div>
   )
 }
 
-export default Home
+export default Login

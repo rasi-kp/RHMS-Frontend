@@ -1,29 +1,29 @@
 import React from 'react';
-import back from './hero-bg.png'
-import image from './hero.png'
+import back from './hero-bg1.png'
+import image from './19778-removebg-preview.png'
 
 const Main = () => {
   return (
-    <section className="py-xxl-10 pb-0" id="home">
-        <div
-          className="bg-holder bg-size"
-          style={{
-            backgroundImage: `url("${back}")`,
-            backgroundPosition: 'top center',
-            backgroundSize: 'cover'
-          }}
-        ></div>
-
-        <div className="container">
-          <div className="row min-vh-xl-100 min-vh-xxl-25">
-            <div className="col-md-5 col-xl-6 col-xxl-7 order-0 order-md-1 text-end"><img className="pt-7 pt-md-0 w-100" src={image} alt="hero-header" /></div>
-            <div className="col-md-75 col-xl-6 col-xxl-5 text-md-start text-center py-6">
-              <h1 className="fw-light font-base fs-6 fs-xxl-7">We're <strong>determined </strong>for<br />your&nbsp;<strong>better life.</strong></h1>
-              <p className="fs-1 mb-5">You can get the care you need 24/7 – be it online or in <br />person. You will be treated by caring specialist doctors. </p><a className="btn btn-lg btn-primary rounded-pill" href="#!" role="button">Make an Appointment</a>
-            </div>
+    <section className="relative md:py-10 xxl:py-8 pb-0" >
+      <div
+        className="absolute inset-0 bg-cover bg-center z-0"
+        style={{
+          backgroundImage: `url("${back}")`,
+        }} ></div>
+      {/* <div className="container mx-auto px-3 py-4"> */}
+      <div className=" container mx-auto relative px-1">
+        <div className=" md:flex min-h-screen xl:min-h-screen">
+          <div className="xl:min-h-screen min-h-1/4 md:order-1">
+            <img className="md:mt-20 pt-24 md:pt-1 pt-md-0 w-100" src={image} alt="hero-header" /></div>
+          <div className="md:w-3/4 xl:w-2/3 xxl:w-5/12 py-6 text-center md:text-left">
+            <h1 className="md:mt-20 font-normal font-sans text-4xl"style={{color:'#283779'}}>We're <strong className='font-bold'>determined </strong>for<br />your&nbsp;<strong className='font-bold'>better life.</strong></h1>
+            <p className="text-xl font-normal  mt-3 mb-4" style={{ color: '#1B71A1' }}>You can get the care you need 24/7 – be it online or in <br />person. You will be treated by caring specialist doctors. </p>
+            <button className="font-semibold px-12 py-4 text-white rounded-full mt-3"
+              style={{ backgroundColor: '#283779', borderColor: '#283779' }}>Make an Appointment</button>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
   );
 };
 

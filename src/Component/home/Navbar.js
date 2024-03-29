@@ -1,30 +1,66 @@
 import React, { useState } from 'react';
-import logo from './logo.png'
-import './home.css';
+import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
+import logo from './logo.png';
 
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // State to manage the navbar's visibility
+  const [nav, setNav] = useState(false);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+  // Toggle function to handle the navbar's display
+  const handleNav = () => {
+    setNav(!nav);
   };
+
+  // Array containing navigation items
+  const navItems = [
+    { id: 1, text: 'Departments' },
+    { id: 2, text: 'Subscription' },
+    { id: 3, text: 'Help' },
+    { id: 4, text: 'Contact' },
+  ];
+
   return (
-    <div>
-      <nav className={isMobileMenuOpen ? "bg-white navbar navbar-expand-lg navbar-light fixed-top py-3":"navbar navbar-expand-lg navbar-light fixed-top py-3"}>
-        <div className="container"><a className="navbar-brand" href="index.html"><img src={logo} width="118" alt="logo" /></a>
-          <button className="navbar-toggler" type="button" onClick={toggleMobileMenu}><span className="navbar-toggler-icon"> </span>
-          </button>
-          <div className="collapse navbar-collapse show">
-          </div>
-          <ul className={isMobileMenuOpen ? " navbar-nav pt-2 pt-lg-0 font-base d-block" :"navbar-nav pt-2 pt-lg-0 font-base d-none d-lg-flex"}>
-            <li className="nav-item px-2"><a className="nav-link" href="#departments">Departments</a></li>
-            <li className="nav-item px-2"><a className="nav-link" href="#findUs">Membership</a></li>
-            <li className="nav-item px-2"><a className="nav-link" href="#findUs">Help </a></li>
-            <li className="nav-item px-2"><a className="nav-link" href="#findUs">Contact</a></li>
-            <a className="btn btn-sm btn-outline-primary rounded-pill order-1 order-lg-0 ms-lg-4" href="#!">Sign In</a>
-          </ul>
-        </div> 
-      </nav>
+    <div className='fixed z-10 w-full flex justify-between items-center h-20 mx-auto px-6 text-blue-900 '>
+      <img src={logo} width="118" alt="logo" />
+
+      {/* Desktop Navigation */}
+      <ul className='hidden md:flex'>
+        {navItems.map(item => (
+          <li
+            key={item.id}
+            className='p-4 hover:bg-[#00df9a] rounded-xl m-2 cursor-pointer duration-300 hover:text-black'
+          >
+            {item.text}
+          </li>
+        ))}
+      </ul>
+
+      {/* Mobile Navigation Icon */}
+      <div onClick={handleNav} className='block md:hidden'>
+        {nav ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}
+      </div>
+
+      {/* Mobile Navigation Menu */}
+      <ul
+        className={
+          nav
+            ? 'fixed md:hidden left-0 top-0 w-[60%] h-full bg-[#ffffff] ease-in-out duration-500 z-10'
+            : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]'
+        }
+      >
+        {/* Mobile Logo */}
+        <h1 className='w-full text-3xl font-bold text-[#00df9a] m-4'>REACT.</h1>
+
+        {/* Mobile Navigation Items */}
+        {navItems.map(item => (
+          <li
+            key={item.id}
+            className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
+          >
+            {item.text}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
