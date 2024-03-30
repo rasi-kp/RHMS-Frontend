@@ -1,15 +1,15 @@
 import React from 'react'
 import Navbar from  '../Component/home/Navbar';
-import Login1 from '../Component/home/login';
+import Signup1 from '../Component/home/Signup';
 import FooterH from '../Component/home/footer'
-function Login() {
+function Signup() {
   return (
     <div>
-       <Navbar/>
-       <Login1/>
+      <Navbar/>
+       <Signup1/>
        <FooterH/>
     </div>
   )
 }
 
-export default Login
+export default Signup

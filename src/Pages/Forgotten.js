@@ -1,12 +1,12 @@
 import React from 'react'
 import Navbar from  '../Component/home/Navbar';
-import Login1 from '../Component/home/login';
+import Forgotten from '../Component/home/forgottenpassword';
 import FooterH from '../Component/home/footer'
 function Login() {
   return (
     <div>
        <Navbar/>
-       <Login1/>
+       <Forgotten/>
        <FooterH/>
     </div>
   )
