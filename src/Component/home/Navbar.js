@@ -15,8 +15,8 @@ const Navbar = () => {
       <ul className='hidden md:flex'>
         <li className='p-4 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Departments</li>
         <li className='p-4 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Subscription</li>
-        <li className='p-4 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Help</li>
         <li className='p-4 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Contact</li>
+        <li className='p-4 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Doctor Login</li>
         <li className='m-2 pl-5 pt-3 border cursor-pointer border-blue-900 font-bold rounded-full border-[#283779] w-24 h-12 hover:bg-blue-900 hover:text-white'>Sign In</li>
       </ul>
       <div onClick={handleNav} className='block md:hidden z-50'>
@@ -34,8 +34,8 @@ const Navbar = () => {
 
         <li className='p-2 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Departments</li>
         <li className='p-2 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Subscription</li>
-        <li className='p-2 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Help</li>
         <li className='p-2 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Contact</li>
+        <li className='p-2 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Doctor Login</li>
         <li className='m-2 pl-5 pt-3 border border-blue-900 font-bold rounded-full border-[#283779] w-24 h-12 hover:bg-blue-900 hover:text-white'>Sign In</li>
        
       </ul>
