@@ -6,8 +6,7 @@ function Home() {
   return (
     <div>
        <Patient/>
-      {/* Your dashboard content goes here */}
-      {/* <h1>Welcome to Dashboard</h1> */}
+
     </div>
   )
 }

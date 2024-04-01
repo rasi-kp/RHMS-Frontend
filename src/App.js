@@ -10,12 +10,12 @@ import Patient from './Pages/patients/Dashboard'
 function App() {
   return (
     <div>
-      {/* <Home/> */}
-      {/* <Forgotten/> */}
-      {/* <Signup/> */}
-      {/* <Login/> */}
-      {/* <Doctorlogin/> */}
-      {/* <Error/> */}
+      {/* <Home/>
+      <Forgotten/>
+      <Signup/>
+      <Login/>
+      <Doctorlogin/>
+      <Error/> */}
       <Patient/>
     </div>
   );

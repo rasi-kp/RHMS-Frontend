@@ -4,7 +4,7 @@ import image from '../images/19778-removebg-preview.png'
 
 const Main = () => {
   return (
-    <section className="relative md:py-10 xxl:py-8 pb-0" >
+    <section className="relative md:py-8 xxl:py-8 pb-0" >
       <div
         className="absolute inset-0 bg-cover bg-center z-0"
         style={{
@@ -15,7 +15,7 @@ const Main = () => {
         <div className=" md:flex min-h-screen xl:min-h-screen">
           <div className="xl:min-h-screen min-h-1/4 md:order-1">
             <img className="md:mt-20 md:mr-10 pt-24 md:pt-1 pt-md-0 w-100" src={image} alt="hero-header" /></div>
-          <div className="md:w-3/4 xl:w-2/3 xxl:w-5/12 md:px-20 py-6 text-center md:text-left">
+          <div className="md:w-3/4 xl:w-2/3 xxl:w-5/12 md:px-2 py-6 text-center md:text-left">
             <h1 className="md:mt-28 font-normal font-sans text-5xl"style={{color:'#283779'}}>We're <strong className='font-bold'>determined </strong>for<br />your&nbsp;<strong className='font-bold'>better life.</strong></h1>
             <p className="text-xl font-normal  mt-3 mb-4" style={{ color: '#1B71A1' }}>You can get the care you need 24/7 – be it online or in <br />person. You will be treated by caring specialist doctors. </p>
             <button className="font-semibold px-12 py-4 text-white rounded-full mt-3"
