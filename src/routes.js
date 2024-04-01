@@ -10,6 +10,9 @@ import Doctorlogin from './Pages/home/doctorlogin'
 // import otp from './Pages/home/otp'
 import Error from './Pages/404/404'
 import Patient from './Pages/patients/Dashboard'
+import Patientsall from "./Pages/patients/Patients"
+import Doctorsall from "./Pages/patients/Doctors"
+import Appointmentall from "./Pages/patients/Appointments"
 
 const routes = () => {
     return (
@@ -25,6 +28,9 @@ const routes = () => {
                     <Route path="/forgotten"element={<Forgotten />} />
                     {/* <Route path="/otp" component={otp} /> */}
                     <Route path="*" element={<Error />} />
+                    <Route path="/patient/members"element={<Patientsall />} />
+                    <Route path="/patient/doctors"element={<Doctorsall />} />
+                    <Route path="/patient/appointments"element={<Appointmentall />} />
                 </Routes>
             </BrowserRouter>
         </div>
