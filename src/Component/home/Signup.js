@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaRegUser } from "react-icons/fa";
 import back from '../images/hero-bg1.png'
 import image from '../images/19778-removebg-preview.png'
+import { Link } from 'react-router-dom';
 
 const Main = () => {
     return (
@@ -16,15 +17,15 @@ const Main = () => {
                 <div className=" md:flex min-h-screen xl:min-h-screen">
                     <div className="md:1/2 md:order-1">
                         <img className="md:mt-20 md:mr-10 pt-24 md:pt-1 pt-md-0 w-100" src={image} alt="hero-header" /></div>
-                    <div className="w-full md:w-3/4 xl:w-2/3 xxl:w-5/12 lg:px-2 py-6 text-center ">
+                    <div className="w-full md:w-3/4 xl:w-2/3 xxl:w-5/12 lg:px-20 py-6 text-center ">
                         <section className="h-3/4 lg:w-5/6 md:mt-16">
                             <div className="p-6 md:ml-16 flex h-full items-center ">
                                 <div className="w-full ">
                                     <form>
                                         <div className="mb-10 flex items-center justify-between">
-                                            <label className="pl-8 underline decoration-4 underline-offset-8 inline-block font-bold text-3xl hover:cursor-pointer text-[#5f80a9]">
+                                            <Link to="/login"> <label className="pl-8 underline decoration-4 underline-offset-8 inline-block font-bold text-3xl hover:cursor-pointer text-[#5f80a9]">
                                                 Login
-                                            </label>
+                                            </label></Link>
                                             <label className="p-5 underline decoration-4 underline-offset-8 inline-block font-bold text-3xl hover:cursor-pointer text-[#003171]">
                                             </label>
                                             <label
@@ -78,10 +79,10 @@ const Main = () => {
 
                                         <div className="mb-6 flex items-center justify-between">
                                             <div className="mb-[0.125rem] block min-h-[1.5rem] ">
-                                                <label
+                                                <Link to="/login"> <label
                                                     className="mt-3 inline-block text-xs font-semibold hover:cursor-pointer text-[#003171]">
                                                     Already have an account ?
-                                                </label>
+                                                </label></Link>
                                             </div>
                                             <button className='w-32 h-10 mt-2 text-xl bg-blue-900 text-white font-bold rounded-full  hover:bg-blue-900 hover:text-blue-900 hover:border border-blue-900 hover:bg-transparent'>Sign Up</button>
                                         </div>
