@@ -6,7 +6,7 @@ import { FaUsers } from "react-icons/fa";
 
 function recentactivity() {
   return (
-    <div className='w-full lg:ml-14 lg:me-2 mt-2 md:w-96  '>
+    <div className='w-full md:w-96 lg:ml-14 xl:ml-10  lg:me-2 mt-3   '>
       <div className='bg-white ml-7 me-6 mt-1 h-56 rounded-lg'>
         <h1 className='text-xs pt-2 pl-4 font-semibold'>Recent Activity </h1>
         <div className="flex px-4 pt-3 items-center justify-between">

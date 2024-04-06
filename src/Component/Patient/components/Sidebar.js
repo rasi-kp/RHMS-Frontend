@@ -19,14 +19,14 @@ const Sidebar = ({ isOpen, toggle }) => {
         <AiOutlineClose className='text-black w-5 h-5 ml-8 cursor-pointer md:hidden' onClick={toggle}/>
       </div>
       <ul className="text-[#7F8F98]">
-        <li className="pl-6 p-3 bg-blue-100 text-[#3497F9] flex"><AiFillDashboard className="w-5 h-5 mr-3 "/><span className="cursor-pointer text-sm text-md"><Link to="/patient">Dashboard</Link></span></li>
-        <li className="pl-6 p-2 flex"><FaUsers className="w-5 h-6 mr-3"/><span className="cursor-pointer text-sm"><Link to="/patient/members">Members</Link></span></li>
-        <li className="pl-6 p-2 flex"><IoDocuments className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm"><Link to="/patient/appointments"> Appointment</Link></span></li>
-        <li className="pl-6 p-2 flex"><FaUserDoctor className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm"><Link to="/patient/doctors">Doctors</Link></span></li>
-        <li className="pl-6 p-2 flex"><RiMessage2Fill className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm"><Link to="">Messages</Link></span></li>
-        <li className="pl-6 p-2 flex"><IoMdVideocam className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm" ><Link to="">Online Consultant</Link></span></li>
-        <li className="pl-6 p-2 flex"><BiSolidAmbulance className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm"><Link to="">Ambulance</Link></span></li>
-        <li className="pl-6 p-2 flex"><MdSubscriptions className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm"><Link to="">Subscription</Link></span></li>
+        <li className="pl-6 p-3 lg:pb-3 bg-blue-100 text-[#3497F9] flex"><AiFillDashboard className="w-5 h-5 mr-3 "/><span className="cursor-pointer text-sm text-md"><Link to="/patient">Dashboard</Link></span></li>
+        <li className="pl-6 p-2 lg:pb-3 flex"><FaUsers className="w-5 h-6 mr-3"/><span className="cursor-pointer text-sm"><Link to="/patient/members">Members</Link></span></li>
+        <li className="pl-6 p-2 lg:pb-3 flex"><IoDocuments className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm"><Link to="/patient/appointments"> Appointment</Link></span></li>
+        <li className="pl-6 p-2 lg:pb-3 flex"><FaUserDoctor className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm"><Link to="/patient/doctors">Doctors</Link></span></li>
+        <li className="pl-6 p-2 lg:pb-3 flex"><RiMessage2Fill className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm"><Link to="">Messages</Link></span></li>
+        <li className="pl-6 p-2 lg:pb-3 flex"><IoMdVideocam className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm" ><Link to="">Online Consultant</Link></span></li>
+        <li className="pl-6 p-2 lg:pb-3 flex"><BiSolidAmbulance className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm"><Link to="">Ambulance</Link></span></li>
+        <li className="pl-6 p-2 lg:pb-3 flex"><MdSubscriptions className="w-5 h-5 mr-3"/><span className="cursor-pointer text-sm"><Link to="">Subscription</Link></span></li>
         {/* <li className="pl-6 p-2 flex"><MdMore className="w-5 h-5 mr-3"/>Others</li> */}
       </ul>
 

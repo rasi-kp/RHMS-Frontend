@@ -7,7 +7,7 @@ import { FaUsers } from "react-icons/fa";
 function reports() {
     return (
         <div className='w-full lg:ml-52 md:w-96 '>
-            <div className='bg-white ml-7 me-6 mt-1 h-56 flex rounded-lg'>
+            <div className='bg-white ml-7 me-6 mt-1 h-56  flex rounded-lg'>
 
                 <div className="w-2/4 flex flex-col">
                     {/* <h1 className='absolute pl-3 pt-2 font-semibold text-xs hidden lg:block'>Report</h1> */}

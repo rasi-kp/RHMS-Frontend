@@ -15,9 +15,9 @@ const Main = () => {
             </div>
             <div className="container mx-auto relative px-1">
                 <div className=" md:flex min-h-screen xl:min-h-screen">
-                    <div className="md:1/2 md:order-1">
-                        <img className="md:mt-20 md:mr-10 pt-24 md:pt-1 pt-md-0 w-100" src={image} alt="hero-header" /></div>
-                    <div className="w-full md:w-3/4 xl:w-2/3 xxl:w-5/12 lg:px-20 py-6 text-center ">
+                <div className="md:mt-20 pt-24 md:pt-0 text-center sm:order-1 ">
+                        <img className="p-1" src={image} alt="hero-header" /></div>
+                    <div className="w-full xl:w-3/6 lg:pl-16 text-center ">
                         <section className="h-3/4 lg:w-5/6 md:mt-16">
                             <div className="p-6 md:ml-16 flex h-full items-center ">
                                 <div className="w-full ">

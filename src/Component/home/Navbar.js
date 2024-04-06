@@ -11,7 +11,7 @@ const Navbar = () => {
 
   return (
     <div className='fixed z-10 w-full flex justify-between items-center h-20 mx-auto px-12 text-blue-900 '>
-      <Link to="/"> <img src={logo} width="118" alt="logo" /></Link>
+      <Link to="/"> <img className='' src={logo} width="118" alt="logo" /></Link>
 
       <ul className='hidden md:flex'>
         <li className='p-4 m-2 cursor-pointer duration-200 hover:text-[#38488f] hover:font-semibold'>Departments</li>
