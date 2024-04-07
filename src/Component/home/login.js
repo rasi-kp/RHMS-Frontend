@@ -1,12 +1,85 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MdOutlineMailOutline } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FcGoogle } from "react-icons/fc";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import back from '../images/hero-bg1.png'
 import image from '../images/19778-removebg-preview.png'
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+import { loginSuccess } from '../../reducer/authSlice';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Main = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+    const tokenredux = useSelector(state => state.auth.user);
+    // const { userRole, user, loginUser } = useUser();
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [eerror, setError] = useState("")
+    const [perror, setPerror] = useState('')
+    const handleClick = async (e) => {
+        e.preventDefault()
+        setError('');
+        setPerror('');
+        if (!email.trim()) {
+            toast.error("Email Required");
+            setError('Email is required');
+            return;
+        }
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            setError('Invalid email format');
+            return;
+        }
+        if (!password.trim()) {
+            setPerror('Password is required');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:3000/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                }),
+            });
+            if (!response) {
+                throw new Error('Failed to sign in');
+            }
+            const data = await response.json();
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                if (data.user) {
+                    dispatch(loginSuccess(data));
+                    navigate('/patient');
+                    setTimeout(() => {
+                        toast.success("Successfully Login");   
+                    }, 100);
+                }
+            }
+            else {
+                if (data.error === 'Invalied Email ID') {
+                    toast.error("Invalied Email ID");
+                    setError("Invalied Email ID")
+                }
+                else {
+                    toast.error("Invalied Password");
+                    setPerror("Invalied Password")
+                }
+            }
+        } catch (error) {
+            alert(error.message)
+        }
+    }
+
     return (
         <section className="relative md:py-10 xxl:py-8 pb-0" >
             <div className="absolute inset-0 bg-cover bg-center z-0"
@@ -34,24 +107,29 @@ const Main = () => {
                                                 </label>
                                             </Link>
                                         </div>
-
+                                        <p className=' text-red-600'>{eerror}</p>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pt-3 pl-3 pointer-events-none">
                                                 <MdOutlineMailOutline className="h-5 w-5 text-gray-600" />
                                             </div>
                                             <input
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                value={email}
                                                 type="text"
                                                 placeholder="Email ID"
 
                                                 style={{ textShadow: '0px 2px 4px rgba(0, 0, 0, .3)' }}
-                                                className="placeholder:text-gray-500 placeholder: text-center mb-6 w-full px-4 py-2 rounded-full bg-transparent border-2 focus:outline-none focus:border-blue-500 border-blue-900 shadow-[0_10px_20px_-2px_#38488f] " />
-                                        </div>
+                                                className="placeholder:text-gray-500 placeholder: text-center mb-5 w-full px-4 py-2 rounded-full bg-transparent border-2 focus:outline-none focus:border-blue-500 border-blue-900 shadow-[0_10px_20px_-2px_#38488f] " />
 
+                                        </div>
+                                        <p className=' text-red-600'>{perror}</p>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pt-3 pl-3 pointer-events-none">
                                                 <RiLockPasswordLine className="h-5 w-5 text-gray-600" />
                                             </div>
                                             <input
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                value={password}
                                                 type="text"
                                                 style={{ textShadow: '0px 2px 4px rgba(0, 0, 0, .3)' }}
                                                 className="placeholder:text-gray-500 text-center mb-4 w-full px-4 py-2 rounded-full bg-transparent border-2 focus:outline-none focus:border-blue-500 border-blue-900 shadow-[0_10px_20px_-2px_#38488f]"
@@ -60,12 +138,12 @@ const Main = () => {
                                         <div className="mb-6 flex items-center justify-between">
                                             <div className="mb-[0.125rem] block min-h-[1.5rem] ">
                                                 <Link to="/forgotten">
-                                                <label
-                                                    className="mt-3 inline-block text-xs font-semibold hover:cursor-pointer text-[#003171]">
-                                                    Forgotten Your Password ?
-                                                </label></Link> 
+                                                    <label
+                                                        className="mt-3 inline-block text-xs font-semibold hover:cursor-pointer text-[#003171]">
+                                                        Forgotten Your Password ?
+                                                    </label></Link>
                                             </div>
-                                            <button className='w-32 h-10 mt-2 text-xl bg-blue-900 text-white font-bold rounded-full  hover:bg-blue-900 hover:text-blue-900 hover:border border-blue-900 hover:bg-transparent'>Login</button>
+                                            <button onClick={handleClick} className='w-32 h-10 mt-2 text-xl bg-blue-900 text-white font-bold rounded-full  hover:bg-blue-900 hover:text-blue-900 hover:border border-blue-900 hover:bg-transparent'>Login</button>
                                         </div>
                                         <div className="my-4 flex items-center  before:flex-1 before:border-2 before:border-blue-900  after:mt-0.5 after:flex-1 after:border-2 after:border-blue-900">
                                             <p className="mx-2 mb-0 text-center font-bold text-blue-900">
@@ -81,6 +159,7 @@ const Main = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </section>
     );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 import Sidebar from './components/Sidebar';
 import Report from './components/reports'
@@ -9,8 +10,13 @@ import Recent from './components/recentactivity'
 import Subscription from './components/Subscription';
 
 
+import { useSelector } from 'react-redux';
+
 const DashboardLayout = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false);
+
+    const tokenredux = useSelector(state => state.auth.user);
+    console.log(tokenredux.name);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -22,7 +28,7 @@ const DashboardLayout = ({ children }) => {
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Dashboard</h1>
-                    <Navbar />
+                    <Navbar user={tokenredux.name}/>
                 <div className='sm:flex h-full'>
                     <Report />
                     <div className='md:w-3/4 '>
@@ -38,6 +44,7 @@ const DashboardLayout = ({ children }) => {
                 </div>
                 
             </div>
+            <ToastContainer/>
         </div>
     );
 };
