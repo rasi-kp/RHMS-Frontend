@@ -1,6 +1,7 @@
 import React from 'react';
 import back from '../images/hero-bg1.png'
 import image from '../images/19778-removebg-preview.png'
+import { ToastContainer, toast } from 'react-toastify';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -25,6 +26,7 @@ const Main = () => {
           </div>
         </div>
       </div>
+      <ToastContainer/>
     </section>
   );
 };

@@ -5,6 +5,7 @@ import image from '../images/3293465-removebg-preview.png'
 import { ToastContainer, toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../../apiconfig';
 
 const Main = () => {
     const navigate = useNavigate()
@@ -20,7 +21,7 @@ const Main = () => {
             return;
         }
         try {
-            const response = await fetch('http://localhost:3000/user/validateotp', {
+            const response = await fetch(`${BASE_URL}/user/validateotp`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

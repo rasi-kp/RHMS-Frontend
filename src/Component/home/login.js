@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdOutlineMailOutline } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FcGoogle } from "react-icons/fc";
@@ -11,17 +11,38 @@ import { useSelector } from 'react-redux';
 
 import { loginSuccess } from '../../reducer/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../../apiconfig';
 
 const Main = () => {
+
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    const tokenredux = useSelector(state => state.auth.user);
-    // const { userRole, user, loginUser } = useUser();
+    const tokenredux = useSelector(state => state.auth);
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [eerror, setError] = useState("")
     const [perror, setPerror] = useState('')
+
+
+    useEffect(() => {
+        if (tokenredux.token != null) {
+            if (tokenredux.role == 'patient') {
+                navigate('/patient')
+            }
+            if (tokenredux.role == 'doctor') {
+                navigate('/doctor')
+            }
+            if (tokenredux.role == 'admin') {
+                navigate('/admin')
+            }
+        }
+        else {
+            navigate('/login')
+        }
+    }, []);
+
     const handleClick = async (e) => {
+        console.log(tokenredux);
         e.preventDefault()
         setError('');
         setPerror('');
@@ -41,7 +62,7 @@ const Main = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:3000/user/login', {
+            const response = await fetch(`${BASE_URL}/user/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,14 +77,13 @@ const Main = () => {
             }
             const data = await response.json();
             if (data.token) {
-                localStorage.setItem('token', data.token);
-                if (data.user) {
-                    dispatch(loginSuccess(data));
-                    navigate('/patient');
-                    setTimeout(() => {
-                        toast.success("Successfully Login");   
-                    }, 100);
-                }
+                dispatch(loginSuccess(data));
+                navigate('/patient');
+                setTimeout(() => {
+                    toast.success("Successfully Login", {
+                        autoClose: 1000, // Set the duration to 2 seconds (2000 milliseconds)
+                    });
+                }, 100);
             }
             else {
                 if (data.error === 'Invalied Email ID') {
@@ -115,7 +135,7 @@ const Main = () => {
                                             <input
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 value={email}
-                                                type="text"
+                                                type="email"
                                                 placeholder="Email ID"
 
                                                 style={{ textShadow: '0px 2px 4px rgba(0, 0, 0, .3)' }}
@@ -130,7 +150,7 @@ const Main = () => {
                                             <input
                                                 onChange={(e) => setPassword(e.target.value)}
                                                 value={password}
-                                                type="text"
+                                                type="password"
                                                 style={{ textShadow: '0px 2px 4px rgba(0, 0, 0, .3)' }}
                                                 className="placeholder:text-gray-500 text-center mb-4 w-full px-4 py-2 rounded-full bg-transparent border-2 focus:outline-none focus:border-blue-500 border-blue-900 shadow-[0_10px_20px_-2px_#38488f]"
                                                 placeholder="Password" />
