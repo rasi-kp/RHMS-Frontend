@@ -13,6 +13,7 @@ import Patient from './Pages/patients/Dashboard'
 import Patientsall from "./Pages/patients/Patients"
 import Doctorsall from "./Pages/patients/Doctors"
 import Appointmentall from "./Pages/patients/Appointments"
+import Cappointment from "./Component/Patient/cappointment"
 
 const routes = () => {
     return (
@@ -31,6 +32,7 @@ const routes = () => {
                     <Route path="/patient/members"element={<Patientsall />} />
                     <Route path="/patient/doctors"element={<Doctorsall />} />
                     <Route path="/patient/appointments"element={<Appointmentall />} />
+                    <Route path="/patient/appointments/complete"element={<Cappointment />} />
                 </Routes>
             </BrowserRouter>
         </div>
