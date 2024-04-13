@@ -25,6 +25,30 @@ export const createUser = (userData,token) => {
       }
     };
 };
+export const updateUser = (userData,token) => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/edit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(userData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update member');
+      }
+      const data = await response.json();
+      if (data.message) {
+        toast.success(`Successfully Update ${data.name}`);
+      }
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};
 export const deleteuser = (patientid,token) => {
     return async (dispatch) => {
       try {
@@ -48,3 +72,25 @@ export const deleteuser = (patientid,token) => {
       }
     };
 };
+export const edituser = (patientid,token) => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/edit/${patientid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add new member');
+      }
+      const data = await response.json();
+      return data.patient
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};
+

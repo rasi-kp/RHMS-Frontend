@@ -12,68 +12,33 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { BASE_URL } from '../../../apiconfig';
 import AddUser from './addpatient';
+import Edit from './editpatient'
 import profile from '../../images/profile.png'
-import { deleteuser, edituser } from "../../../connection/patient";
+import { deleteuser } from "../../../connection/patient";
 
 const TABLE_HEAD = ["Member Name", "Gender", "Blood Group", "Age", "Weight", "Height", "Action"];
-
-const TABLE_ROWS = [
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-        name: "John Michael",
-        gender: "male",
-        bloodgroup: "B+",
-        online: true,
-        age: 22,
-        height: 175,
-        weight: 59,
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
-        name: "John Michael",
-        gender: "male",
-        bloodgroup: "B+",
-        online: true,
-        age: 22,
-        height: 175,
-        weight: 59,
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-        name: "John Michael",
-        gender: "male",
-        bloodgroup: "B+",
-        online: true,
-        age: 22,
-        height: 175,
-        weight: 59,
-    },
-
-];
 
 function Patientcom() {
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const [adduser, setAdduser] = useState(false)
+    const [useredit, setUseredit] = useState(false)
     const [userdata, setUserData] = useState([])
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1);
-    const [flag,setFlag] = useState(false)
+    const [Editpatient, setEditedPatientId] = useState(null)
+    const [flag, setFlag] = useState(false)
     const [totalPages, setTotalPages] = useState(1);
-    const [useredit, setUseredit] = useState(false)
 
     const addpatient = () => {
         setAdduser(!adduser)
     }
-    const handleDelete = (patientid) => {
-        if (window.confirm('Are you sure you want to delete this patient?')) {
-            setFlag(true)
-            dispatch(deleteuser(patientid, token));
-        }
+    const editpatient = () => {
+        setUseredit(!useredit)
     }
+
     useEffect(() => {
         const fetchData = async () => {
-            setFlag(true)
             try {
                 const response = await fetch(`${BASE_URL}/patient/all?page=${page}&search=${search}`, {
                     method: 'GET',
@@ -99,23 +64,32 @@ function Patientcom() {
             }
         };
         fetchData();
-    }, [adduser, page, search, flag]);
+    }, [adduser, page, search, flag, useredit]);
 
+    const handleDelete = async (patientid) => {
+        if (window.confirm('Are you sure you want to delete this patient?')) {
+            try {
+                await dispatch(deleteuser(patientid, token));
+                setFlag(!flag);
+            } catch (error){
+                toast.error("Failed to delete user");
+            }
+        }
+    }
+    const handleEdit = (patientid) => {
+        setEditedPatientId(patientid);
+        setUseredit(true)
+    }
+    //*********************** Pagination Logic *************** */
     const handlePrevClick = () => {
         setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
     };
-
     const handleNextClick = () => {
         setPage(prevPage => Math.min(prevPage + 1, totalPages)); // Ensure page doesn't exceed total pages
     };
     const handlePageClick = (pageNumber) => {
         setPage(pageNumber);
     };
-    
-    const handleEdit = (patientid) => {
-        setUseredit(true)
-    }
-
     const renderPaginationButtons = () => {
         const buttons = [];
         for (let i = 1; i <= totalPages; i++) {
@@ -130,6 +104,7 @@ function Patientcom() {
         }
         return buttons;
     };
+    //*************************************************** */
     return (
         <div>
             <div className='lg:ml-60 ml-6 me-8 rounded-lg bg-white  px-5 h-full pb-10 pt-3'>
@@ -168,7 +143,7 @@ function Patientcom() {
                         <tbody>
                             {userdata.map(
                                 ({ img, patient_id, first_name, last_name, age, blood_group, height, weight, gender }, index) => {
-                                    const isLast = index === TABLE_ROWS.length - 1;
+                                    const isLast = index === userdata.length - 1;
                                     const classes = isLast ? "pl-3 border-b border-blue-gray-50" : "pl-3 border-b border-blue-gray-50";
                                     return (
                                         <tr key={patient_id} className=' h-12'>
@@ -260,7 +235,7 @@ function Patientcom() {
             </div>
             {adduser && <AddUser closeModal={addpatient} />}
 
-            {/* {useredit && <Edit closeModaluser={closeModaluser} selectedEmail={selectedEmail} />} */}
+            {useredit && <Edit closeModal={editpatient} patientid={Editpatient} />}
             <ToastContainer />
         </div>
     )

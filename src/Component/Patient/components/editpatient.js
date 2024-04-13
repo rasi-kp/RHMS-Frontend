@@ -1,50 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { RxCross2 } from "react-icons/rx";
-import { createUser } from "../../../connection/patient";
+import { edituser, updateUser } from "../../../connection/patient";
 import { useDispatch, useSelector } from "react-redux";
 
-function AddUser({ closeModal }) {
-    const token = useSelector(state => state.auth.token); // Move useSelector inside the function
+function EditUser({ closeModal, patientid }) {
     const dispatch = useDispatch();
-    const [fname, setFname] = useState("")
-    const [lname, setLname] = useState("")
-    const [dob, setDob] = useState("")
-    const [gender, setGender] = useState("")
-    const [weight, setWeight] = useState("")
-    const [height, setHeight] = useState("")
-    const [bg, setBg] = useState("")
-    const [age, setAge] = useState("")
+    const token = useSelector(state => state.auth.token);
+    const [user, setUser] = useState("")
     const [error, setError] = useState("")
 
-    const adduser = async (e) => {
-        e.preventDefault()
-        const isDateFormatValid = (dateString) => {
-            const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
-            return dateFormatRegex.test(dateString);
-        };
+    useEffect(() => {
+        dispatch(edituser(patientid, token))
+            .then(initialData => {
+                setUser(initialData);
+            })
+            .catch(error => {
+                console.error("Error fetching user data:", error);
+            });
+    }, []);
 
-        if (!fname.trim() || !dob.trim() || !gender.trim() || !bg.trim() || !height.trim() || !weight.trim()) {
-            toast.error("Fill Required Field")
-            setError('Fill Required Field');
-            return;
-        }
-        if (!isDateFormatValid(dob)) {
-            return toast.error("Invalied Date Format")
-        }
-        const userData = {
-            fname: fname,
-            lname: lname,
-            dob: dob,
-            bg: bg,
-            gender: gender,
-            age: age,
-            weight: weight,
-            height: height,
-        };
-        dispatch(createUser(userData, token));
-        closeModal(!closeModal)
+    const edituserClick = async (e) => {
+        e.preventDefault()
+        dispatch(updateUser(user, token));
+        closeModal(false)
     }
     return (
         <>
@@ -65,27 +45,27 @@ function AddUser({ closeModal }) {
                                 className="text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                 type="text"
                                 placeholder="First Name"
-                                value={fname}
-                                onChange={e => setFname(e.target.value)}
+                                value={user.first_name}
+                                onChange={e => setUser({ ...user, first_name: e.target.value })}
                                 name="fname" />
                             <input
                                 className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                 type="text"
                                 placeholder="Last Name"
-                                value={lname}
-                                onChange={e => setLname(e.target.value)}
+                                value={user.last_name}
+                                onChange={e => setUser({ ...user, last_name: e.target.value })}
                                 name="lname" />
                             <input
                                 className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                 type="text"
                                 placeholder="DOB (YYYY-MM-DD)"
-                                value={dob}
-                                onChange={e => setDob(e.target.value)}
+                                value={user.date_of_birth}
+                                onChange={e => setUser({ ...user, date_of_birth: e.target.value })}
                                 name="dob" />
                             <select
                                 className=" mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
-                                value={bg}
-                                onChange={e => setBg(e.target.value)}
+                                value={user.blood_group}
+                                onChange={e => setUser({ ...user, blood_group: e.target.value })}
                                 name="gender">
                                 <option value="">Blood Group</option>
                                 <option value="B+">B+</option>
@@ -99,8 +79,8 @@ function AddUser({ closeModal }) {
                             </select>
                             <select
                                 className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
-                                value={gender}
-                                onChange={e => setGender(e.target.value)}
+                                value={user.gender}
+                                onChange={e => setUser({ ...user, gender: e.target.value })}
                                 name="gender">
                                 <option value="">Gender</option>
                                 <option value="male">Male</option>
@@ -110,22 +90,22 @@ function AddUser({ closeModal }) {
                                 className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                 type="number"
                                 placeholder="Age"
-                                value={age}
-                                onChange={e => setAge(e.target.value)}
+                                value={user.age}
+                                onChange={e => setUser({ ...user, age: e.target.value })}
                                 name="age" />
                             <input
                                 className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                 type="number"
                                 placeholder="Height"
-                                value={height}
-                                onChange={e => setHeight(e.target.value)}
+                                value={user.height}
+                                onChange={e => setUser({ ...user, height: e.target.value })}
                                 name="height" />
                             <input
                                 className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                 type="number"
                                 placeholder="Weight"
-                                value={weight}
-                                onChange={e => setWeight(e.target.value)}
+                                value={user.weight}
+                                onChange={e => setUser({ ...user, weight: e.target.value })}
                                 name="weight" />
                             <div className="mt-4 flex justify-between font-semibold text-sm">
 
@@ -134,7 +114,7 @@ function AddUser({ closeModal }) {
                             <button
                                 className="bg-blue-500 py-1.5 w-full text-white text-sm px-6 rounded hover:bg-blue-700"
                                 type="button"
-                                onClick={adduser}>
+                                onClick={edituserClick}>
                                 Submit
                             </button>
                         </div>
@@ -147,4 +127,4 @@ function AddUser({ closeModal }) {
         </>
     );
 }
-export default AddUser
+export default EditUser
