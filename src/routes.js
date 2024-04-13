@@ -15,7 +15,10 @@ import Doctorsall from "./Pages/patients/Doctors"
 import Appointmentall from "./Pages/patients/Appointments"
 import Cappointment from "./Component/Patient/cappointment"
 //*********** */ Doctor imports *******************
-import Doctor from './Component/Doctor/Dashboard'
+import Doctor from './Pages/doctor/Dashboard'
+import Dpatient from './Pages/doctor/Patients'
+import Dappointment from './Pages/doctor/Appintments'
+import Davailability from './Pages/doctor/Availability'
 
 const routes = () => {
     return (
@@ -37,10 +40,10 @@ const routes = () => {
                     <Route path="/patient/appointments/complete"element={<Cappointment />} />
                     {/*********************** Doctor Routes *******************/}
                     <Route path="/doctor" element={<Doctor />} />
-                    <Route path="/doctor/patients"element={<Patientsall />} />
-                    <Route path="/doctor/"element={<Doctorsall />} />
-                    <Route path="/doctor/appointments"element={<Appointmentall />} />
-                    <Route path="/doctor/appointments/complete"element={<Cappointment />} />
+                    <Route path="/doctor/patients"element={<Dpatient />} />
+                    <Route path="/doctor/appointments"element={<Dappointment />} />
+                    <Route path="/doctor/appointments/complete"element={<Dappointment />} />
+                    <Route path="/doctor/available"element={<Davailability />} />
                 </Routes>
             </BrowserRouter>
         </div>

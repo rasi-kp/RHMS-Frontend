@@ -1,7 +1,9 @@
 import React from 'react'
 import { IoDocuments } from "react-icons/io5";
 import { MdSubscriptions } from "react-icons/md";
+import { RiMessage2Fill } from "react-icons/ri";
 import { MdBloodtype } from "react-icons/md";
+import { LiaHospitalAltSolid } from "react-icons/lia";
 import { FaUsers } from "react-icons/fa";
 
 function reports() {
@@ -15,9 +17,9 @@ function reports() {
                     <div className="h-full">
                         <div className='flex justify-center items-center mt-2 ml-4 me-2 h-20 rounded-xl bg-red-200'>
                             <div className="text-center justify-center">
-                                <MdBloodtype className='w-7 h-7 ml-4 text-[#7F8F98]' />
-                                <h1 className='text-sm font-bold'>B+</h1>
-                                <h1 className='text-xs font-light'>Blood Group</h1> {/* Blood group */}
+                                <FaUsers className='w-7 h-7 ml-4 text-[#7F8F98]' />
+                                <h1 className='text-sm font-bold'>50</h1>
+                                <h1 className='text-xs font-light'>Tot Patients</h1> {/* Blood group */}
                             </div>
                         </div>
                     </div>
@@ -25,9 +27,9 @@ function reports() {
                     <div className="h-full">
                         <div className='flex items-center justify-center ml-4 me-2 h-20 rounded-xl bg-yellow-200'>
                             <div className="text-center justify-center">
-                                <FaUsers className='w-7 h-7 ml-3 text-[#7F8F98]' />
-                                <h1 className='text-sm font-bold'>2</h1>
-                                <h1 className='text-xs font-light'>Members</h1> {/* Blood group */}
+                                <RiMessage2Fill className='w-6 h-6 ml-3 text-[#7F8F98]' />
+                                <h1 className='text-sm font-bold'>10</h1>
+                                <h1 className='text-xs font-light'>Messages</h1> {/* Blood group */}
                             </div>
                         </div>
                     </div>
@@ -45,9 +47,9 @@ function reports() {
                     <div className="h-full">
                         <div className='flex items-center mt-3 ml-2 me-4 h-20 rounded-xl justify-center bg-green-200'>
                             <div className="text-center justify-center">
-                                <MdSubscriptions className='w-6 h-7 ml-5 text-[#7F8F98]' />
-                                <h1 className='text-sm font-bold'>yes</h1>
-                                <h1 className='text-xs font-light'>Subscription</h1> {/* Blood group */}
+                                <LiaHospitalAltSolid className='w-7 h-7 ml-3 text-[#7F8F98]' />
+                                <h1 className='text-sm font-bold'>5</h1>
+                                <h1 className='text-xs font-light'>Lab Result</h1> {/* Blood group */}
                             </div>
                         </div>
                     </div>

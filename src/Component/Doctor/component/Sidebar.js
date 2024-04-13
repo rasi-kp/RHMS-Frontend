@@ -4,15 +4,15 @@ import { AiFillDashboard } from "react-icons/ai";
 import { FaUsers } from "react-icons/fa";
 import { AiOutlineClose } from 'react-icons/ai';
 import { IoDocuments, IoLogOutSharp } from "react-icons/io5";
-import { FaUserDoctor } from "react-icons/fa6";
 import { RiMessage2Fill } from "react-icons/ri";
-import { MdSubscriptions } from "react-icons/md";
 import { IoMdVideocam } from "react-icons/io";
-import { BiSolidAmbulance } from "react-icons/bi";
+import { LiaHospitalAltSolid } from "react-icons/lia";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { logout } from '../../../reducer/authSlice';
 import { useDispatch } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
+import { MdEventAvailable } from "react-icons/md";
+import { TbReport } from "react-icons/tb";
+import { toast } from 'react-toastify';
 
 
 const Sidebar = ({ isOpen, toggle }) => {
@@ -40,18 +40,18 @@ const Sidebar = ({ isOpen, toggle }) => {
   return (
     <nav className={`${isOpen ? 'block' : 'hidden'} lg:block lg:w-52 bg-white h-screen fixed top-0 left-0 z-50`}>
       <div className="p-4 text-white flex">
-        <Link to="/patient"> <img className='ml-5 ' src={logo} width="118" alt="logo" /></Link>
+        <Link to="/doctor"> <img className='ml-5 ' src={logo} width="118" alt="logo" /></Link>
         <AiOutlineClose className='text-black w-5 h-5 ml-8 cursor-pointer md:hidden' onClick={toggle} />
       </div>
       <ul className="text-[#7F8F98]">
         <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><AiFillDashboard className="w-5 h-5 mr-3 " /><span className="cursor-pointer text-sm text-md" onClick={() => handleItemClick('/doctor')}><Link to="/doctor">Dashboard</Link></span></li>
         <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/patients' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><FaUsers className="w-5 h-6 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctor/patients')}><Link to="/doctor/patients">Patients</Link></span></li>
-        <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/appointments'|| activeLink === '/doctor/appointments/complete' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><IoDocuments className="w-5 h-5 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctor/appointments')}><Link to="/patient/appointments"> Appointment</Link></span></li>
-        <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/available' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><FaUserDoctor className="w-5 h-5 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctors/available')}><Link to="/doctor/available">Availability</Link></span></li>
+        <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/appointments'|| activeLink === '/doctor/appointments/complete' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><IoDocuments className="w-5 h-5 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctor/appointments')}><Link to="/doctor/appointments"> Appointment</Link></span></li>
+        <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/available' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><MdEventAvailable className="w-5 h-5 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctors/available')}><Link to="/doctor/available">Availability</Link></span></li>
         <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/messages' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><RiMessage2Fill className="w-5 h-5 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctor/messages')}><Link to="">Messages</Link></span></li>
-        <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/report' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><BiSolidAmbulance className="w-5 h-5 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctor/report')}><Link to="">Reports</Link></span></li>
+        <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/report' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><TbReport className="w-5 h-5 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctor/report')}><Link to="">Reports</Link></span></li>
         <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/online' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><IoMdVideocam className="w-5 h-5 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctor/online')}><Link to="">Online Consultant</Link></span></li>
-        <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/lresult' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><MdSubscriptions className="w-5 h-5 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctor/lresult')}><Link to="">Lab Result</Link></span></li>
+        <li className={`pl-6 p-3 lg:pb-3 hover:text-[#3497F9] flex ${activeLink === '/doctor/lresult' ? 'bg-blue-100 text-[#3497F9]' : ''}`}><LiaHospitalAltSolid className="w-5 h-5 mr-3" /><span className="cursor-pointer text-sm" onClick={() => handleItemClick('/doctor/lresult')}><Link to="">Lab Result</Link></span></li>
         {/* <li className="pl-6 p-2 flex"><MdMore className="w-5 h-5 mr-3"/>Others</li> */}
       </ul>
 
