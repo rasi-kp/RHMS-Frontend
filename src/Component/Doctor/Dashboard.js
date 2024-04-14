@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 
 import Sidebar from './component/Sidebar';
@@ -11,13 +11,33 @@ import Newmessage from './component/newmessage';
 
 
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const DashboardLayoutDoctor = ({ children }) => {
+
+    const navigate = useNavigate()
+    const tokenredux = useSelector(state => state.auth);
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+    useEffect(() => {
+        if (tokenredux.token != null) {
+            if (tokenredux.role == 'doctor') {
+                navigate('/doctor')
+            }
+            if (tokenredux.role == 'patient') {
+                navigate('/patient')
+            }  
+            if (tokenredux.role == 'admin') {
+                navigate('/admin')
+            }
+        }
+        else {
+            navigate('/dlogin')
+        }
+    }, []);
 
     return (
         <div className='bg-[#E2F1FF] h-full sm:h-screen'>

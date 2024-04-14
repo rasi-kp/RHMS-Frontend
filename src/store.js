@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import logger from 'redux-logger';
 import authReducer from './reducer/authSlice';
 
 // Load state from local storage
@@ -30,7 +29,6 @@ export const store = configureStore({
     auth: authReducer,
   },
   preloadedState: loadState(),
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger), // Include logger middleware
 });
 
 store.subscribe(() => {

@@ -20,6 +20,11 @@ import Dpatient from './Pages/doctor/Patients'
 import Dappointment from './Pages/doctor/Appintments'
 import Davailability from './Pages/doctor/Availability'
 
+//*********** */ Admin imports *******************
+import Admin from './Pages/admin/Dashboard'
+import Apatient from './Pages/admin/Patients'
+import ADoctor from './Pages/admin/Doctors'
+
 const routes = () => {
     return (
         <div>
@@ -40,10 +45,17 @@ const routes = () => {
                     <Route path="/patient/appointments/complete"element={<Cappointment />} />
                     {/*********************** Doctor Routes *******************/}
                     <Route path="/doctor" element={<Doctor />} />
-                    <Route path="/doctor/patients"element={<Dpatient />} />
+                    {/* <Route path="/doctor/patients"element={<Dpatient />} />
                     <Route path="/doctor/appointments"element={<Dappointment />} />
                     <Route path="/doctor/appointments/complete"element={<Dappointment />} />
-                    <Route path="/doctor/available"element={<Davailability />} />
+                    <Route path="/doctor/available"element={<Davailability />} /> */}
+                    {/*********************** Admin Routes *******************/}
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/admin/doctor"element={<ADoctor />} />
+                    {/* <Route path="/admin/patients"element={<Apatient />} />
+                    <Route path="/admin/appointments"element={<Aappointment />} />
+                    <Route path="/admin/appointments/complete"element={<ACappointment />} /> */}
+                    
                 </Routes>
             </BrowserRouter>
         </div>

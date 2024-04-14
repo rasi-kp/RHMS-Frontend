@@ -1,41 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 
-import Sidebar from './components/Sidebar';
-import Report from './components/reports'
-import Appointments from './components/Appointments';
-import Navbar from './components/Navbar';
-import NavbarMobile from './components/NavbarMobile';
-import Recent from './components/recentactivity'
-import Subscription from './components/Subscription';
+import Sidebar from './component/Sidebar';
+import Report from './component/reports'
+import Appointments from './component/Appointments';
+import Navbar from './component/Navbar';
+import NavbarMobile from './component/NavbarMobile';
+import Graph from './component/graph';
+import Newmessage from './component/newmessage';
+
 
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayoutDoctor = ({ children }) => {
 
     const navigate = useNavigate()
-    const [isOpen, setIsOpen] = useState(false);
-
     const tokenredux = useSelector(state => state.auth);
+    const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
     useEffect(() => {
         if (tokenredux.token != null) {
-            if (tokenredux.role == 'patient') {
-                navigate('/patient')
+            if (tokenredux.role == 'admin') {
+                navigate('/admin')
             }
             if (tokenredux.role == 'doctor') {
                 navigate('/doctor')
             }
-            if (tokenredux.role == 'admin') {
-                navigate('/admin')
-            }
+            if (tokenredux.role == 'patient') {
+                navigate('/patient')
+            }   
         }
         else {
-            navigate('/login')
+            navigate('/dlogin')
         }
     }, []);
 
@@ -45,7 +45,7 @@ const DashboardLayout = ({ children }) => {
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Dashboard</h1>
-                    <Navbar user={tokenredux.name}/>
+                    <Navbar />
                 <div className='sm:flex h-full'>
                     <Report />
                     <div className='md:w-3/4 '>
@@ -54,16 +54,15 @@ const DashboardLayout = ({ children }) => {
                 </div>
 
                 <div className='sm:flex'>
+                <Newmessage/>
                     <div className='w-full md:w-3/4 '>
-                        <Subscription/>
+                    <Graph />
                     </div>
-                    <Recent />
                 </div>
-                
             </div>
             <ToastContainer/>
         </div>
     );
 };
 
-export default DashboardLayout;
+export default DashboardLayoutDoctor;
