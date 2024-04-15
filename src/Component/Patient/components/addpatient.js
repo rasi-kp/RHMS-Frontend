@@ -44,7 +44,9 @@ function AddUser({ closeModal }) {
             height: height,
         };
         dispatch(createUser(userData, token));
-        closeModal(!closeModal)
+        setTimeout(() => {
+            closeModal(true); // Close the modal by passing true
+        }, 1000);
     }
     return (
         <>

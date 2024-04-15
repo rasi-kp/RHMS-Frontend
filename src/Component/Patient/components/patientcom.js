@@ -53,7 +53,6 @@ function Patientcom() {
                 const datas = await response.json();
                 if (datas.error) {
                     toast.error(datas.error)
-                    console.log(datas.error);
                 }
                 else {
                     setUserData(datas.data);
@@ -236,7 +235,7 @@ function Patientcom() {
             {adduser && <AddUser closeModal={addpatient} />}
 
             {useredit && <Edit closeModal={editpatient} patientid={Editpatient} />}
-            <ToastContainer />
+            <ToastContainer/>
         </div>
     )
 }

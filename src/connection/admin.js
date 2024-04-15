@@ -1,28 +1,27 @@
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 const BASE_URL = require('../apiconfig').BASE_URL;
 
-export const createDoctor = (userData, token) => {
+export const createDoctor = (formData, token) => {
   return async () => {
     try {
       const response = await fetch(`${BASE_URL}/admin/adddoctor`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          "Contetnt-Type": "multipart/form-data",
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(userData),
+        body: formData,
       });
       if (!response.ok) {
         throw new Error('Failed to add Doctor');
       }
       const data = await response.json();
-      if (data.message) {
+      if (data.success) {
         toast.success("Doctor added successfully!");
       }
-      if (data.error) {
-        alert(data.error);
-        toast.error(data.error);
+      if (data.message) {
+        toast.error(data.message);
+        // alert(data.message);
       }
     } catch (error) {
       toast.error(error.message)
@@ -30,10 +29,10 @@ export const createDoctor = (userData, token) => {
     }
   };
 };
-export const alldoctor = (page, token) => {
+export const alldoctor = (page, search, token) => {
   return async () => {
     try {
-      const response = await fetch(`${BASE_URL}/admin/alldoctor?page=${page}`, {
+      const response = await fetch(`${BASE_URL}/admin/alldoctor?page=${page}&search=${search}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

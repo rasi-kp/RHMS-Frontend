@@ -23,8 +23,15 @@ function EditUser({ closeModal, patientid }) {
 
     const edituserClick = async (e) => {
         e.preventDefault()
-        dispatch(updateUser(user, token));
-        closeModal(false)
+        const data=await dispatch(updateUser(user, token));
+        if (data.message) {
+            toast.success(`Successfully Update ${data.name}`,{
+              zindex:"9999"
+            });
+          }
+          setTimeout(() => {
+            closeModal(true); // Close the modal by passing true
+        }, 1000);
     }
     return (
         <>

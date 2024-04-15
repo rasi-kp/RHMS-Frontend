@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import image from '../../images/profile.png'
+
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { MdBlock } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
@@ -16,6 +17,7 @@ import {
 import { CiSearch } from 'react-icons/ci';
 import { alldoctor, deletedoctor, blockdoctor, unblockdoctor } from "../../../connection/admin";
 import AddDoctor from './adddoctor';
+const BASE_URL = require('../../../apiconfig').BASE_URL;
 
 const TABLE_HEAD = ["Doctor Name", "Gender", "Qualification", "Specialitation", "Action"];
 
@@ -31,7 +33,7 @@ function Doctor() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await dispatch(alldoctor(page, token));
+            const data = await dispatch(alldoctor(page,search, token));
             setDoctordata(data.data);
             setTotalPages(data.totalPages)
         };
@@ -102,6 +104,8 @@ function Doctor() {
                 <div className='flex'>
                     <div className="relative">
                         <input
+                        value={search}
+                        onChange={(e)=>setSearch(e.target.value)}
                             type="text"
                             className="ml-3 pl-8 w-32 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
                             placeholder="Search"
@@ -141,14 +145,14 @@ function Doctor() {
                             </thead>
                             <tbody>
                                 {doctordata.map(
-                                    ({ img, doctor_id, first_name, last_name, gender, qualification, specialization, isActive }, index) => {
+                                    ({ image, doctor_id, first_name, last_name, gender, qualification, specialization, isActive }, index) => {
                                         const isLast = index === doctordata.length - 1;
                                         const classes = isLast ? "pl-3 border-b border-blue-gray-50" : "pl-3 border-b border-blue-gray-50";
                                         return (
                                             <tr key={doctor_id} className=' h-12'>
                                                 <td className={classes} >
                                                     <div className="flex items-center ">
-                                                        <img src={image} alt={first_name} className="w-7 h-7 rounded-full mr-2" />
+                                                        <img src={`${BASE_URL}/doctors/${image}`} alt={first_name} className="w-7 h-7 rounded-full mr-2" />
                                                         <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{first_name}</Typography>
                                                     </div>
                                                 </td>

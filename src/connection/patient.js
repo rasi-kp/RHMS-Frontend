@@ -17,7 +17,7 @@ export const createUser = (userData,token) => {
         }
         const data = await response.json();
         if (data.message) {
-          toast.success('Successfully Add New Member');
+          toast.success('Successfully Add New Member')
         }
       } catch (error) {
         toast.error(error.message)
@@ -40,9 +40,7 @@ export const updateUser = (userData,token) => {
         throw new Error('Failed to update member');
       }
       const data = await response.json();
-      if (data.message) {
-        toast.success(`Successfully Update ${data.name}`);
-      }
+      return data
     } catch (error) {
       toast.error(error.message)
       alert(error.message);
