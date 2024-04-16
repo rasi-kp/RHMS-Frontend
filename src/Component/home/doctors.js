@@ -12,7 +12,6 @@ const Main = () => {
       });
       const data = await response.json();
       setData(data.doctors)
-      console.log(data);
     };
     fetchData();
   }, []);
