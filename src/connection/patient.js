@@ -1,6 +1,30 @@
 import { toast } from 'react-toastify';
 const BASE_URL = require('../apiconfig').BASE_URL;
 
+export const allpatient = (page,search,token) => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/all?page=${page}&search=${search}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add new member');
+      }
+      const data = await response.json();
+      return data
+      if (data.success) {
+        toast.success('Successfully Deleted');
+      }
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};
 export const createUser = (userData,token) => {
     return async (dispatch) => {
       try {
@@ -85,6 +109,26 @@ export const edituser = (patientid,token) => {
       }
       const data = await response.json();
       return data.patient
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};
+export const alldoctor = () => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/user/doctors`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch doctors');
+      }
+      const data = await response.json();
+      return data
     } catch (error) {
       toast.error(error.message)
       alert(error.message);

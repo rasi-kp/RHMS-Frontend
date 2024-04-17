@@ -1,69 +1,83 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { MdModeEditOutline } from "react-icons/md";
-import { RxCross2 } from "react-icons/rx";
-import { IoChatbubble } from "react-icons/io5";
+import { AiFillMessage } from "react-icons/ai";
+import { ToastContainer, toast } from 'react-toastify';
 
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Card,
     Typography,
     CardBody,
 } from "@material-tailwind/react";
 import { CiSearch } from 'react-icons/ci';
-const TABLE_HEAD = ["Doctor Name", "Gender", "Qualification", "Specialitation", ""];
+import { alldoctor, deletedoctor, blockdoctor, unblockdoctor } from "../../../connection/admin";
+// import AddDoctor from './adddoctor';
+const BASE_URL = require('../../../apiconfig').BASE_URL;
 
-const TABLE_ROWS = [
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-        name: "John Michael",
-        gender: "male",
-        qualification: "MBBS",
-        specialitation: "cardiolagyst"
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
-        name: "John Michael",
-        gender: "male",
-        bloodgroup: "B+",
-        qualification: "MBBS",
-        specialitation: "neuroligist"
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-        name: "John Michael",
-        gender: "Female",
-        qualification: "MBBS",
-        specialitation: "gynecologist"
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-        name: "John Michael",
-        gender: "Female",
-        qualification: "MBBS",
-        specialitation: "generic medicine"
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-        name: "John Michael",
-        gender: "male",
-        qualification: "MBBS",
-        specialitation: "cardiolagyst"
-    },
+const TABLE_HEAD = ["Doctor Name", "Gender", "Qualification", "Specialitation", "Action"];
 
-];
-function patientcom() {
+function Doctor() {
+    const dispatch = useDispatch();
+    const token = useSelector(state => state.auth.token);
+    const [adddoctor, setAdddoctor] = useState(false)
+    const [doctordata, setDoctordata] = useState([])
+    const [search, setSearch] = useState('')
+    const [page, setPage] = useState(1);
+    const [flag, setFlag] = useState(false)
+    const [totalPages, setTotalPages] = useState(1);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await dispatch(alldoctor(page,search, token));
+            setDoctordata(data.data);
+            setTotalPages(data.totalPages)
+        };
+        fetchData();
+    }, [adddoctor, page, search, flag]);
+
+    const handleAppointment = async (doctorid) => {
+       
+    }
+    const handleMessage = async (doctorid) => {
+        
+    }
+    //*********************** Pagination Logic *************** */
+    const handlePrevClick = () => {
+        setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
+    };
+    const handleNextClick = () => {
+        setPage(prevPage => Math.min(prevPage + 1, totalPages)); // Ensure page doesn't exceed total pages
+    };
+    const handlePageClick = (pageNumber) => {
+        setPage(pageNumber);
+    };
+    const renderPaginationButtons = () => {
+        const buttons = [];
+        for (let i = 1; i <= totalPages; i++) {
+            buttons.push(
+                <button
+                    key={i}
+                    className={`mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md ${i === page ? 'bg-blue-500 text-white' : ''}`}
+                    onClick={() => handlePageClick(i)} >
+                    {i}
+                </button>
+            );
+        }
+        return buttons;
+    };
+    //*************************************************** */
     return (
         <div>
-            <div className='lg:ml-60 ml-6 me-8 rounded-lg bg-white  px-5 h-full pb-10 pt-3'>
+            <div className='lg:ml-60 md:ml-6 ml-3 me-3 md:me-8 rounded-lg bg-white  px-5 h-full pb-10 pt-3'>
                 <h1 className='absolute font-semibold text-xs pt-4 pl-3 underline underline-offset-8 decoration-blue-500'>Doctor Info</h1>
-                {/* <div className=' justify-end flex'>
-                        <button className=' bg-[#3497F9]  text-white text-xs rounded-xl px-2 p-1.5'>Add Member</button>
-                    </div> */}
+
                 <hr className='mt-9 ' />
                 <div className='flex'>
                     <div className="relative">
                         <input
+                        value={search}
+                        onChange={(e)=>setSearch(e.target.value)}
                             type="text"
                             className="ml-3 pl-8 w-32 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
                             placeholder="Search"
@@ -73,10 +87,10 @@ function patientcom() {
                     <div className="relative">
                         <input
                             type="text"
-                            className="ml-10 pl-8 w-32 md:w-44 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
+                            className="ml-3 md:ml-10 pl-8 w-32 md:w-44 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
                             placeholder="Search by specialization"
                         />
-                        <CiSearch className="absolute mt-2 left-12 top-2" />
+                        <CiSearch className="absolute mt-2 left-5 md:left-12 top-2" />
                     </div>
                 </div>
                 <CardBody className=" overflow-x-hidden mt-3 px-2 pt-0">
@@ -102,16 +116,16 @@ function patientcom() {
 
                             </thead>
                             <tbody>
-                                {TABLE_ROWS.map(
-                                    ({ img, name, gender, qualification, specialitation }, index) => {
-                                        const isLast = index === TABLE_ROWS.length - 1;
+                                {doctordata.map(
+                                    ({ image, doctor_id, first_name, last_name, gender, qualification, specialization, isActive }, index) => {
+                                        const isLast = index === doctordata.length - 1;
                                         const classes = isLast ? "pl-3 border-b border-blue-gray-50" : "pl-3 border-b border-blue-gray-50";
                                         return (
-                                            <tr key={name} className=' h-12'>
+                                            <tr key={doctor_id} className=' h-12'>
                                                 <td className={classes} >
                                                     <div className="flex items-center ">
-                                                        <img src={img} alt={name} className="w-7 h-7 rounded-full mr-2" />
-                                                        <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{name}</Typography>
+                                                        <img src={`${BASE_URL}/doctors/${image}`} alt={first_name} className="w-7 h-7 rounded-full mr-2" />
+                                                        <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{first_name}</Typography>
                                                     </div>
                                                 </td>
                                                 <td className={classes}>
@@ -133,17 +147,20 @@ function patientcom() {
                                                 <td className={classes}>
                                                     <div className="flex items-center">
                                                         <Typography className="pl-3 font-semibold text-xs text-slate-500" >
-                                                            {specialitation}
+                                                            {specialization}
                                                         </Typography>
                                                     </div>
                                                 </td>
 
                                                 <td className={classes}>
                                                     <div className="flex items-center">
-                                                        <button className="border bg-blue-500 rounded-lg p-1.5 flex items-center justify-center">
-                                                            <IoChatbubble className="w-3 h-3 text-white" />
+                                                        <button className="border border-blue-500 rounded-lg p-1 flex items-center justify-center" title='Delete'
+                                                            onClick={() => handleMessage(doctor_id)}>
+                                                            <AiFillMessage className="w-4 h-4 text-blue-500" />
                                                         </button>
-                                                        <button className='ml-2 bg-green-600  text-white text-xs rounded-md px-2 p-1'>Take Appointment</button>
+                                                        <button className="ml-3  border text-xs bg-green-600 text-white rounded-lg p-1.5 hover:bg-green-800"
+                                                            onClick={() => handleAppointment(doctor_id)}>Take an Appointment
+                                                        </button>
 
                                                     </div>
                                                 </td>
@@ -155,33 +172,32 @@ function patientcom() {
                         </table>
                     </div>
                 </CardBody>
-                <div class="mt-5 flex justify-end items-center">
+                <div className="mt-5 flex justify-end items-center">
                     <div>
-
-                        <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
+                        <button
+                            className="mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
+                            onClick={handlePrevClick}
+                            disabled={page === 1} // Disable Prev button on first page
+                        >
                             Prev
                         </button>
                     </div>
                     <div>
-                        <button class=" bg-blue-600 text-white  text-sm py-1 px-2 rounded-md">
-                            1
-                        </button>
-                        <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                            2
-                        </button>
-                        <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                            3
-                        </button>
+                        {renderPaginationButtons()}
                     </div>
                     <div>
-                        <button class="me-5 hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
+                        <button
+                            className="ml- hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
+                            onClick={handleNextClick}
+                            disabled={page === totalPages} >
                             Next
                         </button>
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     )
 }
 
-export default patientcom
+export default Doctor

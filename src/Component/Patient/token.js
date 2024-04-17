@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 
-import Sidebar from './component/Sidebar';
-import Navbar from './component/Navbar';
-import NavbarMobile from './component/NavbarMobile';
+import Sidebar from './components/Sidebar';
+import Navbar from './components/Navbar';
+import NavbarMobile from './components/NavbarMobile';
 import { addtokens,viewtoken } from "../../connection/doctor";
 import { useDispatch, useSelector } from "react-redux";
 const tokens = [

@@ -20,7 +20,6 @@ function AddDoctor({ closeModal }) {
     const [department, setdepartment] = useState("")
     const [image, setImage] = useState("")
     const [error, setError] = useState("")
-    console.log(image);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -34,7 +33,6 @@ function AddDoctor({ closeModal }) {
             const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
             return dateFormatRegex.test(dateString);
         };
-
         if (!fname.trim() || !image || !lname.trim() || !dob.trim() || !gender.trim() || !mobno.trim() || !email.trim() || !specialization.trim()) {
             toast.error("Fill All Field")
             setError('Fill Required Field');
@@ -60,20 +58,6 @@ function AddDoctor({ closeModal }) {
         formData.append('address', address);
         formData.append('department', department);
 
-        console.log(formData);
-        // const doctorData = {
-        //     email: email,
-        //     image: image,
-        //     first_name: fname,
-        //     last_name: lname,
-        //     date_of_birth: dob,
-        //     gender: gender,
-        //     mob_no: mobno,
-        //     qualification: qualification,
-        //     specialization: specialization,
-        //     address: address,
-        //     department: department
-        // };
         dispatch(createDoctor(formData, token));
         setTimeout(() => {
             closeModal(true); // Close the modal by passing true

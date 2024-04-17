@@ -11,6 +11,7 @@ import Otp from './Pages/home/otp'
 import Error from './Pages/404/404'
 import Patient from './Pages/patients/Dashboard'
 import Patientsall from "./Pages/patients/Patients"
+import Ptoken from './Component/Patient/token'
 import Doctorsall from "./Pages/patients/Doctors"
 import Appointmentall from "./Pages/patients/Appointments"
 import Cappointment from "./Component/Patient/cappointment"
@@ -42,6 +43,7 @@ const routes = () => {
                     <Route path="/patient/members"element={<Patientsall />} />
                     <Route path="/patient/doctors"element={<Doctorsall />} />
                     <Route path="/patient/appointments"element={<Appointmentall />} />
+                    <Route path="/patient/token"element={<Ptoken />} />
                     <Route path="/patient/appointments/complete"element={<Cappointment />} />
                     {/*********************** Doctor Routes *******************/}
                     <Route path="/doctor" element={<Doctor />} />

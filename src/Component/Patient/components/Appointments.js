@@ -33,7 +33,7 @@ const TABLE_ROWS = [
         online: false,
         date: "19/09/17",
     },
-  
+
 ];
 function Appointments() {
     return (
