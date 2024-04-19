@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
@@ -9,6 +9,8 @@ import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { MdMonitor } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { CiSearch } from "react-icons/ci";
+import { IoMdClose } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
 
 import {
     Card,
@@ -19,67 +21,45 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { alldoctorselection, allpatient } from "../../services/patient";
+import { alldoctorselection, allpatient, allappointments } from "../../services/patient";
 
-const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Token No", "Doctor", "Action", ""];
-
-const TABLE_ROWS = [
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-        name: "John Michael",
-        doctor: "Dr.Smith",
-        time: "10:30 AM",
-        age: 22,
-        token: 2,
-        fee: true,
-        online: true,
-        date: "23/04/18",
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
-        name: "Alexa Liras",
-        doctor: "Dr.Roopa S",
-        time: "11:30 AM",
-        age: 22,
-        token: 5,
-        fee: true,
-        online: false,
-        date: "23/04/18",
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-        name: "Laurent Perrier",
-        doctor: "Dr.John Doe",
-        time: "10:30 AM",
-        online: false,
-        age: 22,
-        token: 9,
-        fee: true,
-        date: "19/09/17",
-    },
-
-];
+const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Token", "Doctor","Status", "Action", ""];
 
 const DashboardLayout = ({ children }) => {
 
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const [addappointment, setAddappointment] = useState(false);
+    const [deleteAppointment,setDeleteappointment] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
     const [patientid, setPatientid] = useState('')
     const [doctorid, setDoctorid] = useState('')
+    const [appointmentid,setappointmentid]=useState(null)
     const [doctor, setDoctor] = useState([])
     const [search, setSearch] = useState('')
     const [data, setData] = useState([])
     const [flag, setFlag] = useState(false)
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [allappointment, setAllappointment] = useState([])
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+    const showModal=()=>{
+        setDeleteappointment(!deleteAppointment)
+    }
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await dispatch(allappointments(page, search, token));
+            setAllappointment(data.appointment);
+            setTotalPages(data.totalPages)
+        };
+        fetchData();
+    }, [page, search]);
+
     const Addappointment = () => {
         setAddappointment(true)
         dispatch(allpatient(page, search, token))
@@ -91,14 +71,50 @@ const DashboardLayout = ({ children }) => {
                 setDoctor(Data.doctors);
             })
     }
-    const submit=()=>{
-        if(patientid=='' || doctorid==''){
+    const submit = () => {
+        if (patientid == '' || doctorid == '') {
             return toast.error("Please Select Patient and Doctor!!!")
         }
-        navigate('/patient/token',{ state: { patientid,doctorid}})
-        
+        navigate('/patient/token', { state: { patientid, doctorid } })
+
+    }
+    const reschedule=(appointmentid)=>{
+        toast.success("reschdule")
+    }
+    const deleteappointment=(appoinmentid)=>{
+        setappointmentid(appoinmentid)
+        setDeleteappointment(true)
+    }
+    const handleDelete=()=>{
+        toast.success("deleted")
+        setDeleteappointment(false)
     }
 
+     //*********************** Pagination Logic *************** */
+     const handlePrevClick = () => {
+        setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
+    };
+    const handleNextClick = () => {
+        setPage(prevPage => Math.min(prevPage + 1, totalPages)); // Ensure page doesn't exceed total pages
+    };
+    const handlePageClick = (pageNumber) => {
+        setPage(pageNumber);
+    };
+    const renderPaginationButtons = () => {
+        const buttons = [];
+        for (let i = 1; i <= totalPages; i++) {
+            buttons.push(
+                <button
+                    key={i}
+                    className={`mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md ${i === page ? 'bg-blue-500 text-white' : ''}`}
+                    onClick={() => handlePageClick(i)} >
+                    {i}
+                </button>
+            );
+        }
+        return buttons;
+    };
+    //*************************************************** */
     return (
         <div className='bg-[#E2F1FF] h-screen'>
             <NavbarMobile toggle={toggleSidebar} />
@@ -160,12 +176,12 @@ const DashboardLayout = ({ children }) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {TABLE_ROWS.map(
-                                            ({ img, name, time, doctor, date, age, token }, index) => {
-                                                const isLast = index === TABLE_ROWS.length - 1;
+                                        {allappointment.map(
+                                            ({ image, appointment_id, date, time, status, token, patient, doctor }, index) => {
+                                                const isLast = index === allappointment.length - 1;
                                                 const classes = isLast ? "pl-3 border-b border-blue-gray-50" : "pl-3 border-b border-blue-gray-50";
                                                 return (
-                                                    <tr key={name} className=' h-14'>
+                                                    <tr key={appointment_id} className=' h-14'>
                                                         <td className={classes}>
                                                             <div className=" flex items-center p-3">
                                                                 <Typography className=" font-semibold text-xs text-slate-500" >
@@ -183,40 +199,48 @@ const DashboardLayout = ({ children }) => {
 
                                                         <td className={classes}>
                                                             <div className="flex items-center">
-                                                                <img src={img} alt={name} className="w-7 h-7 rounded-full mr-2" /> {/* Image */}
-                                                                <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{name}</Typography> {/* Name */}
+                                                                <img src={image} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" /> {/* Image */}
+                                                                <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{patient.first_name} {patient.last_name}</Typography> {/* Name */}
                                                             </div>
                                                         </td>
                                                         <td className={classes}>
                                                             <div className="flex items-center">
                                                                 <Typography className="pl-4 font-semibold text-xs text-slate-500" >
-                                                                    {age}
+                                                                    {patient.age}
                                                                 </Typography>
                                                             </div>
                                                         </td>
                                                         <td className={classes}>
                                                             <div className="flex items-center">
                                                                 <Typography className="pl-7 font-semibold text-xs text-slate-500" >
-                                                                    {token}
+                                                                    {token.token_no}
                                                                 </Typography>
                                                             </div>
                                                         </td>
                                                         <td className={classes}>
                                                             <div className="flex items-center">
                                                                 <Typography className="pl-3 font-semibold text-xs text-slate-500" >
-                                                                    {doctor}
+                                                                    {doctor.first_name} {doctor.last_name}
                                                                 </Typography>
                                                             </div>
                                                         </td>
                                                         <td className={classes}>
                                                             <div className="flex items-center">
-                                                                <p className='pl-3 text-xs text-blue-600 font-normal cursor-pointer'>Reschedule</p>
+                                                                <Typography className="pl-3 font-semibold text-xs text-slate-500" >
+                                                                    {status}
+                                                                </Typography>
+                                                            </div>
+                                                        </td>
+                                                        <td className={classes}>
+                                                            <div className="flex items-center">
+                                                                <p className='pl-3 text-xs text-blue-600 font-normal cursor-pointer' onClick={()=>reschedule(appointment_id)}>Reschedule</p>
                                                             </div>
                                                         </td>
 
                                                         <td className={classes}>
                                                             <div className="flex items-center">
-                                                                <button className=" border-2 bg-red-400 border-red-400 rounded-lg p-1 flex items-center justify-center">
+                                                                <button className=" border-2 bg-red-400 border-red-400 rounded-lg p-1 flex items-center justify-center"
+                                                                onClick={e=>deleteappointment(appointment_id)}>
                                                                     <RxCross2 className="w-3 h-3 text-white" />
                                                                 </button>
                                                                 <button className="ml-2 me-2 border-2 border-green-500 bg-green-500  rounded-lg p-1 flex items-center justify-center">
@@ -233,27 +257,20 @@ const DashboardLayout = ({ children }) => {
                             </div>
                         </CardBody>
                     </Card>
-                    <div class="mt-5 flex justify-end items-center">
+                    <div className="mt-1 me-5 flex justify-end items-center">
                         <div>
-
-                            <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                Prev
+                            <button className="mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
+                                onClick={handlePrevClick}
+                                disabled={page === 1} > Prev
                             </button>
                         </div>
                         <div>
-                            <button class=" bg-blue-600 text-white  text-sm py-1 px-2 rounded-md">
-                                1
-                            </button>
-                            <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                2
-                            </button>
-                            <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                3
-                            </button>
+                            {renderPaginationButtons()}
                         </div>
                         <div>
-                            <button class="me-5 hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                Next
+                            <button className="ml- hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
+                                onClick={handleNextClick}
+                                disabled={page === totalPages} > Next
                             </button>
                         </div>
                     </div>
@@ -294,10 +311,7 @@ const DashboardLayout = ({ children }) => {
                                                 <option key={doctor.doctor_id} value={doctor.doctor_id}>{index + 1}. {doctor.first_name} {doctor.last_name}</option>
                                             ))}
                                         </select>
-
                                         <div className="mt-4 flex justify-between font-semibold text-sm">
-
-
                                         </div>
                                         <button
                                             className="bg-blue-500 py-1.5 w-full text-white text-sm px-6 rounded hover:bg-blue-700"
@@ -314,6 +328,29 @@ const DashboardLayout = ({ children }) => {
 
                     </>
                 }
+                {deleteAppointment && (
+                <div
+                    className="fixed inset-0 z-50 flex justify-center items-center bg-gray-900 bg-opacity-50">
+                    <div className="relative mx-3 p-4 w-full max-w-md md:h-auto bg-white rounded-lg shadow dark:bg-white">
+                        < button className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            onClick={showModal} ><IoMdClose className='w-6 h-6 font-bold' />
+                        </button>
+                        <div className="p-4 text-center">
+                            <MdDelete className='text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto' />
+                            <p className="mb-4 text-gray-600 dark:text-gray-600">Are you sure you want to Cancel Appointment?</p>
+                            <div className="flex justify-center items-center space-x-4">
+                                <button className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                                    onClick={showModal} > No, cancel
+                                </button>
+                                <button type="submit" className="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+                                onClick={handleDelete}>
+                                    Yes, I'm sure
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             </div>
             <ToastContainer />
         </div>

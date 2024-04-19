@@ -25,6 +25,27 @@ export const allpatient = (page,search,token) => {
     }
   };
 };
+export const allappointments = (page,search,token) => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/appointments?page=${page}&search=${search}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add new member');
+      }
+      const data = await response.json();
+      return data
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};
 export const alldoctorselection = () => {
   return async () => {
     try {
