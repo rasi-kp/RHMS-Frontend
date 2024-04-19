@@ -15,10 +15,11 @@ import {
     Typography,
     CardBody,
 } from "@material-tailwind/react";
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { alldoctor, allpatient } from "../../connection/patient";
+import { alldoctorselection, allpatient } from "../../services/patient";
 
 const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Token No", "Doctor", "Action", ""];
 
@@ -61,6 +62,7 @@ const TABLE_ROWS = [
 
 const DashboardLayout = ({ children }) => {
 
+    const navigate=useNavigate()
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const [addappointment, setAddappointment] = useState(false);
@@ -84,16 +86,16 @@ const DashboardLayout = ({ children }) => {
             .then(Data => {
                 setData(Data.data);
             })
-        dispatch(alldoctor())
+        dispatch(alldoctorselection())
             .then(Data => {
                 setDoctor(Data.doctors);
             })
     }
     const submit=()=>{
         if(patientid=='' || doctorid==''){
-            toast.error("Please Select Patient and Doctor!!!")
+            return toast.error("Please Select Patient and Doctor!!!")
         }
-        Navigate('/patient/token')
+        navigate('/patient/token',{ state: { patientid,doctorid}})
         
     }
 

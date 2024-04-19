@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { RxCross2 } from "react-icons/rx";
-import { createUser } from "../../../connection/patient";
+import { createUser } from "../../../services/patient";
 import { useDispatch, useSelector } from "react-redux";
 
 function AddUser({ closeModal }) {

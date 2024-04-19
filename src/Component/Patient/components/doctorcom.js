@@ -11,7 +11,7 @@ import {
     CardBody,
 } from "@material-tailwind/react";
 import { CiSearch } from 'react-icons/ci';
-import { alldoctor, deletedoctor, blockdoctor, unblockdoctor } from "../../../connection/admin";
+import { alldoctor } from "../../../services/patient";
 // import AddDoctor from './adddoctor';
 const BASE_URL = require('../../../apiconfig').BASE_URL;
 

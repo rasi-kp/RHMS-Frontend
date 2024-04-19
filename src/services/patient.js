@@ -25,6 +25,26 @@ export const allpatient = (page,search,token) => {
     }
   };
 };
+export const alldoctorselection = () => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/user/doctors`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch doctors');
+      }
+      const data = await response.json();
+      return data
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};
 export const createUser = (userData,token) => {
     return async (dispatch) => {
       try {
@@ -115,13 +135,14 @@ export const edituser = (patientid,token) => {
     }
   };
 };
-export const alldoctor = () => {
+export const alldoctor = (page,search,token) => {
   return async () => {
     try {
-      const response = await fetch(`${BASE_URL}/user/doctors`, {
+      const response = await fetch(`${BASE_URL}/patient/alldoctor?page=${page}&search=${search}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
       });
       if (!response.ok) {
@@ -129,6 +150,52 @@ export const alldoctor = () => {
       }
       const data = await response.json();
       return data
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};
+export const addappoinment = (result,token) => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/addappointment`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(result),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add Doctor');
+      }
+      const data = await response.json();
+      if (data.message) {
+        return toast.success("Appintment Added Successfully !");
+      }
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+}
+
+export const viewtoken = (date,doctorid, token) => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/alltokens?date=${date}&doctorid=${doctorid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch doctors');
+      }
+      const data = await response.json();
+      return data.tokens
     } catch (error) {
       toast.error(error.message)
       alert(error.message);

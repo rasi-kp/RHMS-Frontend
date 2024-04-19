@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Sidebar from './component/Sidebar';
 import Navbar from './component/Navbar';
 import NavbarMobile from './component/NavbarMobile';
-import { addtokens,viewtoken } from "../../connection/doctor";
+import { addtokens,viewtoken } from "../../services/doctor";
 import { useDispatch, useSelector } from "react-redux";
 const tokens = [
     { name: 1, time: '09:00-09:20' },

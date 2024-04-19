@@ -14,7 +14,7 @@ import { BASE_URL } from '../../../apiconfig';
 // import AddUser from './addpatient';
 // import Edit from './editpatient'
 import profile from '../../images/profile.png'
-import { deleteuser } from "../../../connection/patient";
+import { deleteuser } from "../../../services/patient";
 
 const TABLE_HEAD = ["Member Name", "Gender", "Blood Group", "Age", "Weight", "Height", "Action"];
 

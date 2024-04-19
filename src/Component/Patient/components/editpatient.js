@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { RxCross2 } from "react-icons/rx";
-import { edituser, updateUser } from "../../../connection/patient";
+import { edituser, updateUser } from "../../../services/patient";
 import { useDispatch, useSelector } from "react-redux";
 
 function EditUser({ closeModal, patientid }) {

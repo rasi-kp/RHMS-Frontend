@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import { IoMdClose } from "react-icons/io";
+import { GiConfirmed } from "react-icons/gi";
 
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import NavbarMobile from './components/NavbarMobile';
-import { addtokens,viewtoken } from "../../connection/doctor";
+import { addappoinment,viewtoken } from "../../services/patient";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from 'react-router-dom';
 const tokens = [
     { name: 1, time: '09:00-09:20' },
     { name: 2, time: '09:20-09:40' },
@@ -44,64 +47,70 @@ for (let i = 0; i < 7; i++) {
 }
 
 const DashboardLayout = ({ children }) => {
+    const navigate=useNavigate()
+    const {doctorid,patientid}= location.state || null
+    const location = useLocation()
     const token = useSelector(state => state.auth.token); // Move useSelector inside the function
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
 
-    const [selectedTokens, setSelectedTokens] = useState([]);
+    const [selectedTokens, setSelectedTokens] = useState('');
+    const [availabletoken,setAvailabletoken] =useState([])
     const [selectedDate, setSelectedDate] = useState('');
+    const [isModalVisible,setIsmodalvisible] = useState(false)
 
     useEffect(() => {
-        
-    }, [selectedDate]);
+        if(!patientid || !doctorid){
+            navigate('/patient/appointments')
+        }
+    }, [isModalVisible]);
 
+    const showModal = () => {
+        setIsmodalvisible(!isModalVisible);
+    };
+    
     const handleTokenClick = (token) => {
         if (!selectedDate) {
             return toast.error("Please select a Date");
         }
-        const index = selectedTokens.findIndex(t => t.name === token.name);
-        if (index === -1) {
-            setSelectedTokens([...selectedTokens, token]);
+        if (availabletoken.some(t => t.token_no === token.name)) {
+            setSelectedTokens(token);
         } else {
-            setSelectedTokens(selectedTokens.filter(t => t.name !== token.name));
+            setSelectedTokens(null);
         }
     };
     const handleDateClick = (date) => {
-        setSelectedTokens([]);
+        console.log(patientid,doctorid);
+        if(!patientid || !doctorid){
+            return toast.error("Pls select Patient")
+        }
+        setSelectedTokens('')
+        setAvailabletoken([]);
         setSelectedDate(date);
-        dispatch(viewtoken(date.date, token))
+        dispatch(viewtoken(date.date,doctorid,token))
             .then(Data => {
-                setSelectedTokens(Data);
-                console.log(selectedTokens);
+                setAvailabletoken(Data);
+                console.log(availabletoken);
             })
             .catch(error => {
                 console.error("Error fetching user data:", error);
             });
     };
     const submitted=(e)=>{
-        if (selectedTokens.length === 0) {
+        if (!selectedTokens) {
             return toast.error("Please select Token");
         }
-        const formData={
-            tokens:selectedTokens,
-            date:selectedDate
-        }
-        dispatch(addtokens(formData, token));
+        setIsmodalvisible(true);
+        
     }
-    const handleCheckboxChange = (event, range) => {
-        if (!selectedDate) {
-            event.target.checked = false;
-            return toast.error("Please select a Date");
-        }
-        const checked = event.target.checked;
-        if (checked) {
-            setSelectedTokens(range);
-        } else {
-            event.target.checked = false;
-            setSelectedTokens([]);
-        }
-    };
-
+    const confirm=(e)=> {
+        const data={selectedTokens,selectedDate,doctorid,patientid}
+        dispatch(addappoinment(data, token));
+        setIsmodalvisible(false)
+        setAvailabletoken([])
+        setSelectedTokens('')
+        navigate('/patient/appointments',{ state: { patientid:null,doctorid:null}})
+    }
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
@@ -111,7 +120,7 @@ const DashboardLayout = ({ children }) => {
             <NavbarMobile toggle={toggleSidebar} />
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
-                <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Availability Details</h1>
+                <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Select Token</h1>
                 <Navbar />
                 <div className='bg-white lg:ml-60 ml-6 me-6 lg:me-8 mt-1 h-full pb-5 rounded-lg'>
                     <h1 className='p-1 text-xs pl-3 mt-3 text-slate-500 font-bold '>Choose date</h1>
@@ -119,39 +128,32 @@ const DashboardLayout = ({ children }) => {
                         {dates.map((date, index) => (
                             <button
                                 key={index}
-                                className={`w-full text-xs p-1 ml-1 me-1 mt-2 border border-blue-600   ${selectedDate === date ? 'bg-blue-500 text-white' : 'text-blue-800 rounded hover:bg-slate-300'
+                                className={`w-full text-xs p-1 ml-1 me-1 mt-2 border border-blue-600   ${selectedDate == date ? 'bg-blue-500 text-white' : 'text-blue-800 rounded hover:bg-slate-300'
                                     }`}
-                                onClick={() => handleDateClick(date)}
-                            >
+                                onClick={() => handleDateClick(date)}>
                                 <div className="font-semibold text-sm">{date.day}</div>
                                 <div>{date.date}</div>
                             </button>
                         ))}
                     </div>
                     <hr className='my-4' />
-                    <div className='flex justify-end pe-2'>
+                    <div className='flex pl-5'>
                         <div className=' text-xs font-semibold text-slate-500 '>
-                            <div className="flex items-center mb-1">
-                                <div className="rounded-full h-2 w-2 bg-green-500 mr-1"></div>
+                        <div className="flex items-center mb-1">
+                                <div className=" ml-4 rounded-full h-2 w-2 bg-green-500 mr-1"></div>
+                                <p>Available</p>
+                                <div className=" ml-4 rounded-full h-2 w-2 bg-slate-400 mr-1"></div>
+                                <p>Not Available</p>
+                                <div className="ml-4 rounded-full h-2 w-2 bg-red-500 mr-1"></div>
                                 <p>Selected</p>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="rounded-full h-2 w-2 bg-slate-400 mr-1"></div>
-                                <p>Not Selected</p>
-                            </div>
+                            </div>    
                         </div>
                     </div>
                     <div className='flex flex-wrap overflow-x-auto whitespace-nowrap mx-2 mt-3'>
                         {tokens.map(token => (
                             <button
                                 key={token.name}
-                                className={`w-20 md:w-20 text-xs p-1 ml-3 mt-2 border border-slate-400 rounded ${selectedTokens.find(t => t.name === token.name) || selectedTokens.some(t => t.token_no === token.name) ? 'bg-green-500 text-white' : 'bg-slate-300 hover:bg-slate-500 hover:text-white'
-                                    }`}
-                                // className={`w-20 md:w-20 text-xs p-1 ml-3 mt-2 border rounded ${
-                                //     selectedTokens.some(t => t.token_no === token.token_no) ? 
-                                //     'bg-green-500 text-white' : 
-                                //     'bg-slate-300 hover:bg-slate-500 hover:text-white'
-                                // }`}
+                                className={`w-20 md:w-20 text-xs p-1 ml-3 mt-2 border border-slate-400 rounded ${selectedTokens?.name === token.name ? 'bg-red-500 text-white' : availabletoken.some(t => t.token_no === token.name) ? 'bg-green-500 hover:bg-green-700 text-white' : 'bg-slate-300 cursor-default'}`}
                                 onClick={() => handleTokenClick(token)}>
                                 <div className='font-bold text-sm'>TOK {token.name}</div>
                                 <div>{token.time}</div>
@@ -159,34 +161,36 @@ const DashboardLayout = ({ children }) => {
                         ))}
                     </div>
 
-                    <div className='relative flex justify-end pe-5 mt-3'>
-                        <div className=' text-xs font-semibold text-slate-500 '>
-                            <div className="flex items-center mb-1">
-                                <input type="checkbox"
-                                    onChange={(e) => handleCheckboxChange(e, tokens.slice(0, tokens.length))}
-                                    className="h-3 w-3 me-2 focus:ring-blue-500 border-gray-400 rounded" />
-                                <p>Select All</p>
-                            </div>
-                            <div className="flex items-center mb-1">
-                                <input type="checkbox"
-                                    onChange={(e) => handleCheckboxChange(e, tokens.slice(0, 12))}
-                                    className="h-3 w-3 me-2 focus:ring-blue-500 border-gray-400 rounded" />
-                                <p>Morning</p>
-                            </div>
-                            <div className="flex items-center mb-1">
-                                <input type="checkbox"
-                                    onChange={(e) => handleCheckboxChange(e, tokens.slice(12))}
-                                    className="h-3 w-3 me-2 focus:ring-blue-500 border-gray-400 rounded" />
-                                <p>After noon</p>
-                            </div>
-                        </div>
-                    </div><hr className='mx-3'/>
+                    <hr className='mx-5 mt-6'/>
                     <div className='flex justify-end'>
                             <button onClick={submitted} className='bg-[#3497F9] me-2 md:me-14 mt-2 w-20 text-center text-white font-semibold text-xs rounded px-2 p-1.5 hover:bg-blue-600'>ADD</button>
                         </div>
                 </div>
 
             </div>
+            {isModalVisible && (
+                <div
+                    className="fixed inset-0 z-50 flex justify-center items-center bg-gray-900 bg-opacity-50">
+                    <div className="relative mx-3 p-4 w-full max-w-md md:h-auto bg-white rounded-lg shadow dark:bg-white">
+                        < button className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            onClick={showModal} ><IoMdClose className='w-6 h-6 font-bold'/>
+                        </button>
+                        <div className="p-4 text-center">
+                            <GiConfirmed className=' dark:text-green-500 w-11 h-11 mb-3.5 mx-auto'/>
+                            <p className="mb-4 text-gray-600 dark:text-gray-600">Are you confirm Appointment</p>
+                            <div className="flex justify-center items-center space-x-4">
+                                <button className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                                    onClick={showModal} > No, cancel
+                                </button>
+                                <button type="submit" className="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+                                    onClick={confirm}>
+                                    Yes, I'm sure
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             <ToastContainer />
         </div>
     );
