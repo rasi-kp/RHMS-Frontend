@@ -48,8 +48,8 @@ for (let i = 0; i < 7; i++) {
 
 const DashboardLayout = ({ children }) => {
     const navigate=useNavigate()
-    const {doctorid,patientid}= location.state || null
     const location = useLocation()
+    const {doctorid=null,patientid=null}= location.state || {}
     const token = useSelector(state => state.auth.token); // Move useSelector inside the function
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
@@ -60,6 +60,7 @@ const DashboardLayout = ({ children }) => {
     const [isModalVisible,setIsmodalvisible] = useState(false)
 
     useEffect(() => {
+        console.log(patientid,doctorid);
         if(!patientid || !doctorid){
             navigate('/patient/appointments')
         }

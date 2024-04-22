@@ -21,7 +21,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { alldoctorselection, allpatient, allappointments } from "../../services/patient";
+import { alldoctorselection, allpatient, allappointments,deleteappointment1,reschduleappoinment} from "../../services/patient";
 
 const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Token", "Doctor","Status", "Action", ""];
 
@@ -58,7 +58,7 @@ const DashboardLayout = ({ children }) => {
             setTotalPages(data.totalPages)
         };
         fetchData();
-    }, [page, search]);
+    }, [page, search,deleteAppointment,addappointment]);
 
     const Addappointment = () => {
         setAddappointment(true)
@@ -79,14 +79,16 @@ const DashboardLayout = ({ children }) => {
 
     }
     const reschedule=(appointmentid)=>{
-        toast.success("reschdule")
+        console.log(appointmentid);
+        console.log(patientid,doctorid);
+        navigate('/patient/token', { state: { patientid, doctorid, appointmentid } })
     }
     const deleteappointment=(appoinmentid)=>{
         setappointmentid(appoinmentid)
         setDeleteappointment(true)
     }
-    const handleDelete=()=>{
-        toast.success("deleted")
+    const handleDelete=async ()=>{
+        await dispatch(deleteappointment1(appointmentid, token));
         setDeleteappointment(false)
     }
 

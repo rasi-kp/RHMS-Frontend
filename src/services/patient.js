@@ -46,6 +46,74 @@ export const allappointments = (page,search,token) => {
     }
   };
 };
+export const deleteappointment1 = (id,token) => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/deleteappointment/${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch appointement');
+      }
+      const data = await response.json();
+      if (data.message) {
+        return toast.success("Appointment Cancelled Successfully !");
+      }
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+}
+export const completedappoinment = (page,search,token) => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/completeappointment?page${page}&search=${search}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch appointement');
+      }
+      const data = await response.json();
+      return data
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+}
+export const reschduleappoinment = (result,token) => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/rescheduleappointment`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(result),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add Doctor');
+      }
+      const data = await response.json();
+      if (data.message) {
+        return toast.success("Appintment Added Successfully !");
+      }
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+}
 export const alldoctorselection = () => {
   return async () => {
     try {
@@ -201,6 +269,7 @@ export const addappoinment = (result,token) => {
     }
   };
 }
+
 
 export const viewtoken = (date,doctorid, token) => {
   return async () => {
