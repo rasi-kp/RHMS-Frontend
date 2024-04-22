@@ -21,9 +21,9 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { alldoctorselection, allpatient, allappointments,deleteappointment1,reschduleappoinment} from "../../services/patient";
+import { alldoctorselection, allpatient, allappointments, deleteappointment1 } from "../../services/patient";
 
-const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Token", "Doctor","Status", "Action", ""];
+const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Token", "Doctor", "Status", "Action", ""];
 
 const DashboardLayout = ({ children }) => {
 
@@ -31,12 +31,12 @@ const DashboardLayout = ({ children }) => {
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const [addappointment, setAddappointment] = useState(false);
-    const [deleteAppointment,setDeleteappointment] = useState(false);
+    const [deleteAppointment, setDeleteappointment] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
     const [patientid, setPatientid] = useState('')
     const [doctorid, setDoctorid] = useState('')
-    const [appointmentid,setappointmentid]=useState(null)
+    const [appointmentid, setappointmentid] = useState(null)
     const [doctor, setDoctor] = useState([])
     const [search, setSearch] = useState('')
     const [data, setData] = useState([])
@@ -48,7 +48,7 @@ const DashboardLayout = ({ children }) => {
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
-    const showModal=()=>{
+    const showModal = () => {
         setDeleteappointment(!deleteAppointment)
     }
     useEffect(() => {
@@ -58,7 +58,7 @@ const DashboardLayout = ({ children }) => {
             setTotalPages(data.totalPages)
         };
         fetchData();
-    }, [page, search,deleteAppointment,addappointment]);
+    }, [page, search, deleteAppointment, addappointment]);
 
     const Addappointment = () => {
         setAddappointment(true)
@@ -78,22 +78,20 @@ const DashboardLayout = ({ children }) => {
         navigate('/patient/token', { state: { patientid, doctorid } })
 
     }
-    const reschedule=(appointmentid)=>{
-        console.log(appointmentid);
-        console.log(patientid,doctorid);
+    const reschedule = (appointmentid, patientid, doctorid) => {
         navigate('/patient/token', { state: { patientid, doctorid, appointmentid } })
     }
-    const deleteappointment=(appoinmentid)=>{
+    const deleteappointment = (appoinmentid) => {
         setappointmentid(appoinmentid)
         setDeleteappointment(true)
     }
-    const handleDelete=async ()=>{
+    const handleDelete = async () => {
         await dispatch(deleteappointment1(appointmentid, token));
         setDeleteappointment(false)
     }
 
-     //*********************** Pagination Logic *************** */
-     const handlePrevClick = () => {
+    //*********************** Pagination Logic *************** */
+    const handlePrevClick = () => {
         setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
     };
     const handleNextClick = () => {
@@ -233,16 +231,17 @@ const DashboardLayout = ({ children }) => {
                                                                 </Typography>
                                                             </div>
                                                         </td>
-                                                        <td className={classes}>
+                                                        {status == "scheduled" ? (<td className={classes}>
                                                             <div className="flex items-center">
-                                                                <p className='pl-3 text-xs text-blue-600 font-normal cursor-pointer' onClick={()=>reschedule(appointment_id)}>Reschedule</p>
+                                                                <p className='pl-3 text-xs text-blue-600 font-normal cursor-pointer' onClick={() => reschedule(appointment_id, patient.patient_id, doctor.doctor_id)}>Reschedule</p>
                                                             </div>
-                                                        </td>
-
+                                                        </td>) : (<div className="flex items-center">
+                                                        </div>)
+                                                        }
                                                         <td className={classes}>
                                                             <div className="flex items-center">
                                                                 <button className=" border-2 bg-red-400 border-red-400 rounded-lg p-1 flex items-center justify-center"
-                                                                onClick={e=>deleteappointment(appointment_id)}>
+                                                                    onClick={e => deleteappointment(appointment_id)}>
                                                                     <RxCross2 className="w-3 h-3 text-white" />
                                                                 </button>
                                                                 <button className="ml-2 me-2 border-2 border-green-500 bg-green-500  rounded-lg p-1 flex items-center justify-center">
@@ -331,28 +330,28 @@ const DashboardLayout = ({ children }) => {
                     </>
                 }
                 {deleteAppointment && (
-                <div
-                    className="fixed inset-0 z-50 flex justify-center items-center bg-gray-900 bg-opacity-50">
-                    <div className="relative mx-3 p-4 w-full max-w-md md:h-auto bg-white rounded-lg shadow dark:bg-white">
-                        < button className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                            onClick={showModal} ><IoMdClose className='w-6 h-6 font-bold' />
-                        </button>
-                        <div className="p-4 text-center">
-                            <MdDelete className='text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto' />
-                            <p className="mb-4 text-gray-600 dark:text-gray-600">Are you sure you want to Cancel Appointment?</p>
-                            <div className="flex justify-center items-center space-x-4">
-                                <button className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
-                                    onClick={showModal} > No, cancel
-                                </button>
-                                <button type="submit" className="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
-                                onClick={handleDelete}>
-                                    Yes, I'm sure
-                                </button>
+                    <div
+                        className="fixed inset-0 z-50 flex justify-center items-center bg-gray-900 bg-opacity-50">
+                        <div className="relative mx-3 p-4 w-full max-w-md md:h-auto bg-white rounded-lg shadow dark:bg-white">
+                            < button className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                onClick={showModal} ><IoMdClose className='w-6 h-6 font-bold' />
+                            </button>
+                            <div className="p-4 text-center">
+                                <MdDelete className='text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto' />
+                                <p className="mb-4 text-gray-600 dark:text-gray-600">Are you sure you want to Cancel Appointment?</p>
+                                <div className="flex justify-center items-center space-x-4">
+                                    <button className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                                        onClick={showModal} > No, cancel
+                                    </button>
+                                    <button type="submit" className="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+                                        onClick={handleDelete}>
+                                        Yes, I'm sure
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
             </div>
             <ToastContainer />
         </div>

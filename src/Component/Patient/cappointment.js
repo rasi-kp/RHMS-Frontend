@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
@@ -15,53 +15,48 @@ import {
     Typography,
     CardBody,
 } from "@material-tailwind/react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {completedappoinment} from "../../services/patient";
 
 const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Doctor", "Fee Status", "Action"];
 
-const TABLE_ROWS = [
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-        name: "John Michael",
-        doctor: "Dr.Smith",
-        time: "10:30 AM",
-        age: 22,
-        token: 2,
-        fee: true,
-        online: true,
-        date: "23/04/18",
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
-        name: "Alexa Liras",
-        doctor: "Dr.Roopa S",
-        time: "11:30 AM",
-        age: 22,
-        token: 5,
-        fee: true,
-        online: false,
-        date: "23/04/18",
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-        name: "Laurent Perrier",
-        doctor: "Dr.John Doe",
-        time: "10:30 AM",
-        online: false,
-        age: 22,
-        token: 9,
-        fee: true,
-        date: "19/09/17",
-    },
-
-];
 
 const DashboardLayout = ({ children }) => {
+
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const token = useSelector(state => state.auth.token);
+    const [addappointment, setAddappointment] = useState(false);
+    const [deleteAppointment,setDeleteappointment] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+
+    const [patientid, setPatientid] = useState('')
+    const [doctorid, setDoctorid] = useState('')
+    const [appointmentid,setappointmentid]=useState(null)
+    const [doctor, setDoctor] = useState([])
+    const [search, setSearch] = useState('')
+    const [data, setData] = useState([])
+    const [flag, setFlag] = useState(false)
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [allappointment, setAllappointment] = useState([])
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+    const showModal=()=>{
+        setDeleteappointment(!deleteAppointment)
+    }
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await dispatch(completedappoinment(page, search, token));
+            setAllappointment(data.appointment);
+            setTotalPages(data.totalPages)
+            console.log(allappointment);
+        };
+        fetchData();
+    }, [page, search,deleteAppointment,addappointment]);
 
     return (
         <div className='bg-[#E2F1FF] h-screen'>
@@ -78,7 +73,7 @@ const DashboardLayout = ({ children }) => {
                                 <h5 className='text-xs font-bold cursor-pointer text-slate-400'><Link to="/patient/appointments"> UPCOMING APPOINTMENTS </Link></h5>
                                 <h1 className='text-xs cursor-pointer pl-5 md:pr-5 underline underline-offset-8 decoration-blue-700 font-bold'>COMPLETED APPOINTMENTS</h1>
                             </div>
-                            <button className='hidden sm:inline bg-[#3497F9] text-white text-xs rounded-xl mb-0 mt-0 px-2 p-1.5'>New Appointment</button>
+                            {/* <button className='hidden sm:inline bg-[#3497F9] text-white text-xs rounded-xl mb-0 mt-0 px-2 p-1.5'>New Appointment</button> */}
                             <div className='sm:hidden flex'>
                                 <h5 className='text-xs font-bold cursor-pointer pr-1 md:pr-5 underline underline-offset-8 decoration-blue-700 hover:font-bold'><Link to="/patient/appointments">UPCOMING</Link></h5>
                                 <h1 className='text-xs cursor-pointer text-slate-400 font-bold'>COMPLETED </h1>
@@ -124,12 +119,12 @@ const DashboardLayout = ({ children }) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {TABLE_ROWS.map(
-                                            ({ img, name, time, doctor, date, age, fee }, index) => {
-                                                const isLast = index === TABLE_ROWS.length - 1;
+                                        {allappointment.map(
+                                            ({ img,appointment_id, time,patient,token, doctor, date,status, fee }, index) => {
+                                                const isLast = index === allappointment.length - 1;
                                                 const classes = isLast ? "pl-3 border-b border-blue-gray-50" : "pl-3 border-b border-blue-gray-50";
                                                 return (
-                                                    <tr key={name} className=' h-14'>
+                                                    <tr key={appointment_id} className=' h-14'>
                                                         <td className={classes}>
                                                             <div className=" flex items-center p-3">
                                                                 <Typography className=" font-semibold text-xs text-slate-500" >
@@ -147,21 +142,21 @@ const DashboardLayout = ({ children }) => {
 
                                                         <td className={classes}>
                                                             <div className="flex items-center">
-                                                                <img src={img} alt={name} className="w-7 h-7 rounded-full mr-2" /> {/* Image */}
-                                                                <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{name}</Typography> {/* Name */}
+                                                                <img src={img} alt={appointment_id} className="w-7 h-7 rounded-full mr-2" /> {/* Image */}
+                                                                <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{patient.first_name}</Typography> {/* Name */}
                                                             </div>
                                                         </td>
                                                         <td className={classes}>
                                                             <div className="flex items-center">
                                                                 <Typography className="pl-4 font-semibold text-xs text-slate-500" >
-                                                                    {age}
+                                                                    {patient.age}
                                                                 </Typography>
                                                             </div>
                                                         </td>
                                                         <td className={classes}>
                                                             <div className="flex items-center">
                                                                 <Typography className="pl-2 font-semibold text-xs text-slate-500" >
-                                                                    {doctor}
+                                                                    {doctor.first_name} {doctor.last_name}
                                                                 </Typography>
                                                             </div>
                                                         </td>

@@ -49,7 +49,7 @@ for (let i = 0; i < 7; i++) {
 const DashboardLayout = ({ children }) => {
     const navigate=useNavigate()
     const location = useLocation()
-    const {doctorid=null,patientid=null}= location.state || {}
+    const {doctorid=null,patientid=null,appointmentid=null}= location.state || {}
     const token = useSelector(state => state.auth.token); // Move useSelector inside the function
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +60,6 @@ const DashboardLayout = ({ children }) => {
     const [isModalVisible,setIsmodalvisible] = useState(false)
 
     useEffect(() => {
-        console.log(patientid,doctorid);
         if(!patientid || !doctorid){
             navigate('/patient/appointments')
         }
@@ -91,7 +90,6 @@ const DashboardLayout = ({ children }) => {
         dispatch(viewtoken(date.date,doctorid,token))
             .then(Data => {
                 setAvailabletoken(Data);
-                console.log(availabletoken);
             })
             .catch(error => {
                 console.error("Error fetching user data:", error);
@@ -105,7 +103,7 @@ const DashboardLayout = ({ children }) => {
         
     }
     const confirm=(e)=> {
-        const data={selectedTokens,selectedDate,doctorid,patientid}
+        const data={selectedTokens,selectedDate,doctorid,patientid,appointmentid}
         dispatch(addappoinment(data, token));
         setIsmodalvisible(false)
         setAvailabletoken([])

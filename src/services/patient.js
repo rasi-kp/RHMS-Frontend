@@ -90,30 +90,6 @@ export const completedappoinment = (page,search,token) => {
     }
   };
 }
-export const reschduleappoinment = (result,token) => {
-  return async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/patient/rescheduleappointment`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(result),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to add Doctor');
-      }
-      const data = await response.json();
-      if (data.message) {
-        return toast.success("Appintment Added Successfully !");
-      }
-    } catch (error) {
-      toast.error(error.message)
-      alert(error.message);
-    }
-  };
-}
 export const alldoctorselection = () => {
   return async () => {
     try {
