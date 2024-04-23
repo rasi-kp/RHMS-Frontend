@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import NavbarMobile from './components/NavbarMobile';
-import Appointments from './components/Appointments';
+import man from '../images/profile.png'
+import girl from '../images/girl.jpg'
 
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { CiSearch } from "react-icons/ci";
@@ -31,10 +32,6 @@ const DashboardLayout = ({ children }) => {
     const [deleteAppointment,setDeleteappointment] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
-    const [patientid, setPatientid] = useState('')
-    const [doctorid, setDoctorid] = useState('')
-    const [appointmentid,setappointmentid]=useState(null)
-    const [doctor, setDoctor] = useState([])
     const [search, setSearch] = useState('')
     const [data, setData] = useState([])
     const [flag, setFlag] = useState(false)
@@ -53,10 +50,34 @@ const DashboardLayout = ({ children }) => {
             const data = await dispatch(completedappoinment(page, search, token));
             setAllappointment(data.appointment);
             setTotalPages(data.totalPages)
-            console.log(allappointment);
         };
         fetchData();
     }, [page, search,deleteAppointment,addappointment]);
+    //*********************** Pagination Logic *************** */
+    const handlePrevClick = () => {
+        setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
+    };
+    const handleNextClick = () => {
+        setPage(prevPage => Math.min(prevPage + 1, totalPages)); // Ensure page doesn't exceed total pages
+    };
+    const handlePageClick = (pageNumber) => {
+        setPage(pageNumber);
+    };
+    const renderPaginationButtons = () => {
+        const buttons = [];
+        for (let i = 1; i <= totalPages; i++) {
+            buttons.push(
+                <button
+                    key={i}
+                    className={`mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md ${i === page ? 'bg-blue-500 text-white' : ''}`}
+                    onClick={() => handlePageClick(i)} >
+                    {i}
+                </button>
+            );
+        }
+        return buttons;
+    };
+    //*************************************************** */
 
     return (
         <div className='bg-[#E2F1FF] h-screen'>
@@ -73,21 +94,20 @@ const DashboardLayout = ({ children }) => {
                                 <h5 className='text-xs font-bold cursor-pointer text-slate-400'><Link to="/patient/appointments"> UPCOMING APPOINTMENTS </Link></h5>
                                 <h1 className='text-xs cursor-pointer pl-5 md:pr-5 underline underline-offset-8 decoration-blue-700 font-bold'>COMPLETED APPOINTMENTS</h1>
                             </div>
-                            {/* <button className='hidden sm:inline bg-[#3497F9] text-white text-xs rounded-xl mb-0 mt-0 px-2 p-1.5'>New Appointment</button> */}
                             <div className='sm:hidden flex'>
                                 <h5 className='text-xs font-bold cursor-pointer pr-1 md:pr-5 underline underline-offset-8 decoration-blue-700 hover:font-bold'><Link to="/patient/appointments">UPCOMING</Link></h5>
                                 <h1 className='text-xs cursor-pointer text-slate-400 font-bold'>COMPLETED </h1>
                             </div>
                             <button className='sm:hidden bg-[#3497F9] text-white text-xs rounded-xl mb-1 me-3 px-2 p-1.5'>new appointment</button>
                         </div>
-                        <div className='flex mb-3 ml-6 mt-0'>
+                        <div className='flex mb-3 ml-6 mt-3'>
                             <div className="relative">
                                 <input
                                     type="text"
                                     className="pl-8 w-32 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
                                     placeholder="Search"
                                 />
-                                <CiSearch className="absolute mt-2 left-2 top-2" /> {/* Assuming CiSearch is an icon component */}
+                                <CiSearch className="absolute mt-2 left-2 top-2" />
                             </div>
                             <div className="relative">
                                 <input
@@ -142,7 +162,7 @@ const DashboardLayout = ({ children }) => {
 
                                                         <td className={classes}>
                                                             <div className="flex items-center">
-                                                                <img src={img} alt={appointment_id} className="w-7 h-7 rounded-full mr-2" /> {/* Image */}
+                                                            {patient.gender=='male'?(<img src={man} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />):(<img src={girl} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />)}
                                                                 <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{patient.first_name}</Typography> {/* Name */}
                                                             </div>
                                                         </td>
@@ -188,27 +208,20 @@ const DashboardLayout = ({ children }) => {
                             </div>
                         </CardBody>
                     </Card>
-                    <div class="flex justify-end items-center">
+                    <div className="mt-1 me-5 flex justify-end items-center">
                         <div>
-
-                            <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                Prev
+                            <button className="mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
+                                onClick={handlePrevClick}
+                                disabled={page === 1} > Prev
                             </button>
                         </div>
                         <div>
-                            <button class=" bg-blue-600 text-white  text-sm py-1 px-2 rounded-md">
-                                1
-                            </button>
-                            <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                2
-                            </button>
-                            <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                3
-                            </button>
+                            {renderPaginationButtons()}
                         </div>
                         <div>
-                            <button class="me-5 hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                Next
+                            <button className="ml- hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
+                                onClick={handleNextClick}
+                                disabled={page === totalPages} > Next
                             </button>
                         </div>
                     </div>

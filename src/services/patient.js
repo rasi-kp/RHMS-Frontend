@@ -25,10 +25,10 @@ export const allpatient = (page,search,token) => {
     }
   };
 };
-export const allappointments = (page,search,token) => {
+export const allappointments = (page,date,search,token) => {
   return async (dispatch) => {
     try {
-      const response = await fetch(`${BASE_URL}/patient/appointments?page=${page}&search=${search}`, {
+      const response = await fetch(`${BASE_URL}/patient/appointments?page=${page}&search=${search}&date=${date}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -200,10 +200,10 @@ export const edituser = (patientid,token) => {
     }
   };
 };
-export const alldoctor = (page,search,token) => {
+export const alldoctor = (page,search,specialization,token) => {
   return async () => {
     try {
-      const response = await fetch(`${BASE_URL}/patient/alldoctor?page=${page}&search=${search}`, {
+      const response = await fetch(`${BASE_URL}/patient/alldoctor?page=${page}&search=${search}&specialization=${specialization}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

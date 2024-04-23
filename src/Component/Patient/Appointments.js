@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import NavbarMobile from './components/NavbarMobile';
-import Appointments from './components/Appointments';
+import man from '../images/profile.png'
+import girl from '../images/girl.jpg'
 
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { MdMonitor } from "react-icons/md";
@@ -40,7 +41,7 @@ const DashboardLayout = ({ children }) => {
     const [doctor, setDoctor] = useState([])
     const [search, setSearch] = useState('')
     const [data, setData] = useState([])
-    const [flag, setFlag] = useState(false)
+    const [date, setDate] = useState('')
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [allappointment, setAllappointment] = useState([])
@@ -53,13 +54,12 @@ const DashboardLayout = ({ children }) => {
     }
     useEffect(() => {
         const fetchData = async () => {
-            const data = await dispatch(allappointments(page, search, token));
+            const data = await dispatch(allappointments(page, date, search, token));
             setAllappointment(data.appointment);
             setTotalPages(data.totalPages)
         };
         fetchData();
-    }, [page, search, deleteAppointment, addappointment]);
-
+    }, [page, date, search, deleteAppointment, addappointment]);
     const Addappointment = () => {
         setAddappointment(true)
         dispatch(allpatient(page, search, token))
@@ -143,15 +143,14 @@ const DashboardLayout = ({ children }) => {
                                     type="text"
                                     className="pl-8 w-32 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
                                     placeholder="Search"
+                                    onChange={e => setSearch(e.target.value)}
                                 />
-                                <CiSearch className="absolute mt-2 left-2 top-2" /> {/* Assuming CiSearch is an icon component */}
+                                <CiSearch className="absolute mt-2 left-2 top-2" />
                             </div>
                             <div className="relative">
-                                <input
-                                    type="date"
-                                    className="md:ml-8 ml-2 pl-3 w-32 h-6 text-blue-400 cursor-pointer text-xs mt-3 pe-2 border border-blue-600 rounded-full  outline-none"
-                                    value="Filter by Date"
-                                />
+                                <input type="date"
+                                    onChange={e => setDate(e.target.value)}
+                                    className="md:ml-8 ml-2 pl-3 w-32 h-6 text-blue-400 cursor-pointer text-xs mt-3 pe-2 border border-blue-600 rounded-full  outline-none" />
                             </div>
                         </div>
 
@@ -199,7 +198,7 @@ const DashboardLayout = ({ children }) => {
 
                                                         <td className={classes}>
                                                             <div className="flex items-center">
-                                                                <img src={image} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" /> {/* Image */}
+                                                                {patient.gender == 'male' ? (<img src={man} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />) : (<img src={girl} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />)}
                                                                 <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{patient.first_name} {patient.last_name}</Typography> {/* Name */}
                                                             </div>
                                                         </td>
@@ -240,13 +239,18 @@ const DashboardLayout = ({ children }) => {
                                                         }
                                                         <td className={classes}>
                                                             <div className="flex items-center">
-                                                                <button className=" border-2 bg-red-400 border-red-400 rounded-lg p-1 flex items-center justify-center"
+                                                                {status == "scheduled" ? (<button className=" border-2 bg-red-400 border-red-400 rounded-lg p-1 flex items-center justify-center"
                                                                     onClick={e => deleteappointment(appointment_id)}>
                                                                     <RxCross2 className="w-3 h-3 text-white" />
-                                                                </button>
-                                                                <button className="ml-2 me-2 border-2 border-green-500 bg-green-500  rounded-lg p-1 flex items-center justify-center">
+                                                                </button>) : (<button className=" border-2 bg-red-400 border-red-400 rounded-lg p-1 flex items-center justify-center">
+                                                                    <RxCross2 className="w-3 h-3 text-white" />
+                                                                </button>)}
+                                                                {status == "scheduled" ? (<button className="ml-2 me-2 border-2 border-green-500 bg-green-500  rounded-lg p-1 flex items-center justify-center">
                                                                     <MdMonitor className="w-3 h-3 text-white" />
-                                                                </button>
+                                                                </button>) : (<button className="ml-2 me-2 border-2 border-red-500 bg-red-500  rounded-lg p-1 flex items-center justify-center">
+                                                                    <MdMonitor className="w-3 h-3 text-white" />
+                                                                </button>)}
+
                                                             </div>
                                                         </td>
                                                     </tr>

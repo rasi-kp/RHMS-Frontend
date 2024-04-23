@@ -1,67 +1,103 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Sidebar from './component/Sidebar';
 import Navbar from './component/Navbar';
 import NavbarMobile from './component/NavbarMobile';
-import Appointments from './component/Appointments';
+import man from '../images/profile.png'
+import girl from '../images/girl.jpg'
 
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { MdMonitor } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { CiSearch } from "react-icons/ci";
+import { FaRegBell } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 
 import {
     Card,
     Typography,
     CardBody,
 } from "@material-tailwind/react";
-import { Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { allappointments} from "../../services/doctor";
 
-const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Token No", "Doctor", "Action", ""];
-
-const TABLE_ROWS = [
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-        name: "John Michael",
-        doctor: "Dr.Smith",
-        time: "10:30 AM",
-        age: 22,
-        token: 2,
-        fee: true,
-        online: true,
-        date: "23/04/18",
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
-        name: "Alexa Liras",
-        doctor: "Dr.Roopa S",
-        time: "11:30 AM",
-        age: 22,
-        token: 5,
-        fee: true,
-        online: false,
-        date: "23/04/18",
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-        name: "Laurent Perrier",
-        doctor: "Dr.John Doe",
-        time: "10:30 AM",
-        online: false,
-        age: 22,
-        token: 9,
-        fee: true,
-        date: "19/09/17",
-    },
-
-];
+const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Token No", "Doctor Action"];
 
 const DashboardLayout = ({ children }) => {
+    
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const token = useSelector(state => state.auth.token);
+    const [addappointment, setAddappointment] = useState(false);
+    const [deleteAppointment, setDeleteappointment] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+
+    const [patientid, setPatientid] = useState('')
+    const [doctorid, setDoctorid] = useState('')
+    const [appointmentid, setappointmentid] = useState(null)
+    const [doctor, setDoctor] = useState([])
+    const [search, setSearch] = useState('')
+    const [data, setData] = useState([])
+    const [date, setDate] = useState('')
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [allappointment, setAllappointment] = useState([])
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+    const showModal = () => {
+        setDeleteappointment(!deleteAppointment)
+    }
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await dispatch(allappointments(page, date, search, token));
+            setAllappointment(data.appointment);
+            setTotalPages(data.totalPages)
+        };
+        fetchData();
+    }, [page, date, search,]);
+    const absent=(appoinmentid)=>{
+
+    }
+    const notify=(appoinmentid)=>{
+        
+    }
+    const attend = (appoinmentid) => {
+            return toast.error("Enter !!!")
+        navigate('/doctor/prescription', { state: { appoinmentid } })
+
+    }
+    const reschedule = (appointmentid, patientid, doctorid) => {
+        navigate('/patient/token', { state: { patientid, doctorid, appointmentid } })
+    }
+
+    //*********************** Pagination Logic *************** */
+    const handlePrevClick = () => {
+        setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
+    };
+    const handleNextClick = () => {
+        setPage(prevPage => Math.min(prevPage + 1, totalPages)); // Ensure page doesn't exceed total pages
+    };
+    const handlePageClick = (pageNumber) => {
+        setPage(pageNumber);
+    };
+    const renderPaginationButtons = () => {
+        const buttons = [];
+        for (let i = 1; i <= totalPages; i++) {
+            buttons.push(
+                <button
+                    key={i}
+                    className={`mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md ${i === page ? 'bg-blue-500 text-white' : ''}`}
+                    onClick={() => handlePageClick(i)} >
+                    {i}
+                </button>
+            );
+        }
+        return buttons;
+    };
+    //*************************************************** */
 
     return (
         <div className='bg-[#E2F1FF] h-screen'>
@@ -124,12 +160,12 @@ const DashboardLayout = ({ children }) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {TABLE_ROWS.map(
-                                        ({ img, name, time, doctor, date, age, token }, index) => {
-                                            const isLast = index === TABLE_ROWS.length - 1;
+                                    {allappointment.map(
+                                        ({ image, appointment_id, date, time, status, token, patient, doctor }, index) => {
+                                            const isLast = index === allappointment.length - 1;
                                             const classes = isLast ? "pl-3 border-b border-blue-gray-50" : "pl-3 border-b border-blue-gray-50";
                                             return (
-                                                <tr key={name} className=' h-14'>
+                                                <tr key={appointment_id} className=' h-14'>
                                                     <td className={classes}>
                                                         <div className=" flex items-center p-3">
                                                             <Typography className=" font-semibold text-xs text-slate-500" >
@@ -147,44 +183,38 @@ const DashboardLayout = ({ children }) => {
 
                                                     <td className={classes}>
                                                         <div className="flex items-center">
-                                                            <img src={img} alt={name} className="w-7 h-7 rounded-full mr-2" /> {/* Image */}
-                                                            <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{name}</Typography> {/* Name */}
+                                                        {patient.gender == 'male' ? (<img src={man} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />) : (<img src={girl} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />)}
+                                                            <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{patient.first_name}</Typography> {/* Name */}
                                                         </div>
                                                     </td>
                                                     <td className={classes}>
                                                         <div className="flex items-center">
                                                             <Typography className="pl-4 font-semibold text-xs text-slate-500" >
-                                                                {age}
+                                                                {patient.age}
                                                             </Typography>
                                                         </div>
                                                     </td>
                                                     <td className={classes}>
                                                         <div className="flex items-center">
                                                             <Typography className="pl-7 font-semibold text-xs text-slate-500" >
-                                                                {token}
+                                                                {token.token_no}
                                                             </Typography>
                                                         </div>
-                                                    </td>
-                                                    <td className={classes}>
-                                                        <div className="flex items-center">
-                                                            <Typography className="pl-3 font-semibold text-xs text-slate-500" >
-                                                                {doctor}
-                                                            </Typography>
-                                                        </div>
-                                                    </td>
-                                                    <td className={classes}>
-                                                        <div className="flex items-center">
-                                                            <p className='pl-3 text-xs text-blue-600 font-normal cursor-pointer'>Reschedule</p>
-                                                        </div>
-                                                    </td>
+                                                    </td>                                    
 
                                                     <td className={classes}>
                                                         <div className="flex items-center">
-                                                            <button className=" border-2 bg-red-400 border-red-400 rounded-lg p-1 flex items-center justify-center">
+                                                            <button className=" border-2 bg-red-400 border-red-400 rounded-lg p-1 flex items-center justify-center"
+                                                            onClick={e => absent(appointment_id)}>
                                                                 <RxCross2 className="w-3 h-3 text-white" />
                                                             </button>
-                                                            <button className="ml-2 me-2 border-2 border-green-500 bg-green-500  rounded-lg p-1 flex items-center justify-center">
-                                                                <MdMonitor className="w-3 h-3 text-white" />
+                                                            <button className="ml-2 border-2 border-green-500 bg-green-500  rounded-lg p-1 flex items-center justify-center"
+                                                            onClick={e => attend(appointment_id)}>
+                                                                <FaCheck className="w-3 h-3 text-white" />
+                                                            </button>
+                                                            <button className="ml-2 border-2 border-yellow-500 bg-yellow-500  rounded-lg p-1 flex items-center justify-center"
+                                                            onClick={e => notify(appointment_id)}>
+                                                                <FaRegBell className="w-3 h-3 text-white" />
                                                             </button>
                                                         </div>
                                                     </td>
@@ -197,32 +227,26 @@ const DashboardLayout = ({ children }) => {
                             </div>
                         </CardBody>
                     </Card>
-                    <div class="mt-5 flex justify-end items-center">
+                    <div className="mt-1 me-5 flex justify-end items-center">
                         <div>
-
-                            <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                Prev
+                            <button className="mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
+                                onClick={handlePrevClick}
+                                disabled={page === 1} > Prev
                             </button>
                         </div>
                         <div>
-                            <button class=" bg-blue-600 text-white  text-sm py-1 px-2 rounded-md">
-                                1
-                            </button>
-                            <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                2
-                            </button>
-                            <button class=" hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                3
-                            </button>
+                            {renderPaginationButtons()}
                         </div>
                         <div>
-                            <button class="me-5 hover:bg-blue-600 hover:text-white text-blue-600 text-sm py-1 px-2 rounded-md">
-                                Next
+                            <button className="ml- hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
+                                onClick={handleNextClick}
+                                disabled={page === totalPages} > Next
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

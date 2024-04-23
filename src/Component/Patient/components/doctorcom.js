@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { AiFillMessage } from "react-icons/ai";
 import { ToastContainer, toast } from 'react-toastify';
-
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     Card,
@@ -11,16 +11,23 @@ import {
     CardBody,
 } from "@material-tailwind/react";
 import { CiSearch } from 'react-icons/ci';
-import { alldoctor } from "../../../services/patient";
+import { RxCross2 } from "react-icons/rx";
+import { alldoctor,allpatient } from "../../../services/patient";
 // import AddDoctor from './adddoctor';
 const BASE_URL = require('../../../apiconfig').BASE_URL;
 
 const TABLE_HEAD = ["Doctor Name", "Gender", "Qualification", "Specialitation", "Action"];
-
+const specializations = ['gynecologist', 'Dermatology', 'Neurologist', 'Associate consultant','Emergency Medicine','General physician','genral', 'Anaesthesiology', 'Psychiatry'];
 function Doctor() {
+    const navigate = useNavigate()
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
-    const [adddoctor, setAdddoctor] = useState(false)
+    const [addappointment, setAddappointment] = useState(false);
+    const [selectedSpecialization, setSelectedSpecialization] = useState('');
+
+    const [patientid, setPatientid] = useState('')
+    const [doctorid, setDoctorid] = useState('')
+    const [data, setData] = useState([])
     const [doctordata, setDoctordata] = useState([])
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1);
@@ -29,18 +36,36 @@ function Doctor() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await dispatch(alldoctor(page,search, token));
+            const data = await dispatch(alldoctor(page, search,selectedSpecialization, token));
             setDoctordata(data.data);
             setTotalPages(data.totalPages)
         };
         fetchData();
-    }, [adddoctor, page, search, flag]);
+    }, [ page, search,selectedSpecialization]);
 
+    const submit = () => {
+        if (patientid == '') {
+            return toast.error("Please Select Patient !!!")
+        }
+        navigate('/patient/token', { state: { patientid, doctorid } })
+
+    }
+
+
+    // Handler function to update the selected specialization
+    const handleSpecializationChange = (event) => {
+        setSelectedSpecialization(event.target.value);
+    };
     const handleAppointment = async (doctorid) => {
-       
+        setAddappointment(true)
+        setDoctorid(doctorid)
+        dispatch(allpatient(1, search, token))
+            .then(Data => {
+                setData(Data.data);
+            })
     }
     const handleMessage = async (doctorid) => {
-        
+
     }
     //*********************** Pagination Logic *************** */
     const handlePrevClick = () => {
@@ -76,8 +101,8 @@ function Doctor() {
                 <div className='flex'>
                     <div className="relative">
                         <input
-                        value={search}
-                        onChange={(e)=>setSearch(e.target.value)}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
                             type="text"
                             className="ml-3 pl-8 w-32 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
                             placeholder="Search"
@@ -85,11 +110,17 @@ function Doctor() {
                         <CiSearch className="absolute mt-2 left-5 top-2" /> {/* Assuming CiSearch is an icon component */}
                     </div>
                     <div className="relative">
-                        <input
-                            type="text"
-                            className="ml-3 md:ml-10 pl-8 w-32 md:w-44 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
-                            placeholder="Search by specialization"
-                        />
+                        <select
+                            className="ml-3 md:ml-10 pl-7 w-32 md:w-44 h-6 text-slate-500 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
+                            value={selectedSpecialization}
+                            onChange={handleSpecializationChange}>
+                            <option value="">Search by specialization</option>
+                            {specializations.map((specialization) => (
+                                <option key={specialization} value={specialization}>
+                                    {specialization}
+                                </option>
+                            ))}
+                        </select>
                         <CiSearch className="absolute mt-2 left-5 md:left-12 top-2" />
                     </div>
                 </div>
@@ -194,6 +225,50 @@ function Doctor() {
                         </button>
                     </div>
                 </div>
+                {addappointment &&
+                    <>
+                        <div className="justify-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                            <div className="relative w-80 my-6 mx-auto max-w-3xl">
+                                <div className="mt-20 lg:ml-20 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                    <div className="flex items-start justify-between p-3 ">
+                                        <h3 className="text-xl font-semibold">
+                                            Add new Appointment
+                                        </h3>
+                                        <button onClick={e => setAddappointment(false)}>
+                                            <RxCross2 className="w-5 h-5 m-1" />
+                                        </button>
+                                    </div><hr />
+                                    <div className="mt-3 mb-5 relative px-6 flex-auto">
+                                        {/* <p className="text-red-600 hover:underline hover:underline-offset-4">{error}</p> */}
+                                        <select
+                                            className=" mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
+                                            value={patientid}
+                                            onChange={e => setPatientid(e.target.value)}
+                                            name="patient">
+                                            <option value="">Select Patient</option>
+                                            {data.map((patient, index) => (
+                                                <option key={patient.patient_id} value={patient.patient_id}>{index + 1}. {patient.first_name} {patient.last_name}</option>
+                                            ))}
+
+                                        </select>
+
+                                        <div className="mt-4 flex justify-between font-semibold text-sm">
+                                        </div>
+                                        <button
+                                            className="bg-blue-500 py-1.5 w-full text-white text-sm px-6 rounded hover:bg-blue-700"
+                                            type="button"
+                                            onClick={submit}>
+                                            Submit
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+
+                    </>
+                }
             </div>
             <ToastContainer />
         </div>
