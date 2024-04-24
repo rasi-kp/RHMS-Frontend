@@ -71,11 +71,34 @@ export const addtokens = (formData, token) => {
     }
   };
 }
+export const addprescriptions = (formData, token) => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/doctor/addprescription`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add Doctor');
+      }
+      const data = await response.json();
+      if (data.message) {
+        return toast.success("Prescription added successfully");
+      }
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+}
 
 export const viewtoken = (date, token) => {
   return async () => {
     try {
-        console.log(date + " " + token);
       const response = await fetch(`${BASE_URL}/doctor/viewtokens/${date}`, {
         method: 'GET',
         headers: {
@@ -88,6 +111,27 @@ export const viewtoken = (date, token) => {
       }
       const data = await response.json();
       return data.tokens
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};
+export const accept = (appointmentid,token) => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/doctor/accept/${appointmentid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch doctors');
+      }
+      const data = await response.json();
+      return data
     } catch (error) {
       toast.error(error.message)
       alert(error.message);
