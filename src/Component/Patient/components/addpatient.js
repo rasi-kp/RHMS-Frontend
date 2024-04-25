@@ -25,7 +25,7 @@ function AddUser({ closeModal }) {
             return dateFormatRegex.test(dateString);
         };
 
-        if (!fname.trim() || !dob.trim() || !gender.trim() || !bg.trim() || !height.trim() || !weight.trim()) {
+        if (!fname.trim() || !dob.trim() || !gender.trim() || !bg.trim() || !age.trim()) {
             toast.error("Fill Required Field")
             setError('Fill Required Field');
             return;

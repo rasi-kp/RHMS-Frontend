@@ -9,13 +9,14 @@ import {
     CardBody,
 } from "@material-tailwind/react";
 import { useDispatch, useSelector } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
+import { Bounce, ToastContainer, Zoom, toast } from 'react-toastify';
 import { BASE_URL } from '../../../apiconfig';
 import AddUser from './addpatient';
 import Edit from './editpatient'
-import profile from '../../images/profile.png'
+import man from '../../images/profile.png'
+import girl from '../../images/girl.jpg'
 
-import { deleteuser } from "../../../services/patient";
+import { deleteuser, allpatient } from "../../../services/patient";
 
 const TABLE_HEAD = ["Member Name", "Gender", "Blood Group", "Age", "Weight", "Height", "Action"];
 
@@ -40,28 +41,12 @@ function Patientcom() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await fetch(`${BASE_URL}/patient/all?page=${page}&search=${search}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch user data');
-                }
-                const datas = await response.json();
-                if (datas.error) {
-                    toast.error(datas.error)
-                }
-                else {
-                    setUserData(datas.data);
-                    setTotalPages(datas.totalPages);
-                }
-            } catch (error) {
-                console.error(error);
-            }
+            const datas = await dispatch(allpatient(page, search, token));
+            setUserData(datas.data);
+            setTotalPages(datas.totalPages);
+            // if (datas.data.length === 0) {
+            //     return toast.error('👤 Member in Empty, First add Member!')
+            // }
         };
         fetchData();
     }, [adduser, page, search, flag, useredit]);
@@ -71,7 +56,7 @@ function Patientcom() {
             try {
                 await dispatch(deleteuser(patientid, token));
                 setFlag(!flag);
-            } catch (error){
+            } catch (error) {
                 toast.error("Failed to delete user");
             }
         }
@@ -149,7 +134,7 @@ function Patientcom() {
                                         <tr key={patient_id} className=' h-12'>
                                             <td className={classes} >
                                                 <div className="flex items-center ">
-                                                    <img src={profile} alt={first_name} className="w-7 h-7 rounded-full mr-2" />
+                                                    {gender == 'male' ? (<img src={man} alt={first_name} className="w-7 h-7 rounded-full mr-2" />) : (<img src={girl} alt={first_name} className="w-7 h-7 rounded-full mr-2" />)}
                                                     <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{first_name} {last_name}</Typography>
                                                 </div>
                                             </td>
@@ -236,7 +221,7 @@ function Patientcom() {
             {adduser && <AddUser closeModal={addpatient} />}
 
             {useredit && <Edit closeModal={editpatient} patientid={Editpatient} />}
-            <ToastContainer/>
+            <ToastContainer />
         </div>
     )
 }

@@ -16,9 +16,6 @@ export const allpatient = (page,search,token) => {
       }
       const data = await response.json();
       return data
-      if (data.success) {
-        toast.success('Successfully Deleted');
-      }
     } catch (error) {
       toast.error(error.message)
       alert(error.message);

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import back from '../images/hero-bg1.png';
+import { useNavigate } from 'react-router-dom';
 const BASE_URL = require('../../apiconfig').BASE_URL;
 
 const Main = () => {
+  const navigate = useNavigate()
   const [data, setData] = useState([])
   useEffect(() => {
     const fetchData = async () => {
@@ -15,6 +17,9 @@ const Main = () => {
     };
     fetchData();
   }, []);
+  const handleClick=(doctorid)=>{
+    navigate('/tokenview', { state: { doctorid } })
+  }
   return (
     <section className="relative md:py-10 xxl:py-8 pb-0">
       <div
@@ -33,7 +38,8 @@ const Main = () => {
                 <h1 className='py-2 text-center font-semibold text-4xl text-blue-800'>{`${doctor.first_name} ${doctor.last_name}`}</h1>
                 <h2 className="text-lg font-semibold text-center text-blue-600 mt-1">{doctor.specialization}</h2>
                 <h2 className="text-lg font-semibold text-center mt-2">{doctor.address}</h2>
-                <button className="font-semibold px-10 py-2 text-white rounded-full mt-4" style={{ backgroundColor: '#283779', borderColor: '#283779' }}>Book an Appointment</button>
+                <button className="font-semibold px-10 py-2 text-white rounded-full mt-4"
+                onClick={e=>handleClick(doctor.doctor_id)} style={{ backgroundColor: '#283779', borderColor: '#283779' }}>Book an Appointment</button>
               </div>
             ))}
           </div>

@@ -20,7 +20,7 @@ import {
 } from "@material-tailwind/react";
 import { Link, useNavigate } from 'react-router-dom';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { alldoctorselection, allpatient, allappointments, deleteappointment1 } from "../../services/patient";
 
@@ -57,14 +57,21 @@ const DashboardLayout = ({ children }) => {
             const data = await dispatch(allappointments(page, date, search, token));
             setAllappointment(data.appointment);
             setTotalPages(data.totalPages)
+            // if (data.appointment.length === 0) {
+            //     return toast('👤 First Add Member !')
+            // }
         };
         fetchData();
     }, [page, date, search, deleteAppointment, addappointment]);
     const Addappointment = () => {
-        setAddappointment(true)
         dispatch(allpatient(page, search, token))
             .then(Data => {
                 setData(Data.data);
+                if(Data.data.length===0){
+                    return toast('👤 First Add Member !')
+                }else{
+                    setAddappointment(true)
+                }
             })
         dispatch(alldoctorselection())
             .then(Data => {
@@ -160,7 +167,6 @@ const DashboardLayout = ({ children }) => {
                                     <thead>
                                         <tr>
                                             {TABLE_HEAD.map((head, index) => (
-
                                                 <th
                                                     key={head}
                                                     className="cursor-pointer border-b-2 p-2 pl-6 " >

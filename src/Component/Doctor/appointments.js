@@ -11,6 +11,7 @@ import { RxCross2 } from "react-icons/rx";
 import { CiSearch } from "react-icons/ci";
 import { FaRegBell } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
+import { MdPendingActions } from "react-icons/md";
 
 import {
     Card,
@@ -20,7 +21,9 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { allappointments, addprescriptions, accept } from "../../services/doctor";
+import { allappointments, addprescriptions, accept, pending } from "../../services/doctor";
+import { IoMdClose } from 'react-icons/io';
+import { MdDelete } from 'react-icons/md';
 
 const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Token No", "Doctor Action"];
 
@@ -29,6 +32,7 @@ const DashboardLayout = ({ children }) => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
+    const [absentAppointment,setabsentappointment] = useState(false)
     const [attendmodel, setAttendmodel] = useState(false);
     const [appointmentid, setAppointmentid] = useState('');
     const [patientid, setPatientid] = useState('')
@@ -37,6 +41,7 @@ const DashboardLayout = ({ children }) => {
 
     const [observation, setObservation] = useState('')
     const [search, setSearch] = useState('')
+    const [moreprescription, setmoreprescription] = useState(false)
 
     const [date, setDate] = useState('')
     const [page, setPage] = useState(1);
@@ -91,10 +96,8 @@ const DashboardLayout = ({ children }) => {
             setTotalPages(data.totalPages)
         };
         fetchData();
-    }, [page, date, search, attendmodel]);
-    const absent = (appoinmentid) => {
+    }, [page, date, search, attendmodel,absentAppointment]);
 
-    }
     const notify = (appoinmentid) => {
 
     }
@@ -126,6 +129,17 @@ const DashboardLayout = ({ children }) => {
         setObservation('')
         setTablets([])
         setTest('')
+    }
+    const morep = () => {
+        setmoreprescription(!moreprescription)
+    }
+    const showModal=(appoinmentid)=>{
+        setAppointmentid(appoinmentid)
+        setabsentappointment(!absentAppointment)
+    }
+    const handleDelete=()=>{
+        dispatch(pending(appointmentid, token))
+        setabsentappointment(false)
     }
 
     //*********************** Pagination Logic *************** */
@@ -219,8 +233,9 @@ const DashboardLayout = ({ children }) => {
                                             ({ image, appointment_id, date, time, status, token, patient, doctor }, index) => {
                                                 const isLast = index === allappointment.length - 1;
                                                 const classes = isLast ? "pl-3 border-b border-blue-gray-50" : "pl-3 border-b border-blue-gray-50";
+                                                const rowClass = status === 'pending' ? 'bg-green-300' : '';
                                                 return (
-                                                    <tr key={appointment_id} className=' h-14'>
+                                                    <tr key={appointment_id} className={`h-14 ${rowClass}`}>
                                                         <td className={classes}>
                                                             <div className=" flex items-center p-3">
                                                                 <Typography className=" font-semibold text-xs text-slate-500" >
@@ -260,7 +275,7 @@ const DashboardLayout = ({ children }) => {
                                                         <td className={classes}>
                                                             <div className="flex items-center">
                                                                 <button className=" border-2 bg-red-400 border-red-400 rounded-lg p-1 flex items-center justify-center"
-                                                                    onClick={e => absent(appointment_id)}>
+                                                                    onClick={e => showModal(appointment_id)}>
                                                                     <RxCross2 className="w-3 h-3 text-white" />
                                                                 </button>
                                                                 <button className="ml-2 border-2 border-green-500 bg-green-500  rounded-lg p-1 flex items-center justify-center"
@@ -352,7 +367,7 @@ const DashboardLayout = ({ children }) => {
                                         </div>
                                         <div className='text-end mt-2'>
                                             <button className="bg-blue-500 py-1 text-white text-xs px-2 rounded hover:bg-blue-700">Test Report</button>
-                                            <button className=" ml-2 bg-blue-500 py-1 text-white text-xs px-2 rounded hover:bg-blue-700">More</button>
+                                            <button onClick={morep} className=" ml-2 bg-blue-500 py-1 text-white text-xs px-2 rounded hover:bg-blue-700">More</button>
                                         </div>
                                     </div>
                                     <div className='ml-4 w-2/3'>
@@ -452,7 +467,72 @@ const DashboardLayout = ({ children }) => {
                         </div>
                     </div>
                     <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-                </>}
+                </>
+            }
+            {moreprescription &&
+                <>
+                    <div className=" flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                        <div className="relative w-72 my-6 mx-auto max-w-3xl">
+                            <div className="mt-14 lg:ml- rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+                                <div className="flex items-start justify-between p-1 ">
+                                    <h3 className=" font-semibold">
+
+                                    </h3>
+                                    <button onClick={morep}>
+                                        <RxCross2 className="w-5 h-5 m-1" />
+                                    </button>
+                                </div><hr />
+                                <div className="mt-3 mb-5 relative px-3 flex-auto">
+                                    <div className='h-full bg-slate-100 px-2 w-60 ml-3 border-2 '>
+                                        {patientdata.prescription.map((presc, index) => (
+                                            <div key={index}>
+                                                <p className="text-start text-slate-900 text-xs ml-2 mt-1 mb-1 font-semibold underline">
+                                                                Date: {presc.createdAt ? new Date(presc.createdAt).toLocaleDateString() : 'N/A'}
+                                                            </p>
+                                                <p className='text-xs text-slate-600'>Observation: {presc.observation}</p>
+                                                <p className='text-xs text-slate-600'>Tablets:</p>
+                                                <ul>
+                                                    {presc.tablets.map((tablet, idx) => (
+                                                        <li key={idx} className="text-xs text-slate-600"> 
+                                                            <strong>{idx+1}.</strong> {tablet.name}-{tablet.dosage} mg, Time: {tablet.time.join(', ')}, Days: {tablet.days}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                </>
+            }
+            {absentAppointment && (
+                    <div
+                        className="fixed inset-0 z-50 flex justify-center items-center bg-gray-900 bg-opacity-50">
+                        <div className="relative mx-3 p-4 w-full max-w-md md:h-auto bg-white rounded-lg shadow dark:bg-white">
+                            < button className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                onClick={showModal} ><IoMdClose className='w-6 h-6 font-bold' />
+                            </button>
+                            <div className="p-4 text-center">
+                                <MdPendingActions className='text-gray-400 dark:text-green-500 w-11 h-11 mb-3.5 mx-auto' />
+                                <p className="mb-4 text-gray-600 dark:text-gray-600">Are you sure you want to Pending Appointment?</p>
+                                <div className="flex justify-center items-center space-x-4">
+                                    <button className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                                        onClick={showModal} > No, cancel
+                                    </button>
+                                    <button type="submit" className="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+                                        onClick={handleDelete}>
+                                        Yes, I'm sure
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
         </div>
     );
 };

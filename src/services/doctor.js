@@ -138,3 +138,26 @@ export const accept = (appointmentid,token) => {
     }
   };
 };
+export const pending = (appointmentid,token) => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/doctor/absent/${appointmentid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch doctors');
+      }
+      const data = await response.json();
+      if(data.message){
+        toast.success("Appointment is now Pending")
+      }
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};

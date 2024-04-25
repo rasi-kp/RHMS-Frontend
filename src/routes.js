@@ -8,6 +8,7 @@ import Forgotten from './Pages/home/Forgotten'
 import Doctors from './Pages/home/doctor'
 import Doctorlogin from './Pages/home/doctorlogin'
 import Otp from './Pages/home/otp'
+import Token from './Pages/home/tokenview'
 import Error from './Pages/404/404'
 import Patient from './Pages/patients/Dashboard'
 import Patientsall from "./Pages/patients/Patients"
@@ -40,6 +41,7 @@ const routes = () => {
                     <Route path="/patient" element={<Patient />} />
                     <Route path="/forgotten"element={<Forgotten />} />
                     <Route path="/otp" element={<Otp/>} />
+                    <Route path="/tokenview" element={<Token/>}/>
                     <Route path="*" element={<Error />} />
                     <Route path="/patient/members"element={<Patientsall />} />
                     <Route path="/patient/doctors"element={<Doctorsall />} />

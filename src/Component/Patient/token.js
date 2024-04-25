@@ -80,7 +80,6 @@ const DashboardLayout = ({ children }) => {
         }
     };
     const handleDateClick = (date) => {
-        console.log(patientid,doctorid);
         if(!patientid || !doctorid){
             return toast.error("Pls select Patient")
         }
@@ -90,6 +89,9 @@ const DashboardLayout = ({ children }) => {
         dispatch(viewtoken(date.date,doctorid,token))
             .then(Data => {
                 setAvailabletoken(Data);
+                if(Data.length==0){
+                    return toast.error( "No Tokens Available for this date.")
+                }
             })
             .catch(error => {
                 console.error("Error fetching user data:", error);
