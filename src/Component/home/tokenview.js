@@ -90,9 +90,6 @@ function Tokenview() {
           }
     };
     const submitted=(e)=>{
-        if (!selectedTokens) {
-            return toast.error("Please select Token");
-        }
         navigate('/login')
     }
 
@@ -145,7 +142,7 @@ function Tokenview() {
 
                     <hr className='mx-5 mt-6 border-t-2 border-black'/>
                     <div className='flex justify-end'>
-                            <button onClick={submitted} className='bg-[#3497F9] me-2 md:me-14 mt-2 w-20 text-center text-white font-semibold text-xs rounded px-2 p-1.5 hover:bg-blue-600'>ADD</button>
+                            <button onClick={submitted} className='bg-[#3497F9] me-2 md:me-14 mt-2  text-center text-white font-semibold text-xs rounded px-2 p-1.5 hover:bg-blue-600'>LOGIN NOW</button>
                         </div>
                 </div>
                 

@@ -67,9 +67,9 @@ const DashboardLayout = ({ children }) => {
         dispatch(allpatient(page, search, token))
             .then(Data => {
                 setData(Data.data);
-                if(Data.data.length===0){
+                if (Data.data.length === 0) {
                     return toast('👤 First Add Member !')
-                }else{
+                } else {
                     setAddappointment(true)
                 }
             })
@@ -91,6 +91,9 @@ const DashboardLayout = ({ children }) => {
     const deleteappointment = (appoinmentid) => {
         setappointmentid(appoinmentid)
         setDeleteappointment(true)
+    }
+    const monitor=(doctorid,date)=>{
+        navigate('/patient/livemonitor', { state: { doctorid, date} })
     }
     const handleDelete = async () => {
         await dispatch(deleteappointment1(appointmentid, token));
@@ -251,7 +254,8 @@ const DashboardLayout = ({ children }) => {
                                                                 </button>) : (<button className=" border-2 bg-red-400 border-red-400 rounded-lg p-1 flex items-center justify-center">
                                                                     <RxCross2 className="w-3 h-3 text-white" />
                                                                 </button>)}
-                                                                {status == "scheduled" ? (<button className="ml-2 me-2 border-2 border-green-500 bg-green-500  rounded-lg p-1 flex items-center justify-center">
+                                                                {status == "scheduled" ? (<button className="ml-2 me-2 border-2 border-green-500 bg-green-500  rounded-lg p-1 flex items-center justify-center"
+                                                                    onClick={e => monitor(doctor.doctor_id,date)}>
                                                                     <MdMonitor className="w-3 h-3 text-white" />
                                                                 </button>) : (<button className="ml-2 me-2 border-2 border-red-500 bg-red-500  rounded-lg p-1 flex items-center justify-center">
                                                                     <MdMonitor className="w-3 h-3 text-white" />

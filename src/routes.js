@@ -16,6 +16,7 @@ import Ptoken from './Component/Patient/token'
 import Doctorsall from "./Pages/patients/Doctors"
 import Appointmentall from "./Pages/patients/Appointments"
 import Cappointment from "./Component/Patient/cappointment"
+import Livemonitor from './Component/Patient/livemonitor'
 //*********** */ Doctor imports *******************
 import Doctor from './Pages/doctor/Dashboard'
 import Dpatient from './Pages/doctor/Patients'
@@ -48,6 +49,7 @@ const routes = () => {
                     <Route path="/patient/appointments"element={<Appointmentall />} />
                     <Route path="/patient/token"element={<Ptoken />} />
                     <Route path="/patient/appointments/complete"element={<Cappointment />} />
+                    <Route path="/patient/livemonitor" element={<Livemonitor/>}/>
                     {/*********************** Doctor Routes *******************/}
                     <Route path="/doctor" element={<Doctor />} />
                     <Route path="/doctor/patients"element={<Dpatient />} />

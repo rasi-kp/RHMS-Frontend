@@ -242,7 +242,27 @@ export const addappoinment = (result,token) => {
     }
   };
 }
-
+export const viewmonitor = (date,doctorid, token) => {
+  return async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/viewmonitor?date=${date}&doctorid=${doctorid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch doctors');
+      }
+      const data = await response.json();
+      return data
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};
 
 export const viewtoken = (date,doctorid, token) => {
   return async () => {
