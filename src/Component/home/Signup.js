@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MdOutlineMailOutline } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FaRegUser } from "react-icons/fa";
+import { FaPhoneAlt } from "react-icons/fa";
 import back from '../images/hero-bg1.png'
 import image from '../images/19778-removebg-preview.png'
 import { Link, useNavigate } from 'react-router-dom';
@@ -16,12 +17,14 @@ const Main = () => {
     const navigate = useNavigate()
     const [email, setEmail] = useState("")
     const [name, setName] = useState("")
+    const [phone, setPhone] = useState("")
     const [password, setPassword] = useState("")
     const [cpassword, setCpassword] = useState("")
     const [eerror, setError] = useState("")
     const [perror, setPerror] = useState('')
     const [nerror, setNerror] = useState("")
     const [cerror, setCerror] = useState('')
+    const [phoneerror, setphonerror] = useState("")
     const [isLoading, setIsLoading] = useState(false);
 
     const handleClick = async (e) => {
@@ -30,6 +33,7 @@ const Main = () => {
         setPerror('');
         setNerror('');
         setCerror('');
+        setphonerror('')
         if (!email.trim()) {
             toast.error("Email is Required");
             setError('Email is required');
@@ -46,6 +50,18 @@ const Main = () => {
             setNerror('Name is required');
             return;
         }
+        const trimmedPhone = phone.trim();
+        if (!trimmedPhone) {
+            toast.error(" Phone is required");
+            setNerror('Phone is required');
+            return;
+        }
+        if (trimmedPhone.length !== 10) {
+            toast.error("Phone No must be exactly 10 characters");
+            setphonerror('Phone No must be exactly 10 characters');
+            return;
+        }
+
         if (!password.trim()) {
             toast.error("Password is required");
             setPerror('Password is required');
@@ -77,6 +93,7 @@ const Main = () => {
                     email: email,
                     name: name,
                     password: password,
+                    phone: phone
                 }),
             });
             if (!response) {
@@ -137,7 +154,7 @@ const Main = () => {
                             <div className="p-6 md:ml-16 flex h-full items-center ">
                                 <div className="w-full ">
                                     <form>
-                                        <div className="mb-10 flex items-center justify-between">
+                                        <div className="mb-6 flex items-center justify-between">
                                             <Link to="/login"> <label className="pl-8 underline decoration-4 underline-offset-8 inline-block font-bold text-3xl hover:cursor-pointer text-[#5f80a9]">
                                                 Login
                                             </label></Link>
@@ -159,7 +176,7 @@ const Main = () => {
                                                 type="text"
                                                 placeholder="Email ID"
                                                 style={{ textShadow: '0px 2px 4px rgba(0, 0, 0, .3)' }}
-                                                className="placeholder:text-gray-500 placeholder: text-center mb-6 w-full px-4 py-2 rounded-full bg-transparent border-2 focus:outline-none focus:border-blue-500 border-blue-900 shadow-[0_10px_20px_-2px_#38488f] " />
+                                                className="placeholder:text-gray-500 placeholder: text-center mb-4 w-full px-4 py-2 rounded-full bg-transparent border-2 focus:outline-none focus:border-blue-500 border-blue-900 shadow-[0_10px_20px_-2px_#38488f] " />
                                         </div>
                                         <p className=' text-red-600'>{nerror}</p>
                                         <div className="relative">
@@ -172,7 +189,20 @@ const Main = () => {
                                                 type="text"
                                                 placeholder="Name"
                                                 style={{ textShadow: '0px 2px 4px rgba(0, 0, 0, .3)' }}
-                                                className="placeholder:text-gray-500 placeholder: text-center mb-6 w-full px-4 py-2 rounded-full bg-transparent border-2 focus:outline-none focus:border-blue-500 border-blue-900 shadow-[0_10px_20px_-2px_#38488f] " />
+                                                className="placeholder:text-gray-500 placeholder: text-center mb-4 w-full px-4 py-2 rounded-full bg-transparent border-2 focus:outline-none focus:border-blue-500 border-blue-900 shadow-[0_10px_20px_-2px_#38488f] " />
+                                        </div>
+                                        <p className=' text-red-600'>{phoneerror}</p>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pt-3 pl-3 pointer-events-none">
+                                                <FaPhoneAlt className="h-4 w-5 text-gray-600" />
+                                            </div>
+                                            <input
+                                                value={phone}
+                                                onChange={e => setPhone(e.target.value)}
+                                                type="text"
+                                                placeholder="Phone Number"
+                                                style={{ textShadow: '0px 2px 4px rgba(0, 0, 0, .3)' }}
+                                                className="placeholder:text-gray-500 placeholder: text-center mb-4 w-full px-4 py-2 rounded-full bg-transparent border-2 focus:outline-none focus:border-blue-500 border-blue-900 shadow-[0_10px_20px_-2px_#38488f] " />
                                         </div>
                                         <p className=' text-red-600'>{perror}</p>
                                         <div className="relative">
