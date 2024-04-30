@@ -21,7 +21,7 @@ function AddUser({ closeModal }) {
     const adduser = async (e) => {
         e.preventDefault()
         const isDateFormatValid = (dateString) => {
-            const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
+            const dateFormatRegex = /^\d{2}\/\d{2}\/\d{4}$/;
             return dateFormatRegex.test(dateString);
         };
 
@@ -80,7 +80,7 @@ function AddUser({ closeModal }) {
                             <input
                                 className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                 type="text"
-                                placeholder="DOB (YYYY-MM-DD)"
+                                placeholder="DOB (DD/MM/YYYY)"
                                 value={dob}
                                 onChange={e => setDob(e.target.value)}
                                 name="dob" />

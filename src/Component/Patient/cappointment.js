@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import html2pdf from 'html2pdf.js';
 
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
@@ -11,30 +12,29 @@ import { CiSearch } from "react-icons/ci";
 import { LiaPrescriptionBottleAltSolid } from "react-icons/lia";
 import { RiDownload2Fill } from "react-icons/ri";
 
-import {
-    Card,
-    Typography,
-    CardBody,
-} from "@material-tailwind/react";
+import { Card, Typography, CardBody, } from "@material-tailwind/react";
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {completedappoinment} from "../../services/patient";
+import { completedappoinment } from "../../services/patient";
+import PrescriptionPage from './components/prescription';
+
 
 const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Doctor", "Fee Status", "Action"];
 
 
 const DashboardLayout = ({ children }) => {
 
+    const prescriptionRef = useRef(null);
+
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const [addappointment, setAddappointment] = useState(false);
-    const [deleteAppointment,setDeleteappointment] = useState(false);
+    const [deleteAppointment, setDeleteappointment] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
+    const [p,setp] = useState(false)
     const [search, setSearch] = useState('')
-    const [data, setData] = useState([])
-    const [flag, setFlag] = useState(false)
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [allappointment, setAllappointment] = useState([])
@@ -42,9 +42,6 @@ const DashboardLayout = ({ children }) => {
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
-    const showModal=()=>{
-        setDeleteappointment(!deleteAppointment)
-    }
     useEffect(() => {
         const fetchData = async () => {
             const data = await dispatch(completedappoinment(page, search, token));
@@ -52,7 +49,40 @@ const DashboardLayout = ({ children }) => {
             setTotalPages(data.totalPages)
         };
         fetchData();
-    }, [page, search,deleteAppointment,addappointment]);
+    }, [page, search, deleteAppointment, addappointment]);
+
+    const prescription = (appointmentId) => {
+        setp(true)
+        const element = prescriptionRef.current;
+
+        // Options for html2pdf
+        const options = {
+            margin: [5, 2, 2, 5], // Add margin around the content (top, right, bottom, left)
+            filename: 'prescription.pdf',
+            image: {
+                type: 'jpeg',
+                quality: 0.98,
+            },
+            jsPDF: {
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+            },
+            html2canvas: {
+                scale: 3, // Increase scale for higher quality rendering
+                useCORS: true, // Use CORS to avoid cross-origin issues with images or other resources
+            },
+        };
+
+        // Generate and download the PDF
+        html2pdf()
+            .set(options)
+            .from(element)
+            .save()
+            .catch((error) => {
+                console.error('Error generating PDF:', error);
+            });
+    };
     //*********************** Pagination Logic *************** */
     const handlePrevClick = () => {
         setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
@@ -140,7 +170,7 @@ const DashboardLayout = ({ children }) => {
                                     </thead>
                                     <tbody>
                                         {allappointment.map(
-                                            ({ img,appointment_id, time,patient,token, doctor, date,status, fee }, index) => {
+                                            ({ img, appointment_id, time, patient, token, doctor, date, status, fee }, index) => {
                                                 const isLast = index === allappointment.length - 1;
                                                 const classes = isLast ? "pl-3 border-b border-blue-gray-50" : "pl-3 border-b border-blue-gray-50";
                                                 return (
@@ -162,7 +192,7 @@ const DashboardLayout = ({ children }) => {
 
                                                         <td className={classes}>
                                                             <div className="flex items-center">
-                                                            {patient.gender=='male'?(<img src={man} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />):(<img src={girl} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />)}
+                                                                {patient.gender == 'male' ? (<img src={man} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />) : (<img src={girl} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />)}
                                                                 <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{patient.first_name}</Typography> {/* Name */}
                                                             </div>
                                                         </td>
@@ -191,7 +221,9 @@ const DashboardLayout = ({ children }) => {
 
                                                         <td className={classes}>
                                                             <div className="flex items-center">
-                                                                <button className=" border-2  border-blue-500 rounded-lg p-1 flex items-center justify-center">
+                                                                <button className=" border-2  border-blue-500 rounded-lg p-1 flex items-center justify-center" title='Prescription'
+                                                                    onClick={e => prescription(appointment_id)}>
+                                                                    {/* <PrescriptionPage ref={prescriptionRef} appointment={appointment_id} /> */}
                                                                     <LiaPrescriptionBottleAltSolid className="w-3 h-3 " />
                                                                 </button>
                                                                 <button className="ml-2 me-2 border-2 border-blue-500   rounded-lg p-1 flex items-center justify-center">
@@ -199,7 +231,11 @@ const DashboardLayout = ({ children }) => {
                                                                 </button>
                                                             </div>
                                                         </td>
+                                                         <div className='hidden' ref={prescriptionRef}>
+                                                            <PrescriptionPage appointment={appointment_id} />
+                                                        </div>
                                                     </tr>
+
                                                 );
                                             },
                                         )}
@@ -208,6 +244,7 @@ const DashboardLayout = ({ children }) => {
                             </div>
                         </CardBody>
                     </Card>
+
                     <div className="mt-1 me-5 flex justify-end items-center">
                         <div>
                             <button className="mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
@@ -228,6 +265,7 @@ const DashboardLayout = ({ children }) => {
 
                 </div>
             </div>
+
         </div>
     );
 };

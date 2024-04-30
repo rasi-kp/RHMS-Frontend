@@ -91,7 +91,7 @@ const Main = () => {
                         <img className="md:mt-20 md:mr-10 pt-24 md:pt-1 pt-md-0 w-100" src={image} alt="hero-header" /></div>
                     <div className="w-full md:w-3/4 xl:w-2/3 xxl:w-5/12 lg:px-20 py-6 text-center ">
                         <section className="h-3/4 lg:w-5/6 md:mt-5">
-                            <div className="p-6 md:ml-16 flex h-full items-center ">
+                            <div className="p-6 xl:ml-16 flex h-full items-center ">
                                 <div className="w-full ">
                                     <form>
                                         <h1 className="mb-10 underline decoration-4 underline-offset-8 inline-block font-bold text-3xl hover:cursor-pointer text-[#003171]">Doctor login</h1>
