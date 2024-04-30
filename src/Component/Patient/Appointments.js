@@ -33,6 +33,7 @@ const DashboardLayout = ({ children }) => {
     const token = useSelector(state => state.auth.token);
     const [addappointment, setAddappointment] = useState(false);
     const [deleteAppointment, setDeleteappointment] = useState(false);
+    const [available, setAvailable] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
     const [patientid, setPatientid] = useState('')
@@ -57,12 +58,13 @@ const DashboardLayout = ({ children }) => {
             const data = await dispatch(allappointments(page, date, search, token));
             setAllappointment(data.appointment);
             setTotalPages(data.totalPages)
-            // if (data.appointment.length === 0) {
-            //     return toast('👤 First Add Member !')
-            // }
+            if (allappointment.length == 0) {
+                setAvailable(true)
+            }
         };
         fetchData();
     }, [page, date, search, deleteAppointment, addappointment]);
+
     const Addappointment = () => {
         dispatch(allpatient(page, search, token))
             .then(Data => {
@@ -92,8 +94,8 @@ const DashboardLayout = ({ children }) => {
         setappointmentid(appoinmentid)
         setDeleteappointment(true)
     }
-    const monitor=(doctorid,date)=>{
-        navigate('/patient/livemonitor', { state: { doctorid, date} })
+    const monitor = (doctorid, date) => {
+        navigate('/patient/livemonitor', { state: { doctorid, date } })
     }
     const handleDelete = async () => {
         await dispatch(deleteappointment1(appointmentid, token));
@@ -146,8 +148,7 @@ const DashboardLayout = ({ children }) => {
                                 <h1 className='text-xs cursor-pointer text-slate-400 font-bold'><Link to="/patient/appointments/complete">COMPLETED </Link></h1>
                             </div>
                             <button className='sm:hidden bg-[#3497F9] text-white text-xs rounded-xl mb-1 me-3 px-2 p-1.5' onClick={Addappointment}>new appointment</button>
-                        </div>
-                        <div className='flex mb-3 ml-6 mt-0'>
+                        </div>{available ?(<div className='mt-6'></div>):(<div className='flex mb-3 ml-6 mt-0'>
                             <div className="relative">
                                 <input
                                     type="text"
@@ -162,7 +163,8 @@ const DashboardLayout = ({ children }) => {
                                     onChange={e => setDate(e.target.value)}
                                     className="md:ml-8 ml-2 pl-3 w-32 h-6 text-blue-400 cursor-pointer text-xs mt-3 pe-2 border border-blue-600 rounded-full  outline-none" />
                             </div>
-                        </div>
+                        </div>)}
+                        
 
                         <CardBody className="overflow-x-hidden  px-3 pt-2">
                             <div className="overflow-x-auto">
@@ -183,6 +185,7 @@ const DashboardLayout = ({ children }) => {
                                             ))}
                                         </tr>
                                     </thead>
+
                                     <tbody>
                                         {allappointment.map(
                                             ({ image, appointment_id, date, time, status, token, patient, doctor }, index) => {
@@ -255,7 +258,7 @@ const DashboardLayout = ({ children }) => {
                                                                     <RxCross2 className="w-3 h-3 text-white" />
                                                                 </button>)}
                                                                 {status == "scheduled" ? (<button className="ml-2 me-2 border-2 border-green-500 bg-green-500  rounded-lg p-1 flex items-center justify-center"
-                                                                    onClick={e => monitor(doctor.doctor_id,date)}>
+                                                                    onClick={e => monitor(doctor.doctor_id, date)}>
                                                                     <MdMonitor className="w-3 h-3 text-white" />
                                                                 </button>) : (<button className="ml-2 me-2 border-2 border-red-500 bg-red-500  rounded-lg p-1 flex items-center justify-center">
                                                                     <MdMonitor className="w-3 h-3 text-white" />
@@ -268,7 +271,10 @@ const DashboardLayout = ({ children }) => {
                                             },
                                         )}
                                     </tbody>
+
                                 </table>
+                                {available && <><h1 className=' text-center font-semibold mt-16 text-xl text-red-500'>No Upcoming Appointments </h1>
+                                    <h1 className=' text-center font-semibold mt-2 text-md text-blue-500'>Take New Appointment </h1></>}
                             </div>
                         </CardBody>
                     </Card>

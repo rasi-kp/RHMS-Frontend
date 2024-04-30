@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import html2pdf from 'html2pdf.js';
+
 
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
@@ -23,8 +23,6 @@ const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Doctor", "Fee Status
 
 
 const DashboardLayout = ({ children }) => {
-
-    const prescriptionRef = useRef(null);
 
     const navigate = useNavigate()
     const dispatch = useDispatch();
@@ -53,36 +51,10 @@ const DashboardLayout = ({ children }) => {
 
     const prescription = (appointmentId) => {
         setp(true)
-        const element = prescriptionRef.current;
-
-        // Options for html2pdf
-        const options = {
-            margin: [5, 2, 2, 5], // Add margin around the content (top, right, bottom, left)
-            filename: 'prescription.pdf',
-            image: {
-                type: 'jpeg',
-                quality: 0.98,
-            },
-            jsPDF: {
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4',
-            },
-            html2canvas: {
-                scale: 3, // Increase scale for higher quality rendering
-                useCORS: true, // Use CORS to avoid cross-origin issues with images or other resources
-            },
-        };
-
-        // Generate and download the PDF
-        html2pdf()
-            .set(options)
-            .from(element)
-            .save()
-            .catch((error) => {
-                console.error('Error generating PDF:', error);
-            });
     };
+    const closemodel = () => {
+        setp(!p)
+    }
     //*********************** Pagination Logic *************** */
     const handlePrevClick = () => {
         setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
@@ -223,7 +195,6 @@ const DashboardLayout = ({ children }) => {
                                                             <div className="flex items-center">
                                                                 <button className=" border-2  border-blue-500 rounded-lg p-1 flex items-center justify-center" title='Prescription'
                                                                     onClick={e => prescription(appointment_id)}>
-                                                                    {/* <PrescriptionPage ref={prescriptionRef} appointment={appointment_id} /> */}
                                                                     <LiaPrescriptionBottleAltSolid className="w-3 h-3 " />
                                                                 </button>
                                                                 <button className="ml-2 me-2 border-2 border-blue-500   rounded-lg p-1 flex items-center justify-center">
@@ -231,9 +202,9 @@ const DashboardLayout = ({ children }) => {
                                                                 </button>
                                                             </div>
                                                         </td>
-                                                         <div className='hidden' ref={prescriptionRef}>
-                                                            <PrescriptionPage appointment={appointment_id} />
-                                                        </div>
+                                                        {p && <div >
+                                                            <PrescriptionPage appointment={appointment_id} closeModal={closemodel}/>
+                                                        </div>}
                                                     </tr>
 
                                                 );
