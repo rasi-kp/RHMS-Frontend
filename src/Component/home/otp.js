@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoKeyOutline } from "react-icons/io5";
 import back from '../images/hero-bg1.png'
 import image from '../images/3293465-removebg-preview.png'
@@ -12,6 +12,25 @@ const Main = () => {
     const [eerror, setError] = useState("")
     const [otp, setOtp] = useState('')
     const userid = useSelector(state => state.auth.userid);
+    const initialTime = 300;
+
+    const [timeRemaining, setTimeRemaining] = useState(initialTime);
+    useEffect(() => {
+        if (timeRemaining > 0) {
+            const intervalId = setInterval(() => {
+                setTimeRemaining(timeRemaining - 1);
+            }, 1000);
+            return () => clearInterval(intervalId);
+        } else {
+            console.log('Time is up!');
+        }
+    }, [timeRemaining]);
+    const formatTime = (timeInSeconds) => {
+        const minutes = Math.floor(timeInSeconds / 60);
+        const seconds = timeInSeconds % 60;
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    };
+
     const submit = async (e) => {
         e.preventDefault()
         setError('');
@@ -60,17 +79,23 @@ const Main = () => {
                     <div className="md:1/2 md:order-1 ">
                         <img className="md:mt-5 md:mr-20 pt-24 md:pt-1 pt-md-0 w-100" src={image} alt="hero-header" /></div>
                     <div className="w-full md:w-3/4 xl:w-2/3 xxl:w-5/12 lg:px-20 py-6 text-center ">
-                        <section className="h-3/4 lg:w-5/6 md:mt-16">
+                        <section className="h-3/4 lg:w-5/6 md:mt-14">
                             <div className="p-6 md:ml-16 flex items-center ">
                                 <div className="w-full ">
-                                    
+
                                     <form>
-                                        
+                                        <div className="flex items-center justify-end mb-2 cursor-default">
+                                        <h1 className='text-blue-700 text-sm me-2'>Remaining time :</h1>
+                                            <div className="font-bold text-2xl text-[#003171]">
+                                                {formatTime(timeRemaining)}
+                                            </div>
+                                        </div>
                                         <div className="mb-10 flex items-center justify-between">
                                             <label className="pl-8 underline decoration-4 underline-offset-8 inline-block font-bold text-2xl hover:cursor-pointer text-[#003171]">
                                                 Enter OTP
                                             </label>
                                         </div>
+
                                         <p className=' text-red-600'>{eerror}</p>
 
                                         <div className="relative">

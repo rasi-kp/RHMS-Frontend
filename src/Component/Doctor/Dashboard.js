@@ -9,15 +9,17 @@ import NavbarMobile from './component/NavbarMobile';
 import Graph from './component/graph';
 import Newmessage from './component/newmessage';
 
-
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { dashboard } from '../../services/patient';
 
 const DashboardLayoutDoctor = ({ children }) => {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate()
     const tokenredux = useSelector(state => state.auth);
     const [isOpen, setIsOpen] = useState(false);
+    const [data,setData]=useState('')
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -37,6 +39,14 @@ const DashboardLayoutDoctor = ({ children }) => {
         else {
             navigate('/dlogin')
         }
+        const fetchData = async () => {
+            const data = await dispatch(dashboard(tokenredux.token));
+            setData(data)
+            if(data?.error=="Unauthorized: Invalid token"){
+                return navigate('/login')
+            }
+        };
+        fetchData()
     }, []);
 
     return (

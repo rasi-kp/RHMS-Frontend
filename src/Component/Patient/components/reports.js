@@ -4,7 +4,7 @@ import { MdSubscriptions } from "react-icons/md";
 import { MdBloodtype } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 
-function Reports({appcount,memcount,subscription}) {
+function Reports({appcount,memcount,subscription,bg}) {
     return (
         <div className='w-full lg:ml-52 md:w-96 '>
             <div className='bg-white ml-7 me-6 mt-1 h-56  flex rounded-lg'>
@@ -16,7 +16,7 @@ function Reports({appcount,memcount,subscription}) {
                         <div className='flex justify-center items-center mt-2 ml-4 me-2 h-20 rounded-xl bg-red-200'>
                             <div className="text-center justify-center">
                                 <MdBloodtype className='w-7 h-7 ml-4 text-[#7F8F98]' />
-                                <h1 className='text-sm font-bold'>B+</h1>
+                                <h1 className='text-sm font-bold'>{bg}</h1>
                                 <h1 className='text-xs font-light'>Blood Group</h1> {/* Blood group */}
                             </div>
                         </div>

@@ -57,7 +57,7 @@ const DashboardLayout = ({ children }) => {
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Dashboard</h1>
                     <Navbar />
                 <div className='sm:flex h-full'>
-                    <Report appcount={data ? data.appointmentcount : 0}  memcount= {data ? data.totalMembers : 0} subscription={data && data.subscription ? data.subscription.subscription : false}  />
+                    <Report appcount={data ? data.appointmentcount : 0} bg={data?data.subscription.blood_group:''}  memcount= {data ? data.totalMembers : 0} subscription={data && data.subscription ? data.subscription.subscription : false}  />
                     <div className='md:w-3/4 '>
                         <Appointments appointment= {data? data.upcomingAppointments:[]}/> 
                     </div>

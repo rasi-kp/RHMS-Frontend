@@ -3,18 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { MdModeEditOutline } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
-import {
-    Card,
-    Typography,
-    CardBody,
-} from "@material-tailwind/react";
+import {Typography,CardBody,} from "@material-tailwind/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { BASE_URL } from '../../../apiconfig';
-// import AddUser from './addpatient';
-// import Edit from './editpatient'
+
 import profile from '../../images/profile.png'
-import { deleteuser } from "../../../services/patient";
+import { allpatient } from "../../../services/doctor";
 
 const TABLE_HEAD = ["Member Name", "Gender", "Blood Group", "Age", "Weight", "Height", "Action"];
 
@@ -26,60 +21,22 @@ function Patientcom() {
     const [userdata, setUserData] = useState([])
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1);
-    const [Editpatient, setEditedPatientId] = useState(null)
-    const [flag, setFlag] = useState(false)
+
     const [totalPages, setTotalPages] = useState(1);
 
-    const addpatient = () => {
+    const print = () => {
         setAdduser(!adduser)
     }
-    const editpatient = () => {
-        setUseredit(!useredit)
-    }
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await fetch(`${BASE_URL}/patient/all?page=${page}&search=${search}`, {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `Bearer ${token}`
-    //                 },
-    //             });
-    //             if (!response.ok) {
-    //                 throw new Error('Failed to fetch user data');
-    //             }
-    //             const datas = await response.json();
-    //             if (datas.error) {
-    //                 toast.error(datas.error)
-    //                 console.log(datas.error);
-    //             }
-    //             else {
-    //                 setUserData(datas.data);
-    //                 setTotalPages(datas.totalPages);
-    //             }
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     };
-    //     fetchData();
-    // }, [adduser, page, search, flag, useredit]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const datas = await dispatch(allpatient(page, search, token));
+            setUserData(datas.data);
+            setTotalPages(datas.totalPages);
+        };
+        fetchData();
+    }, [page, search]);
 
-    const handleDelete = async (patientid) => {
-        if (window.confirm('Are you sure you want to delete this patient?')) {
-            try {
-                await dispatch(deleteuser(patientid, token));
-                setFlag(!flag);
-            } catch (error){
-                toast.error("Failed to delete user");
-            }
-        }
-    }
-    const handleEdit = (patientid) => {
-        setEditedPatientId(patientid);
-        setUseredit(true)
-    }
     //*********************** Pagination Logic *************** */
     const handlePrevClick = () => {
         setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
@@ -110,7 +67,7 @@ function Patientcom() {
             <div className='lg:ml-60 ml-6 me-8 rounded-lg bg-white  px-5 h-full pb-10 pt-3'>
                 <h1 className='absolute font-semibold text-xs pt-4 pl-3 underline underline-offset-8 decoration-blue-500'>Patient Info</h1>
                 <div className=' justify-end flex'>
-                    <button className='bg-[#3497F9]  text-white text-xs rounded-xl px-2 p-1.5 hover:bg-blue-600' onClick={addpatient}>Add Member</button>
+                    <button className='bg-[#3497F9]  text-white text-xs rounded-xl px-2 p-1.5 hover:bg-blue-600' onClick={print}>Print</button>
                 </div>
                 <hr className='mt-2 ' />
                 <input
@@ -192,14 +149,12 @@ function Patientcom() {
                                             </td>
                                             <td className={classes}>
                                                 <div className="flex items-center">
-                                                    <button className="border border-red-500 rounded-lg p-1 flex items-center justify-center"
-                                                        onClick={() => handleDelete(patient_id)}>
+                                                    {/* <button className="border border-red-500 rounded-lg p-1 flex items-center justify-center">
                                                         <RxCross2 className="w-3 h-3 text-red-500" />
                                                     </button>
-                                                    <button className="ml-3 border border-blue-500 rounded-lg p-1 flex items-center justify-center"
-                                                        onClick={() => handleEdit(patient_id)}>
+                                                    <button className="ml-3 border border-blue-500 rounded-lg p-1 flex items-center justify-center">
                                                         <MdModeEditOutline className="w-3 h-3 text-blue-500" />
-                                                    </button>
+                                                    </button> */}
 
                                                 </div>
                                             </td>
@@ -215,8 +170,7 @@ function Patientcom() {
                         <button
                             className="mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
                             onClick={handlePrevClick}
-                            disabled={page === 1} // Disable Prev button on first page
-                        >
+                            disabled={page === 1}>
                             Prev
                         </button>
                     </div>

@@ -1,6 +1,37 @@
+import axios from 'axios';
 import { toast } from 'react-toastify';
 const BASE_URL = require('../apiconfig').BASE_URL;
 
+export const dashboard=(token)=>{
+  return async(dispatch)=>{
+    try {
+      const response = await axios.get(`${BASE_URL}/doctor/dashboard`, {
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+          },
+      });
+      return response.data
+  } catch (error) {
+      console.log('Error fetching dashboard:', error);
+  }
+  }
+}
+export const allpatient=(page,search,token)=>{
+  return async(dispatch)=>{
+    try {
+      const response = await axios.get(`${BASE_URL}/doctor/allpatient?page=${page}&search=${search}`, {
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+          },
+      });
+      return response.data
+  } catch (error) {
+      console.log('Error fetching dashboard:', error);
+  }
+  }
+}
 export const allappointments = (page,date,search,token) => {
   return async (dispatch) => {
     try {

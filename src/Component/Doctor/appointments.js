@@ -99,7 +99,7 @@ const DashboardLayout = ({ children }) => {
     }, [page, date, search, attendmodel,absentAppointment]);
 
     const notify = (appoinmentid) => {
-
+        toast.success("Notification sent successfully")
     }
     const attend = async (appoinmentid, patientid) => {
         dispatch(accept(appoinmentid, token))
@@ -196,14 +196,16 @@ const DashboardLayout = ({ children }) => {
                                     type="text"
                                     className="pl-8 w-32 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
                                     placeholder="Search"
+                                    onChange={e=>setSearch(e.target.value)}
                                 />
                                 <CiSearch className="absolute mt-2 left-2 top-2" /> {/* Assuming CiSearch is an icon component */}
                             </div>
                             <div className="relative">
                                 <input
                                     type="date"
+                                    onChange={e => setDate(e.target.value)}
                                     className="md:ml-8 ml-2 pl-3 w-32 h-6 text-blue-400 cursor-pointer text-xs mt-3 pe-2 border border-blue-600 rounded-full  outline-none"
-                                    value="Filter by Date"
+                                    value= {date}
                                 />
                             </div>
                         </div>

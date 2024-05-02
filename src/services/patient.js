@@ -35,22 +35,20 @@ export const profileview=(token)=>{
 export const profiledit = (formData, token) => {
   return async () => {
     try {
-      const response = await axios.post(`${BASE_URL}/patient/profile`, {
+      const response = await axios.post(`${BASE_URL}/patient/profile`,formData, {
         headers: {
           "Contetnt-Type": "multipart/form-data",
           'Authorization': `Bearer ${token}`
         },
-        body: formData,
       });
-      if (!response.ok) {
-        throw new Error('Failed to add Doctor');
+      if (!response) {
+        throw new Error('Failed to Edit Profile');
       }
-      const data = await response.json();
-      if (data.success) {
+      if (response.data.success) {
         toast.success("Successfully Edit Profile!");
       }
-      if (data.message) {
-        toast.error(data.message);
+      if (response.data.message) {
+        toast.error(response.data.message);
       }
     } catch (error) {
       toast.error(error.message)

@@ -5,11 +5,7 @@ import { AiFillMessage } from "react-icons/ai";
 import { ToastContainer, toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    Card,
-    Typography,
-    CardBody,
-} from "@material-tailwind/react";
+import {Typography,CardBody} from "@material-tailwind/react";
 import { CiSearch } from 'react-icons/ci';
 import { RxCross2 } from "react-icons/rx";
 import { alldoctor,allpatient } from "../../../services/patient";
@@ -51,15 +47,13 @@ function Doctor() {
 
     }
 
-
-    // Handler function to update the selected specialization
     const handleSpecializationChange = (event) => {
         setSelectedSpecialization(event.target.value);
     };
     const handleAppointment = async (doctorid) => {
         setAddappointment(true)
         setDoctorid(doctorid)
-        dispatch(allpatient(1, search, token))
+        dispatch(allpatient(1,'', token))
             .then(Data => {
                 setData(Data.data);
             })

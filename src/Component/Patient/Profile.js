@@ -6,28 +6,17 @@ import Navbar from './components/Navbar';
 import NavbarMobile from './components/NavbarMobile';
 import man from '../images/profile.png'
 import { RxCross2 } from "react-icons/rx";
-import girl from '../images/girl.jpg'
 
-import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { CiSearch } from "react-icons/ci";
-import { LiaPrescriptionBottleAltSolid } from "react-icons/lia";
-import { RiDownload2Fill } from "react-icons/ri";
-
-import { Card, Typography, CardBody, } from "@material-tailwind/react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Card } from "@material-tailwind/react";
+// import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { completedappoinment, profiledit, profileview } from "../../services/patient";
-import PrescriptionPage from './components/prescription';
+import { profiledit, profileview } from "../../services/patient";
 import { ToastContainer, toast } from 'react-toastify';
 import { BASE_URL } from '../../apiconfig';
 
-
-const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Doctor", "Fee Status", "Action"];
-
-
 const DashboardLayout = ({ children }) => {
 
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
     const dispatch = useDispatch();
     const [edit, setEdit] = useState(false)
     const [fname, setFname] = useState("")
@@ -35,29 +24,19 @@ const DashboardLayout = ({ children }) => {
     const [dob, setDob] = useState("")
     const [gender, setGender] = useState("")
     const [image, setImage] = useState("")
-    const [address,setAddress]=useState("")
+    const [address, setAddress] = useState("")
     const [bg, setBg] = useState("")
-    const [profiledata,setProfiledata]=useState('')
-    const [error, setError] = useState("")
+    const [profiledata, setProfiledata] = useState('')
     const token = useSelector(state => state.auth.token);
-    const [available, setAvailable] = useState(false)
-    const [addappointment, setAddappointment] = useState(false);
-    const [deleteAppointment, setDeleteappointment] = useState(false);
-    const [appointmentid, setAppointmentid] = useState('')
     const [isOpen, setIsOpen] = useState(false);
 
     const [p, setp] = useState(false)
-    const [search, setSearch] = useState('')
-    const [date, setDate] = useState('')
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [allappointment, setAllappointment] = useState([])
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         setImage(file);
-
     };
+
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
@@ -65,37 +44,37 @@ const DashboardLayout = ({ children }) => {
         const fetchData = async () => {
             const data = await dispatch(profileview(token));
             setProfiledata(data);
-            setImage(data.image)
-            setFname(data.name)
-            setLname(data.last_name)
-            setDob(data.date_of_birth)
-            setGender(data.gender)
-            setBg(data.blood_group)
+            setFname(data.data.name)
+            setLname(data.data.last_name)
+            setDob(data.data.date_of_birth)
+            setGender(data.data.gender)
+            setBg(data.data.blood_group)
+            setAddress(data.data.address)
         };
         fetchData();
-    }, []);
+    }, [edit]);
 
     const submit = (e) => {
         e.preventDefault()
         const isDateFormatValid = (dateString) => {
-            const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
+            const dateFormatRegex = /^\d{2}\/\d{2}\/\d{4}$/;
             return dateFormatRegex.test(dateString);
         };
-        if (!fname.trim() || !image || !lname.trim() || !dob.trim() || !gender.trim() ) {
+        if (!fname?.trim() || !dob?.trim() || !gender?.trim() || !bg?.trim()) {
             toast.error("Fill All Field")
-            setError('Fill Required Field');
             return;
         }
         if (!isDateFormatValid(dob)) {
             return toast.error("Invalied Date Format")
         }
-        
+
         const formData = new FormData();
 
-        formData.append('image', image); 
+        formData.append('image', image);
         formData.append('first_name', fname);
         formData.append('last_name', lname);
-        formData.append('date_of_birth', dob);
+        formData.append('dob', dob);
+        formData.append('bg', bg);
         formData.append('gender', gender);
         formData.append('address', address);
 
@@ -104,10 +83,6 @@ const DashboardLayout = ({ children }) => {
             setEdit(false); // Close the modal by passing true
         }, 1000);
     };
-    const closemodel = () => {
-        setp(!p)
-    }
-
     return (
         <div className='bg-[#E2F1FF] h-screen'>
             <NavbarMobile toggle={toggleSidebar} />
@@ -115,21 +90,37 @@ const DashboardLayout = ({ children }) => {
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Profile</h1>
                 <Navbar />
-                <div className='flex h-full'>
+                <div className='flex h-full flex-col md:flex-row md:flex-nowrap w-full'>
                     <div className=' lg:ml-60 mt-1 ml-4 me-3 md:w-2/5'>
-                        <div className=' bg-white w-full rounded-lg text-center justify-center mb-4 pb-4'>
-                            <img className='pt-7 rounded-full p-2 ml-14 h-52 ' src={man} />
-                            <h1 className=' font-semibold text-md'>{profiledata?.data.name}</h1>
-                            <h1 className=' text-sm'>{profiledata?.data.phone_no}</h1>
-                            <h1 className=' text-sm'>{profiledata?.data.email}</h1>
+                        <div className=' bg-white w-full rounded-lg text-center justify-center mb-1 pb-4'>
+                            <div className="flex items-center justify-center">
+                                <img className='rounded-full p-5 h-52 w-52' src={profiledata?.data?.image ? `${BASE_URL}/users/${profiledata?.data?.image}` : man} alt="Profile Image" />
+                            </div>
+                            <h1 className=' font-semibold text-md'>{fname} {lname}</h1>
+                            <h1 className=' text-sm'>{profiledata?.data?.phone_no}</h1>
+                            <h1 className=' text-sm'>{profiledata?.data?.email}</h1>
                         </div>
-                        <div className=' bg-white w-full rounded-lg mt-2 text-center'>hello
-                            <h1 >Rasi K P</h1>
-                            <h1>9605942261</h1>
-                            <h1>rasir239@gmail.com</h1>
+                        <h1 className=' text-sm text-black font-semibold'>Change Password</h1>
+                        <div className="bg-white w-full rounded-lg mt-2 text-center">
+                            <div className="flex justify-between p-1">
+                                <input
+                                    type="password"
+                                    placeholder="New Password"
+                                    className="w-1/2 text-sm me-1 px-4 py-1 outline-none border bg-blue-50 rounded"
+                                />
+                                <input
+                                    type="password"
+                                    placeholder="Confirm Password"
+                                    className="w-1/2 text-sm px-4 py-1 outline-none border bg-blue-50 rounded"
+                                />
+                            </div>
+                            <div className="flex justify-end">
+                                <button className='bg-[#3497F9] text-white text-sm rounded-md px-4 py-1 mb-2 me-1'>Submit</button>
+                            </div>
                         </div>
+
                     </div>
-                    <div className='bg-white lg:me-8 mt-1 h-full pb-5 rounded-lg md:w-3/4'>
+                    <div className='bg-white lg:me-8 mt-1 h-full pb-5 me-3 ml-3 md:ml-1 rounded-lg md:w-3/4'>
                         <Card className="h-full w-full">
                             <div className='flex justify-end pt-3 pl-5 md:pe-5'>
                                 <button onClick={e => setEdit(!edit)} className=' bg-[#3497F9] text-white text-sm rounded-md me-3 px-6 p-1'>Edit</button>
@@ -137,7 +128,7 @@ const DashboardLayout = ({ children }) => {
                             <div className="mt-1 mb-5 relative px-6 flex-auto">
                                 <labal className="pt-1 text-slate-600">Address :</labal>
                                 <textarea className="text-sm w-full h-20 px-4 py-1.5 outline-none border bg-blue-50 rounded" disabled
-                                value={address}
+                                    value={address}
                                     placeholder="Address" />
                                 <labal className="pt-1 text-slate-600">DOB :</labal>
                                 <input type='text' disabled value={dob}
@@ -147,7 +138,7 @@ const DashboardLayout = ({ children }) => {
                                     className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                     placeholder='Blood Group' />
                                 <labal className="p-1 text-slate-600">Gender :</labal>
-                                <select disabled value={profiledata?.data.gender || ''}
+                                <select disabled value={gender}
                                     className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded">
                                     <option value="">Gender</option>
                                     <option value="male">Male</option>
@@ -155,9 +146,7 @@ const DashboardLayout = ({ children }) => {
                                 </select>
                             </div>
                         </Card>
-                        {p && <div >
-                            <PrescriptionPage appointment={appointmentid} closeModal={closemodel} />
-                        </div>}
+
                         {edit && <>
                             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                                 <div className="relative w-96 my-6 mx-auto max-w-3xl">
@@ -190,11 +179,8 @@ const DashboardLayout = ({ children }) => {
                                                 <div className="flex">
                                                     <img
                                                         className="ml-24 md:ml-28 mb-3 inset-y-0 w-24 h-24 rounded-full"
-                                                        src={profiledata?.data?.image 
-                                                            ? `${BASE_URL}/doctors/${profiledata.data.image}` 
-                                                            : (image ? URL.createObjectURL(image) : '')}
-                                                        alt="Uploaded Image"
-                                                    />
+                                                        src={URL.createObjectURL(image)}
+                                                        alt="Uploaded Image" />
                                                     <span className=" cursor-pointer" onClick={() => setImage(null)}>❌</span>
                                                 </div>
                                             )}
@@ -202,26 +188,26 @@ const DashboardLayout = ({ children }) => {
                                                 className="text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                                 type="text"
                                                 placeholder="First Name"
-                                                value={profiledata?.data.name}
+                                                value={fname}
                                                 onChange={e => setFname(e.target.value)}
                                                 name="fname" />
                                             <input
                                                 className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                                 type="text"
                                                 placeholder="Last Name"
-                                                value={profiledata?.data.last_name}
+                                                value={lname}
                                                 onChange={e => setLname(e.target.value)}
                                                 name="lname" />
                                             <input
                                                 className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                                 type="text"
                                                 placeholder="DOB (DD/MM/YYYY)"
-                                                value={profiledata?.data.date_of_birth}
+                                                value={dob}
                                                 onChange={e => setDob(e.target.value)}
                                                 name="dob" />
                                             <select
                                                 className=" mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
-                                                value={profiledata?.data.blood_group}
+                                                value={bg}
                                                 onChange={e => setBg(e.target.value)}
                                                 name="gender">
                                                 <option value="">Blood Group</option>
@@ -236,7 +222,7 @@ const DashboardLayout = ({ children }) => {
                                             </select>
                                             <select
                                                 className="mt-2 text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
-                                                value={profiledata?.data.gender}
+                                                value={gender}
                                                 onChange={e => setGender(e.target.value)}
                                                 name="gender">
                                                 <option value="">Gender</option>
