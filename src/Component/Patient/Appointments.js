@@ -58,8 +58,10 @@ const DashboardLayout = ({ children }) => {
             const data = await dispatch(allappointments(page, date, search, token));
             setAllappointment(data.appointment);
             setTotalPages(data.totalPages)
-            if (allappointment.length == 0) {
-                setAvailable(true)
+            if (data.appointment.length == 0) {
+                setAvailable(true);
+            } else {
+                setAvailable(false);
             }
         };
         fetchData();
@@ -273,8 +275,8 @@ const DashboardLayout = ({ children }) => {
                                     </tbody>
 
                                 </table>
-                                {available && <><h1 className=' text-center font-semibold mt-16 text-xl text-red-500'>No Upcoming Appointments </h1>
-                                    <h1 className=' text-center font-semibold mt-2 text-md text-blue-500'>Take New Appointment </h1></>}
+                                {available && <><h1 className=' cursor-default text-center font-semibold mt-16 text-xl text-red-500'>No Upcoming Appointments </h1>
+                                    <h1 onClick={Addappointment} className=' cursor-pointer text-center font-semibold mt-2 text-md text-blue-500'>Take New Appointment </h1></>}
                             </div>
                         </CardBody>
                     </Card>

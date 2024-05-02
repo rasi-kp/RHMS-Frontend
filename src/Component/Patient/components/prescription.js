@@ -9,7 +9,7 @@ import { MdEmail } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { FaPhoneAlt } from "react-icons/fa";
 import { TbWorldWww } from "react-icons/tb";
-const PrescriptionPage = forwardRef((props, ref) => {
+const PrescriptionPage = forwardRef((props) => {
 
     const prescriptionRef = useRef(null);
     const token = useSelector(state => state.auth.token);
@@ -30,7 +30,7 @@ const PrescriptionPage = forwardRef((props, ref) => {
             }
         };
         fetchPrescriptionData();
-    }, [appointment]);
+    }, []);
     const pdownload = () => {
         const element = prescriptionRef.current;
         const options = {

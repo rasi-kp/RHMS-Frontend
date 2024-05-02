@@ -27,12 +27,15 @@ const DashboardLayout = ({ children }) => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
+    const [available,setAvailable]=useState(false)
     const [addappointment, setAddappointment] = useState(false);
     const [deleteAppointment, setDeleteappointment] = useState(false);
+    const [appointmentid,setAppointmentid]=useState('')
     const [isOpen, setIsOpen] = useState(false);
 
-    const [p,setp] = useState(false)
+    const [p, setp] = useState(false)
     const [search, setSearch] = useState('')
+    const [date, setDate] = useState('')
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [allappointment, setAllappointment] = useState([])
@@ -42,14 +45,20 @@ const DashboardLayout = ({ children }) => {
     };
     useEffect(() => {
         const fetchData = async () => {
-            const data = await dispatch(completedappoinment(page, search, token));
+            const data = await dispatch(completedappoinment(page,date, search, token));
             setAllappointment(data.appointment);
             setTotalPages(data.totalPages)
+            if (data.appointment.length == 0) {
+                setAvailable(true);
+            } else {
+                setAvailable(false);
+            }
         };
         fetchData();
-    }, [page, search, deleteAppointment, addappointment]);
+    }, [page,date, search, deleteAppointment, addappointment]);
 
     const prescription = (appointmentId) => {
+        setAppointmentid(appointmentId)
         setp(true)
     };
     const closemodel = () => {
@@ -108,14 +117,16 @@ const DashboardLayout = ({ children }) => {
                                     type="text"
                                     className="pl-8 w-32 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
                                     placeholder="Search"
+                                    value={search}
+                                    onChange={e=>setSearch(e.target.value)}
                                 />
                                 <CiSearch className="absolute mt-2 left-2 top-2" />
                             </div>
                             <div className="relative">
                                 <input
                                     type="date"
+                                    onChange={e => setDate(e.target.value)}
                                     className="md:ml-8 ml-2 pl-3 w-32 h-6 text-blue-400 cursor-pointer text-xs mt-3 pe-2 border border-blue-600 rounded-full  outline-none"
-                                    value="Filter by Date"
                                 />
                             </div>
                         </div>
@@ -165,7 +176,7 @@ const DashboardLayout = ({ children }) => {
                                                         <td className={classes}>
                                                             <div className="flex items-center">
                                                                 {patient.gender == 'male' ? (<img src={man} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />) : (<img src={girl} alt={patient.first_name} className="w-7 h-7 rounded-full mr-2" />)}
-                                                                <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{patient.first_name}</Typography> {/* Name */}
+                                                                <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{patient.first_name} {patient.last_name}</Typography> {/* Name */}
                                                             </div>
                                                         </td>
                                                         <td className={classes}>
@@ -202,16 +213,18 @@ const DashboardLayout = ({ children }) => {
                                                                 </button>
                                                             </div>
                                                         </td>
-                                                        {p && <div >
-                                                            <PrescriptionPage appointment={appointment_id} closeModal={closemodel}/>
-                                                        </div>}
-                                                    </tr>
 
+                                                    </tr>
                                                 );
                                             },
                                         )}
                                     </tbody>
                                 </table>
+                                {p && <div >
+                                    <PrescriptionPage appointment={appointmentid} closeModal={closemodel} />
+                                </div>}
+                                {available && <><h1 className=' text-center font-semibold mt-16 text-xl text-red-500'>No Appointments </h1>
+                                    <h1 className=' text-center font-semibold mt-2 text-md text-blue-500'>Take New Appointment </h1></>}
                             </div>
                         </CardBody>
                     </Card>

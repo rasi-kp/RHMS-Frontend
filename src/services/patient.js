@@ -1,6 +1,63 @@
+import axios from 'axios';
 import { toast } from 'react-toastify';
 const BASE_URL = require('../apiconfig').BASE_URL;
 
+export const dashboard=(token)=>{
+  return async(dispatch)=>{
+    try {
+      const response = await axios.get(`${BASE_URL}/patient/dashboard`, {
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+          },
+      });
+      return response.data
+  } catch (error) {
+      console.log('Error fetching dashboard:', error);
+  }
+  }
+}
+export const profileview=(token)=>{
+  return async(dispatch)=>{
+    try {
+      const response = await axios.get(`${BASE_URL}/patient/profile`, {
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+          },
+      });
+      return response.data
+  } catch (error) {
+      console.log('Error fetching dashboard:', error);
+  }
+  }
+}
+export const profiledit = (formData, token) => {
+  return async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/patient/profile`, {
+        headers: {
+          "Contetnt-Type": "multipart/form-data",
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add Doctor');
+      }
+      const data = await response.json();
+      if (data.success) {
+        toast.success("Successfully Edit Profile!");
+      }
+      if (data.message) {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
+};
 export const allpatient = (page,search,token) => {
   return async (dispatch) => {
     try {
@@ -66,10 +123,10 @@ export const deleteappointment1 = (id,token) => {
     }
   };
 }
-export const completedappoinment = (page,search,token) => {
+export const completedappoinment = (page,date,search,token) => {
   return async () => {
     try {
-      const response = await fetch(`${BASE_URL}/patient/completeappointment?page${page}&search=${search}`, {
+      const response = await fetch(`${BASE_URL}/patient/completeappointment?page=${page}&search=${search}&date=${date}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

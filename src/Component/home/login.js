@@ -20,7 +20,7 @@ const Main = () => {
     const tokenredux = useSelector(state => state.auth);
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [eerror, setError] = useState("")
+    const [eerror, setError] = useState('')
     const [perror, setPerror] = useState('')
 
 
@@ -76,7 +76,7 @@ const Main = () => {
                 throw new Error('Failed to sign in');
             }
             const data = await response.json();
-            if (data.token) {
+            if (data?.token) {
                 dispatch(loginSuccess(data));
                 navigate('/patient');
                 setTimeout(() => {
@@ -86,7 +86,7 @@ const Main = () => {
                 }, 100);
             }
             else {
-                if (data.error === 'Invalied Email ID') {
+                if (data?.error === 'Invalied Email ID') {
                     toast.error("Invalied Email ID");
                     setError("Invalied Email ID")
                 }
@@ -96,7 +96,7 @@ const Main = () => {
                 }
             }
         } catch (error) {
-            alert(error.message)
+            console.log(error);
         }
     }
 

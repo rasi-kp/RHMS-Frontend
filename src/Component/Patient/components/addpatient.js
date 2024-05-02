@@ -62,7 +62,6 @@ function AddUser({ closeModal }) {
                             </button>
                         </div><hr />
                         <div className="mt-3 mb-5 relative px-6 flex-auto">
-                            {/* <p className="text-red-600 hover:underline hover:underline-offset-4">{error}</p> */}
                             <input
                                 className="text-sm w-full px-4 py-1.5 outline-none border bg-blue-50 rounded"
                                 type="text"
@@ -140,7 +139,6 @@ function AddUser({ closeModal }) {
                                 Submit
                             </button>
                         </div>
-
                     </div>
                 </div>
             </div>

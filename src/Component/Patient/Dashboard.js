@@ -9,13 +9,16 @@ import NavbarMobile from './components/NavbarMobile';
 import Recent from './components/recentactivity'
 import Subscription from './components/Subscription';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { dashboard } from '../../services/patient';
 
 const DashboardLayout = ({ children }) => {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false);
+    const [data,setData]=useState('')
 
     const tokenredux = useSelector(state => state.auth);
 
@@ -37,19 +40,26 @@ const DashboardLayout = ({ children }) => {
         else {
             navigate('/login')
         }
+        const fetchData = async () => {
+            const data = await dispatch(dashboard(tokenredux.token));
+            setData(data)
+            if(data?.error=="Unauthorized: Invalid token"){
+                return navigate('/login')
+            }
+        };
+        fetchData()
     }, []);
-
     return (
         <div className='bg-[#E2F1FF] h-full sm:h-screen'>
             <NavbarMobile toggle={toggleSidebar} />
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Dashboard</h1>
-                    <Navbar user={tokenredux.name}/>
+                    <Navbar />
                 <div className='sm:flex h-full'>
-                    <Report />
+                    <Report appcount={data ? data.appointmentcount : 0}  memcount= {data ? data.totalMembers : 0} subscription={data && data.subscription ? data.subscription.subscription : false}  />
                     <div className='md:w-3/4 '>
-                        <Appointments />
+                        <Appointments appointment= {data? data.upcomingAppointments:[]}/> 
                     </div>
                 </div>
 
@@ -58,8 +68,7 @@ const DashboardLayout = ({ children }) => {
                         <Subscription/>
                     </div>
                     <Recent />
-                </div>
-                
+                </div>  
             </div>
             <ToastContainer/>
         </div>
