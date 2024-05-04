@@ -43,8 +43,7 @@ function Appointments({ appointment }) {
                                         Take New Appointment
                                     </h1>
                                 </Link>
-                            </div>
-                            
+                            </div> 
                         </div>
                     ):(
                     <table className=" w-full min-w-max table-auto text-left">

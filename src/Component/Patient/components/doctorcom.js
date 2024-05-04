@@ -9,7 +9,7 @@ import { Typography, CardBody } from "@material-tailwind/react";
 import { CiSearch } from 'react-icons/ci';
 import { RxCross2 } from "react-icons/rx";
 import { alldoctor, allpatient } from "../../../services/patient";
-import Chat from '../../Patient/components/chat';
+import Chat from '../../common/chat';
 const BASE_URL = require('../../../apiconfig').BASE_URL;
 
 const TABLE_HEAD = ["Doctor Name", "Gender", "Qualification", "Specialitation", "Action"];

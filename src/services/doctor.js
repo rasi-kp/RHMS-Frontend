@@ -17,6 +17,17 @@ export const dashboard=(token)=>{
   }
   }
 }
+export const getuserid=(patientid,token)=>{
+  return async(dispatch)=>{
+      const response = await axios.get(`${BASE_URL}/doctor/getuserid/${patientid}`, {
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+          },
+      });
+      return response.data
+  }
+}
 export const allpatient=(page,search,token)=>{
   return async(dispatch)=>{
     try {

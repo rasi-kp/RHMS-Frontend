@@ -18,6 +18,7 @@ import Appointmentall from "./Pages/patients/Appointments"
 import Cappointment from "./Component/Patient/cappointment"
 import Livemonitor from './Component/Patient/livemonitor'
 import Profile from './Component/Patient/Profile'
+import Message from './Component/Patient/messages'
 //*********** */ Doctor imports *******************
 import Doctor from './Pages/doctor/Dashboard'
 import Dpatient from './Pages/doctor/Patients'
@@ -52,6 +53,7 @@ const routes = () => {
                     <Route path="/patient/appointments/complete"element={<Cappointment />} />
                     <Route path="/patient/livemonitor" element={<Livemonitor/>}/>
                     <Route path="/patient/profile" element={<Profile />}/>
+                    <Route path="/patient/messages" element={<Message />}/>
                     {/*********************** Doctor Routes *******************/}
                     <Route path="/doctor" element={<Doctor />} />
                     <Route path="/doctor/patients"element={<Dpatient />} />

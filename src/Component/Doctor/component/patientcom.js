@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
 
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { RxCross2 } from "react-icons/rx";
+import { FaBookMedical } from "react-icons/fa";
 import { AiFillMessage } from "react-icons/ai";
-import {Typography,CardBody,} from "@material-tailwind/react";
+import { Typography, CardBody, } from "@material-tailwind/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
-import { BASE_URL } from '../../../apiconfig';
 
 import profile from '../../images/profile.png'
-import { allpatient } from "../../../services/doctor";
-import Chat from '../../Patient/components/chat';
+import { allpatient, getuserid } from "../../../services/doctor";
+import Chat from '../../common/chat';
+import Pagination from '../../common/Pagination';
 
 const TABLE_HEAD = ["Member Name", "Gender", "Blood Group", "Age", "Weight", "Height", "Action"];
 
@@ -19,18 +19,21 @@ function Patientcom() {
     const token = useSelector(state => state.auth.token);
     const doctor = useSelector(state => state.auth.user);
     const role = useSelector(state => state.auth.role);
-    const [adduser, setAdduser] = useState(false)
     const [chat, setChat] = useState(false)
     const [userdata, setUserData] = useState([])
     const [search, setSearch] = useState('')
+    const [userid, setUserid] = useState('')
     const [page, setPage] = useState(1);
 
     const [totalPages, setTotalPages] = useState(1);
 
     const print = () => {
-        setAdduser(!adduser)
+    const elementToPrint = document.getElementById('elementToPrint');
+    const originalContent = document.body.innerHTML;
+    document.body.innerHTML = elementToPrint.innerHTML;
+    window.print();
+    document.body.innerHTML = originalContent;
     }
-
     useEffect(() => {
         const fetchData = async () => {
             const datas = await dispatch(allpatient(page, search, token));
@@ -41,36 +44,19 @@ function Patientcom() {
     }, [page, search]);
 
     const handleMessage = async (patientid) => {
+        const userid = await dispatch(getuserid(patientid, token));
+        setUserid(userid.user.user_id);
+        setChat(true)
+    }
+    const medicalhistory=()=>{
+
+    }
+    const setModal=()=>{
         setChat(!chat)
     }
-    //*********************** Pagination Logic *************** */
-    const handlePrevClick = () => {
-        setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
-    };
-    const handleNextClick = () => {
-        setPage(prevPage => Math.min(prevPage + 1, totalPages)); // Ensure page doesn't exceed total pages
-    };
-    const handlePageClick = (pageNumber) => {
-        setPage(pageNumber);
-    };
-    const renderPaginationButtons = () => {
-        const buttons = [];
-        for (let i = 1; i <= totalPages; i++) {
-            buttons.push(
-                <button
-                    key={i}
-                    className={`mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md ${i === page ? 'bg-blue-500 text-white' : ''}`}
-                    onClick={() => handlePageClick(i)} >
-                    {i}
-                </button>
-            );
-        }
-        return buttons;
-    };
-    //*************************************************** */
     return (
         <div>
-            <div className='lg:ml-60 ml-6 me-8 rounded-lg bg-white  px-5 h-full pb-10 pt-3'>
+            <div id='elementToPrint' className='lg:ml-60 ml-6 me-8 rounded-lg bg-white  px-5 h-full pb-10 pt-3'>
                 <h1 className='absolute font-semibold text-xs pt-4 pl-3 underline underline-offset-8 decoration-blue-500'>Patient Info</h1>
                 <div className=' justify-end flex'>
                     <button className='bg-[#3497F9]  text-white text-xs rounded-xl px-2 p-1.5 hover:bg-blue-600' onClick={print}>Print</button>
@@ -83,7 +69,8 @@ function Patientcom() {
                     className=" pl-4 ml-5 w-32 h-6 mt-3 rounded-full bg-[#E2F1FF] outline-none "
                     placeholder="Search" />
                 <CardBody className=" overflow-x-hidden mt-3 px-2 pt-0">
-                    <table className=" w-full min-w-max table-auto text-left">
+                <div className="overflow-x-auto">
+                    <table  className=" w-full min-w-max table-auto text-left">
                         <thead>
                             <tr>
                                 {TABLE_HEAD.map((head, index) => (
@@ -95,13 +82,10 @@ function Patientcom() {
                                             {index !== TABLE_HEAD.length && (
                                                 <ChevronUpDownIcon strokeWidth={2} className="h-3 w-3" />
                                             )}
-
                                         </Typography>
-
                                     </th>
                                 ))}
                             </tr>
-
                         </thead>
                         <tbody>
                             {userdata.map(
@@ -130,7 +114,6 @@ function Patientcom() {
                                                     </Typography>
                                                 </div>
                                             </td>
-
                                             <td className={classes}>
                                                 <div className="flex items-center">
                                                     <Typography className="pl-3 font-semibold text-xs text-slate-500" >
@@ -151,49 +134,30 @@ function Patientcom() {
                                                         {height}
                                                     </Typography>
                                                 </div>
-
                                             </td>
                                             <td className={classes}>
-                                                    <div className="flex items-center">
-                                                        <button className="border border-blue-500 rounded-lg p-1 flex items-center justify-center" title='Message'
-                                                            onClick={() => handleMessage(patient_id)}>
-                                                            <AiFillMessage className="w-4 h-4 text-blue-500" />
-                                                        </button>
-                                                        <button className="ml-3  border text-xs bg-green-600 text-white rounded-lg p-1.5 hover:bg-green-800">N
-                                                        </button>
-
-                                                    </div>
-                                                </td>
+                                                <div className="flex items-center">
+                                                    <button className="border border-blue-500 rounded-lg p-1 flex items-center justify-center" title='Message'
+                                                        onClick={() => handleMessage(patient_id)}>
+                                                        <AiFillMessage className="w-4 h-4 text-blue-500" />
+                                                    </button>
+                                                    <button className="border ml-2 border-green-500 rounded-lg p-1 flex items-center justify-center" title='Message'
+                                                        onClick={() => medicalhistory(patient_id)}>
+                                                        <FaBookMedical className="w-4 h-4 text-green-500" />
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </tr>
                                     );
                                 },
                             )}
                         </tbody>
                     </table>
+                    </div>
                 </CardBody>
-                <div className="mt-5 flex justify-end items-center">
-                    <div>
-                        <button
-                            className="mr-1 hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
-                            onClick={handlePrevClick}
-                            disabled={page === 1}>
-                            Prev
-                        </button>
-                    </div>
-                    <div>
-                        {renderPaginationButtons()}
-                    </div>
-                    <div>
-                        <button
-                            className="ml- hover:bg-blue-400 hover:text-white text-blue-600 text-xs py-1 px-2 rounded-md"
-                            onClick={handleNextClick}
-                            disabled={page === totalPages} >
-                            Next
-                        </button>
-                    </div>
-                </div>
+                <Pagination page={page} setPage={setPage} totalPages={totalPages} />
             </div>
-            {chat && <Chat senderId={doctor.id} role={role} receiverId={20} closeChat={handleMessage} />}
+            {chat && <Chat senderId={doctor.id} role={role} receiverId={userid} closeChat={setModal} />}
             <ToastContainer />
         </div>
     )
