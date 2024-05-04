@@ -5,46 +5,48 @@ import { AiFillMessage } from "react-icons/ai";
 import { ToastContainer, toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {Typography,CardBody} from "@material-tailwind/react";
+import { Typography, CardBody } from "@material-tailwind/react";
 import { CiSearch } from 'react-icons/ci';
 import { RxCross2 } from "react-icons/rx";
-import { alldoctor,allpatient } from "../../../services/patient";
-// import AddDoctor from './adddoctor';
+import { alldoctor, allpatient } from "../../../services/patient";
+import Chat from '../../Patient/components/chat';
 const BASE_URL = require('../../../apiconfig').BASE_URL;
 
 const TABLE_HEAD = ["Doctor Name", "Gender", "Qualification", "Specialitation", "Action"];
-const specializations = ['gynecologist', 'Dermatology', 'Neurologist', 'Associate consultant','Emergency Medicine','General physician','genral', 'Anaesthesiology', 'Psychiatry'];
+const specializations = ['gynecologist', 'Dermatology', 'Neurologist', 'Associate consultant', 'Emergency Medicine', 'General physician', 'genral', 'Anaesthesiology', 'Psychiatry'];
 function Doctor() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
+    const user = useSelector(state => state.auth.user);
+    const role = useSelector(state => state.auth.role);
     const [addappointment, setAddappointment] = useState(false);
+    const [chat, setChat] = useState(false)
     const [selectedSpecialization, setSelectedSpecialization] = useState('');
 
     const [patientid, setPatientid] = useState('')
     const [doctorid, setDoctorid] = useState('')
+    const [doctoridm, setDoctoridm] = useState('')
     const [data, setData] = useState([])
     const [doctordata, setDoctordata] = useState([])
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1);
-    const [flag, setFlag] = useState(false)
     const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await dispatch(alldoctor(page, search,selectedSpecialization, token));
+            const data = await dispatch(alldoctor(page, search, selectedSpecialization, token));
             setDoctordata(data.data);
             setTotalPages(data.totalPages)
         };
         fetchData();
-    }, [ page, search,selectedSpecialization]);
+    }, [page, search, selectedSpecialization]);
 
     const submit = () => {
         if (patientid == '') {
             return toast.error("Please Select Patient !!!")
         }
         navigate('/patient/token', { state: { patientid, doctorid } })
-
     }
 
     const handleSpecializationChange = (event) => {
@@ -53,13 +55,14 @@ function Doctor() {
     const handleAppointment = async (doctorid) => {
         setAddappointment(true)
         setDoctorid(doctorid)
-        dispatch(allpatient(1,'', token))
+        dispatch(allpatient(1, '', token))
             .then(Data => {
                 setData(Data.data);
             })
     }
     const handleMessage = async (doctorid) => {
-
+        setDoctoridm(doctorid)
+        setChat(!chat)
     }
     //*********************** Pagination Logic *************** */
     const handlePrevClick = () => {
@@ -179,7 +182,7 @@ function Doctor() {
 
                                                 <td className={classes}>
                                                     <div className="flex items-center">
-                                                        <button className="border border-blue-500 rounded-lg p-1 flex items-center justify-center" title='Delete'
+                                                        <button className="border border-blue-500 rounded-lg p-1 flex items-center justify-center" title='Message'
                                                             onClick={() => handleMessage(doctor_id)}>
                                                             <AiFillMessage className="w-4 h-4 text-blue-500" />
                                                         </button>
@@ -263,6 +266,7 @@ function Doctor() {
 
                     </>
                 }
+                {chat && <Chat senderId={user.id} role={role} receiverId={doctoridm} closeChat={handleMessage} />}
             </div>
             <ToastContainer />
         </div>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { MdModeEditOutline } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
+import { AiFillMessage } from "react-icons/ai";
 import {Typography,CardBody,} from "@material-tailwind/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
@@ -10,14 +10,17 @@ import { BASE_URL } from '../../../apiconfig';
 
 import profile from '../../images/profile.png'
 import { allpatient } from "../../../services/doctor";
+import Chat from '../../Patient/components/chat';
 
 const TABLE_HEAD = ["Member Name", "Gender", "Blood Group", "Age", "Weight", "Height", "Action"];
 
 function Patientcom() {
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
+    const doctor = useSelector(state => state.auth.user);
+    const role = useSelector(state => state.auth.role);
     const [adduser, setAdduser] = useState(false)
-    const [useredit, setUseredit] = useState(false)
+    const [chat, setChat] = useState(false)
     const [userdata, setUserData] = useState([])
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1);
@@ -37,6 +40,9 @@ function Patientcom() {
         fetchData();
     }, [page, search]);
 
+    const handleMessage = async (patientid) => {
+        setChat(!chat)
+    }
     //*********************** Pagination Logic *************** */
     const handlePrevClick = () => {
         setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure page doesn't go below 1
@@ -148,16 +154,16 @@ function Patientcom() {
 
                                             </td>
                                             <td className={classes}>
-                                                <div className="flex items-center">
-                                                    {/* <button className="border border-red-500 rounded-lg p-1 flex items-center justify-center">
-                                                        <RxCross2 className="w-3 h-3 text-red-500" />
-                                                    </button>
-                                                    <button className="ml-3 border border-blue-500 rounded-lg p-1 flex items-center justify-center">
-                                                        <MdModeEditOutline className="w-3 h-3 text-blue-500" />
-                                                    </button> */}
+                                                    <div className="flex items-center">
+                                                        <button className="border border-blue-500 rounded-lg p-1 flex items-center justify-center" title='Message'
+                                                            onClick={() => handleMessage(patient_id)}>
+                                                            <AiFillMessage className="w-4 h-4 text-blue-500" />
+                                                        </button>
+                                                        <button className="ml-3  border text-xs bg-green-600 text-white rounded-lg p-1.5 hover:bg-green-800">N
+                                                        </button>
 
-                                                </div>
-                                            </td>
+                                                    </div>
+                                                </td>
                                         </tr>
                                     );
                                 },
@@ -187,9 +193,7 @@ function Patientcom() {
                     </div>
                 </div>
             </div>
-            {/* {adduser && <AddUser closeModal={addpatient} />} */}
-
-            {/* {useredit && <Edit closeModal={editpatient} patientid={Editpatient} />} */}
+            {chat && <Chat senderId={doctor.id} role={role} receiverId={20} closeChat={handleMessage} />}
             <ToastContainer />
         </div>
     )
