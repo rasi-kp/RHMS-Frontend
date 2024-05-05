@@ -2,40 +2,63 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 const BASE_URL = require('../apiconfig').BASE_URL;
 
-export const dashboard=(token)=>{
-  return async(dispatch)=>{
+export const dashboard = (token) => {
+  return async (dispatch) => {
     try {
       const response = await axios.get(`${BASE_URL}/patient/dashboard`, {
-          headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-          },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
       return response.data
-  } catch (error) {
+    } catch (error) {
       console.log('Error fetching dashboard:', error);
-  }
+    }
   }
 }
-export const profileview=(token)=>{
-  return async(dispatch)=>{
+
+export const message = (receiverId, token) => {
+  return async (dispatch) => {
+    const response = await axios.get(`${BASE_URL}/patient/doctor/${receiverId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data
+  }
+}
+export const allchats = (token) => {
+  return async (dispatch) => {
+    const response = await axios.get(`${BASE_URL}/patient/allchats`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data
+  }
+}
+export const profileview = (token) => {
+  return async (dispatch) => {
     try {
       const response = await axios.get(`${BASE_URL}/patient/profile`, {
-          headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-          },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
       return response.data
-  } catch (error) {
+    } catch (error) {
       console.log('Error fetching dashboard:', error);
-  }
+    }
   }
 }
 export const profiledit = (formData, token) => {
   return async () => {
     try {
-      const response = await axios.post(`${BASE_URL}/patient/profile`,formData, {
+      const response = await axios.post(`${BASE_URL}/patient/profile`, formData, {
         headers: {
           "Contetnt-Type": "multipart/form-data",
           'Authorization': `Bearer ${token}`
@@ -56,7 +79,7 @@ export const profiledit = (formData, token) => {
     }
   };
 };
-export const allpatient = (page,search,token) => {
+export const allpatient = (page, search, token) => {
   return async (dispatch) => {
     try {
       const response = await fetch(`${BASE_URL}/patient/all?page=${page}&search=${search}`, {
@@ -77,7 +100,7 @@ export const allpatient = (page,search,token) => {
     }
   };
 };
-export const allappointments = (page,date,search,token) => {
+export const allappointments = (page, date, search, token) => {
   return async (dispatch) => {
     try {
       const response = await fetch(`${BASE_URL}/patient/appointments?page=${page}&search=${search}&date=${date}`, {
@@ -98,13 +121,13 @@ export const allappointments = (page,date,search,token) => {
     }
   };
 };
-export const deleteappointment1 = (id,token) => {
+export const deleteappointment1 = (id, token) => {
   return async () => {
     try {
       const response = await fetch(`${BASE_URL}/patient/deleteappointment/${id}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
       });
@@ -121,13 +144,13 @@ export const deleteappointment1 = (id,token) => {
     }
   };
 }
-export const completedappoinment = (page,date,search,token) => {
+export const completedappoinment = (page, date, search, token) => {
   return async () => {
     try {
       const response = await fetch(`${BASE_URL}/patient/completeappointment?page=${page}&search=${search}&date=${date}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
       });
@@ -162,31 +185,31 @@ export const alldoctorselection = () => {
     }
   };
 };
-export const createUser = (userData,token) => {
-    return async (dispatch) => {
-      try {
-        const response = await fetch(`${BASE_URL}/patient/add`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(userData),
-        });
-        if (!response.ok) {
-          throw new Error('Failed to add new member');
-        }
-        const data = await response.json();
-        if (data.message) {
-          toast.success('Successfully Add New Member')
-        }
-      } catch (error) {
-        toast.error(error.message)
-        alert(error.message);
+export const createUser = (userData, token) => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(userData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add new member');
       }
-    };
+      const data = await response.json();
+      if (data.message) {
+        toast.success('Successfully Add New Member')
+      }
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
 };
-export const updateUser = (userData,token) => {
+export const updateUser = (userData, token) => {
   return async (dispatch) => {
     try {
       const response = await fetch(`${BASE_URL}/patient/edit`, {
@@ -208,30 +231,30 @@ export const updateUser = (userData,token) => {
     }
   };
 };
-export const deleteuser = (patientid,token) => {
-    return async (dispatch) => {
-      try {
-        const response = await fetch(`${BASE_URL}/patient/delete/${patientid}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Failed to add new member');
-        }
-        const data = await response.json();
-        if (data.success) {
-          toast.success('Successfully Deleted');
-        }
-      } catch (error) {
-        toast.error(error.message)
-        alert(error.message);
+export const deleteuser = (patientid, token) => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(`${BASE_URL}/patient/delete/${patientid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add new member');
       }
-    };
+      const data = await response.json();
+      if (data.success) {
+        toast.success('Successfully Deleted');
+      }
+    } catch (error) {
+      toast.error(error.message)
+      alert(error.message);
+    }
+  };
 };
-export const edituser = (patientid,token) => {
+export const edituser = (patientid, token) => {
   return async (dispatch) => {
     try {
       const response = await fetch(`${BASE_URL}/patient/edit/${patientid}`, {
@@ -252,7 +275,7 @@ export const edituser = (patientid,token) => {
     }
   };
 };
-export const alldoctor = (page,search,specialization,token) => {
+export const alldoctor = (page, search, specialization, token) => {
   return async () => {
     try {
       const response = await fetch(`${BASE_URL}/patient/alldoctor?page=${page}&search=${search}&specialization=${specialization}`, {
@@ -273,13 +296,13 @@ export const alldoctor = (page,search,specialization,token) => {
     }
   };
 };
-export const addappoinment = (result,token) => {
+export const addappoinment = (result, token) => {
   return async () => {
     try {
       const response = await fetch(`${BASE_URL}/patient/addappointment`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(result),
@@ -297,7 +320,7 @@ export const addappoinment = (result,token) => {
     }
   };
 }
-export const viewmonitor = (date,doctorid, token) => {
+export const viewmonitor = (date, doctorid, token) => {
   return async () => {
     try {
       const response = await fetch(`${BASE_URL}/patient/viewmonitor?date=${date}&doctorid=${doctorid}`, {
@@ -319,7 +342,7 @@ export const viewmonitor = (date,doctorid, token) => {
   };
 };
 
-export const viewtoken = (date,doctorid, token) => {
+export const viewtoken = (date, doctorid, token) => {
   return async () => {
     try {
       const response = await fetch(`${BASE_URL}/patient/alltokens?date=${date}&doctorid=${doctorid}`, {

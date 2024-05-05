@@ -60,6 +60,7 @@ const routes = () => {
                     <Route path="/doctor/appointments"element={<Dappointment />} />
                     <Route path="/doctor/appointments/complete"element={<Dappointment />} />
                     <Route path="/doctor/available"element={<Davailability />} />
+                    <Route path="/doctor/messages" element={<Message />}/>
                     {/* <Route path='/doctor/prescription' element={<Addprescription/>} />  */}
                     {/*********************** Admin Routes *******************/}
                     <Route path="/admin" element={<Admin />} />

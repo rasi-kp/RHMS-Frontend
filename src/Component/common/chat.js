@@ -1,47 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import { RxCross2 } from 'react-icons/rx';
 import { BASE_URL } from '../../apiconfig';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { message } from '../../services/patient';
+import { messagedoctor } from '../../services/doctor';
 
 function Chat({ closeChat, senderId, receiverId, role }) {
 
+    const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const [doctor, setDoctor] = useState('')
+    const chatContainerRef = useRef(null);
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [currentMessage, setCurrentMessage] = useState('');
     const [typingStatus, setTypingStatus] = useState(false);
     const [typingTimeout, setTypingTimeout] = useState(null);
     const [status, setStatus] = useState('');
-    const patientchat = async () => {
-        const response = await axios.get(`${BASE_URL}/patient/doctor/${receiverId}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-        setDoctor(response.data.doctor)
-        setMessages(response.data.chats);
-    }
-    const doctorchat = async () => {
-        const response = await axios.get(`${BASE_URL}/doctor/patient/${receiverId}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-        setDoctor(response.data.user)
-        setMessages(response.data.chats);
-    }
+    
     useEffect(() => {
-        if (role == 'patient') {
-            patientchat()
+        const fetchData = async () => {
+            if (role == 'patient') {
+                const response = await dispatch(message(receiverId,token));
+                setDoctor(response.doctor)
+                setMessages(response.chats);
+            }
+            if (role == 'doctor') {
+                const response = await dispatch(messagedoctor(receiverId,token));
+                setDoctor(response.user)
+                setMessages(response.chats);
+            }
         }
-        if (role == 'doctor') {
-            doctorchat()
-        }
+        fetchData()
         const newSocket = io(BASE_URL);
         setSocket(newSocket);
         // // Handle socket connection
@@ -49,7 +41,7 @@ function Chat({ closeChat, senderId, receiverId, role }) {
             newSocket.emit('joinRoom', { senderId, receiverId });
         });
         newSocket.on('user_status', (data) => {
-            setStatus(data.status)
+            setStatus(data)
         });
         newSocket.on('receive_message', (newChat) => {
             setMessages((prevMessages) => [...prevMessages, newChat]);
@@ -64,10 +56,13 @@ function Chat({ closeChat, senderId, receiverId, role }) {
                 }, 3000) // Typing indicator will be hidden after 3 seconds of inactivity
             );
         });
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
         return () => {
             newSocket.disconnect();
         };
-    }, [senderId, receiverId]);
+    }, [senderId, receiverId,currentMessage]);
     const sendMessage = () => {
         if (currentMessage.trim() !== '') {
             const chatData = {
@@ -97,7 +92,7 @@ function Chat({ closeChat, senderId, receiverId, role }) {
                         <div>
                             {role == 'patient' ? (<p className="text-lg font-semibold">{doctor?.first_name} {doctor?.doctor?.last_name}</p>) : (<p className="text-lg font-semibold">{doctor?.name} {doctor?.last_name}</p>)}
                             <div className="flex items-center">
-                                {status === 'online' ? (<><span className="h-2 w-2 bg-green-500 rounded-full mr-2"></span><p>Online</p></>) : (<><span className="h-2 w-2 bg-red-500 rounded-full mr-2"></span><p>offline</p></>)}
+                                {status && status.userId === receiverId && status.status == 'online' ? (<><span className="h-2 w-2 bg-green-500 rounded-full mr-2"></span><p>Online</p></>) : (<><span className="h-2 w-2 bg-red-500 rounded-full mr-2"></span><p>offline</p></>)}
                             </div>
                         </div>
                     </div>
@@ -108,7 +103,7 @@ function Chat({ closeChat, senderId, receiverId, role }) {
                     </button>
                 </div>
 
-                <div className="p-4 h-80 overflow-y-auto">
+                <div className="p-4 h-80 overflow-y-auto" ref={chatContainerRef}>
                     <div className='mb-0'>
                         {messages.map((chat, index) => (
                             <div key={index} className={`${chat.senderId === senderId ? ' text-right' : 'text-left'}`}>
@@ -134,7 +129,7 @@ function Chat({ closeChat, senderId, receiverId, role }) {
                         value={currentMessage}
                         onChange={(e) => setCurrentMessage(e.target.value)}
                         onKeyDown={handleTyping}
-                        placeholder="Type a message"/>
+                        placeholder="Type a message" />
                     <button
                         className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition duration-300"
                         onClick={sendMessage}>
