@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 import Patient from './components/patientcom'
 import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
-import NavbarMobile from './components/NavbarMobile';
+import Navbar from '../common/Navbar';
+import NavbarMobile from '../common/NavbarMobile';
 import { ToastContainer } from 'react-toastify';
 
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import logo from '../../images/logo.png'
-import image from '../../images/doctor 1.jpg'
+import logo from '../images/logo.png'
+import image from '../images/doctor 1.jpg'
 
 import { AiOutlineMenu } from 'react-icons/ai';
 import { IoNotifications } from "react-icons/io5";

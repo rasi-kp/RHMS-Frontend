@@ -4,8 +4,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import Sidebar from './components/Sidebar';
 import Report from './components/reports'
 import Appointments from './components/Appointments';
-import Navbar from './components/Navbar';
-import NavbarMobile from './components/NavbarMobile';
+import Navbar from '../common/Navbar';
+import NavbarMobile from '../common/NavbarMobile';
 import Recent from './components/recentactivity'
 import Subscription from './components/Subscription';
 

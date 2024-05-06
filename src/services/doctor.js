@@ -17,6 +17,17 @@ export const dashboard=(token)=>{
   }
   }
 }
+// export const messagedoctor = (receiverId, token) => {
+//   return async (dispatch) => {
+//     const response = await axios.get(`${BASE_URL}/patient/doctor/${receiverId}`, {
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${token}`,
+//       },
+//     });
+//     return response.data
+//   }
+// }
 export const allchatsdoctor = (token) => {
   return async (dispatch) => {
     const response = await axios.get(`${BASE_URL}/doctor/allchats`, {

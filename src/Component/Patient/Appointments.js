@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
-import NavbarMobile from './components/NavbarMobile';
+import Navbar from '../common/Navbar';
+import NavbarMobile from '../common/NavbarMobile';
 import man from '../images/profile.png'
 import girl from '../images/girl.jpg'
 
@@ -150,7 +150,7 @@ const DashboardLayout = ({ children }) => {
                                 <h1 className='text-xs cursor-pointer text-slate-400 font-bold'><Link to="/patient/appointments/complete">COMPLETED </Link></h1>
                             </div>
                             <button className='sm:hidden bg-[#3497F9] text-white text-xs rounded-xl mb-1 me-3 px-2 p-1.5' onClick={Addappointment}>new appointment</button>
-                        </div>{available ?(<div className='mt-6'></div>):(<div className='flex mb-3 ml-6 mt-0'>
+                        </div>{available ? (<div className='mt-6'></div>) : (<div className='flex mb-3 ml-6 mt-0'>
                             <div className="relative">
                                 <input
                                     type="text"
@@ -166,7 +166,7 @@ const DashboardLayout = ({ children }) => {
                                     className="md:ml-8 ml-2 pl-3 w-32 h-6 text-blue-400 cursor-pointer text-xs mt-3 pe-2 border border-blue-600 rounded-full  outline-none" />
                             </div>
                         </div>)}
-                        
+
 
                         <CardBody className="overflow-x-hidden  px-3 pt-2">
                             <div className="overflow-x-auto">
@@ -343,7 +343,6 @@ const DashboardLayout = ({ children }) => {
                                             Submit
                                         </button>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

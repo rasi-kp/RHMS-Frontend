@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 
 import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
-import NavbarMobile from './components/NavbarMobile';
+import Navbar from '../common/Navbar';
+import NavbarMobile from '../common/NavbarMobile';
 import man from '../images/profile.png'
 import girl from '../images/girl.jpg'
 

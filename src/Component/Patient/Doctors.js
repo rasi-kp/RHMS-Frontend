@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
-import NavbarMobile from './components/NavbarMobile';
+import Navbar from '../common/Navbar';
+import NavbarMobile from '../common/NavbarMobile';
 import Doctor from './components/doctorcom'
 
 const DashboardLayout = ({ children }) => {

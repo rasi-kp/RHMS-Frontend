@@ -40,6 +40,17 @@ export const allchats = (token) => {
     return response.data
   }
 }
+export const alldoctorchat = (search,token) => {
+  return async (dispatch) => {
+    const response = await axios.get(`${BASE_URL}/patient/alldoctorchat?search=${search}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data
+  }
+}
 export const profileview = (token) => {
   return async (dispatch) => {
     try {

@@ -12,9 +12,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Bounce, ToastContainer, Zoom, toast } from 'react-toastify';
 import { BASE_URL } from '../../../apiconfig';
 import AddUser from './addpatient';
-import Edit from './editpatient'
-import man from '../../images/profile.png'
-import girl from '../../images/girl.jpg'
+import Edit from './editpatient';
+import man from '../../images/profile.png';
+import image from '../../images/right-arrow.gif'
+import user from '../../images/user.gif'
+import girl from '../../images/girl.jpg';
 
 import { deleteuser, allpatient } from "../../../services/patient";
 
@@ -30,6 +32,7 @@ function Patientcom() {
     const [page, setPage] = useState(1);
     const [Editpatient, setEditedPatientId] = useState(null)
     const [flag, setFlag] = useState(false)
+    const [available, setavailable] = useState(false)
     const [totalPages, setTotalPages] = useState(1);
 
     const addpatient = () => {
@@ -44,9 +47,9 @@ function Patientcom() {
             const datas = await dispatch(allpatient(page, search, token));
             setUserData(datas.data);
             setTotalPages(datas.totalPages);
-            // if (datas.data.length === 0) {
-            //     return toast.error('👤 Member in Empty, First add Member!')
-            // }
+            if (datas.data.length === 0) {
+                setavailable(true)
+            }
         };
         fetchData();
     }, [adduser, page, search, flag, useredit]);
@@ -195,6 +198,25 @@ function Patientcom() {
                         </tbody>
                     </table>
                 </CardBody>
+                {available && (
+                    <div className="flex flex-col md:flex-row justify-center items-center">
+                        <div className="flex justify-center w-full md:w-1/2">
+                            <img src={user} alt="No appointments available" className="w-32 h-32 " />
+                            {/* <img src={image} alt="No appointments available" className="w-32 h-32 " /> */}
+                        </div>
+                        <div className="flex flex-col items-center w-full md:w-1/2">
+                            <h1 className="cursor-default text-center font-semibold text-xl text-red-500">
+                                No Members are there
+                            </h1>
+                            <div className='flex'>
+                                <h1 onClick={addpatient} className="cursor-pointer text-center font-semibold mt-2 text-md text-blue-500">
+                                    Add New Member
+                                </h1>
+                                <img src={image} onClick={addpatient} alt="" className="w-9 h-9 cursor-pointer" />
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <div className="mt-5 flex justify-end items-center">
                     <div>
                         <button

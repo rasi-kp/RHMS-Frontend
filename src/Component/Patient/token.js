@@ -4,8 +4,8 @@ import { IoMdClose } from "react-icons/io";
 import { GiConfirmed } from "react-icons/gi";
 
 import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
-import NavbarMobile from './components/NavbarMobile';
+import Navbar from '../common/Navbar';
+import NavbarMobile from '../common/NavbarMobile';
 import { addappoinment,viewtoken } from "../../services/patient";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from 'react-router-dom';

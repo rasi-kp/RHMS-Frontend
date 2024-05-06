@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
-import image from '../../images/profile.png'
+import image from '../images/profile.png'
 import { CgProfile } from "react-icons/cg";
 import { IoNotifications } from "react-icons/io5";
 import { LiaSignOutAltSolid } from "react-icons/lia";
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../../reducer/authSlice';
+import { logout } from '../../reducer/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { BASE_URL } from '../../../apiconfig';
+import { BASE_URL } from '../../apiconfig';
 
 function Navbar({ }) {
     const [profile, setProfile] = useState(false)
     const [notify, setNotify] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch();
-    const user = useSelector(state => state.auth.user) || "";
+    const user = useSelector(state => state.auth.user)
+    const role = useSelector(state => state.auth.role)
     const logoutonclick = async (e) => {
         dispatch(logout());
         navigate('/')
@@ -29,11 +30,15 @@ function Navbar({ }) {
             <div className='flex items-center'>
                 <IoNotifications onClick={e => setNotify(!notify)} className='cursor-pointer w-5 h-5 me-3 text-slate-500' />
                 <div className="rounded-full border-2 border-blue-900 overflow-hidden bg-gray-200 w-8 h-8 flex mx-auto">
-                    <img onClick={e => setProfile(!profile)} className="w-full h-auto cursor-pointer"  src={user.image ?`${BASE_URL}/users/${user.image}`: image} alt="Doctor" />
+                    <img onClick={e => setProfile(!profile)} className="w-full h-auto cursor-pointer" src={(role == 'patient' ? (user.image ? (`${BASE_URL}/users/${user.image}`) : (image)) : (role == 'doctor' ? (`${BASE_URL}/doctors/${user.img}`) : (image)))} alt="image" />
                 </div>
                 <div className="flex flex-col">
-                    <h1 className="text-sm font-semibold cursor-default text-blue-900 ml-2 mr-3">{user.name} {user.lname}</h1>
-                    <h1 className='text-xs ml-2 cursor-default text-slate-400'>Patient</h1>
+                    { }<h1 className="text-sm font-semibold cursor-default text-blue-900 ml-2 mr-3">{role === 'patient' ?(user.lname?(`${user.name} ${user.lname}?`):(user.name)) : role === 'doctor' ? (`${user.name} ${user.last}`) : 'Admin'}</h1>
+                    <h1 className='text-xs ml-2 cursor-default text-slate-400'>
+                        {role === 'patient' ? 'Patient' :
+                            role === 'doctor' ? 'Doctor' :
+                                role === 'admin' ? 'Admin' :
+                                    ''}</h1>
                 </div>
             </div>
             {profile && <>

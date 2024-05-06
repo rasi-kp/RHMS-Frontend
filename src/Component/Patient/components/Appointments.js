@@ -21,16 +21,16 @@ function Appointments({ appointment }) {
     }, [appointment]);
     return (
         <div className='bg-white ml-6 lg:ml-2 me-6 lg:me-8 mt-1 h-56 rounded-lg'>
-            <Card className="h-full w-full">
+            <Card className="h-full w-full shadow-none">
                 <div className='flex p-2 pl-5 pb-4'>
                     <h5 className='text-xs font-semibold cursor-default underline underline-offset-8 pr-3 '>Upcoming Appointments</h5>
                     {/* <h5 className='text-xs font-semibold cursor-pointer pr-3 underline underline-offset-8 decoration-blue-700 hover:font-bold'>Upcoming Appointments</h5> */}
                     {/* <h1 className='text-xs cursor-pointer hover:font-bold'>Completed Appointments</h1> */}
                 </div>
 
-                <CardBody className=" overflow-x-hidden px-3 pt-0">
+                <CardBody className=" overflow-x-hidden px-3 pt-0 shadow-none">
                 {available ? (
-                        <div className="flex flex-col md:flex-row justify-center items-center">
+                        <div className="flex flex-col md:flex-row justify-center shadow-none items-center">
                             <div className="flex justify-center w-full md:w-1/2">
                                 <img src={image} alt="No appointments available" className="max-w-full h-auto" />
                             </div>
