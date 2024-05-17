@@ -33,7 +33,7 @@ function Navbar({ }) {
                     <img onClick={e => setProfile(!profile)} className="w-full h-auto cursor-pointer" src={(role == 'patient' ? (user.image ? (`${BASE_URL}/users/${user.image}`) : (image)) : (role == 'doctor' ? (`${BASE_URL}/doctors/${user.img}`) : (image)))} alt="image" />
                 </div>
                 <div className="flex flex-col">
-                    { }<h1 className="text-sm font-semibold cursor-default text-blue-900 ml-2 mr-3">{role === 'patient' ?(user.lname?(`${user.name} ${user.lname}?`):(user.name)) : role === 'doctor' ? (`${user.name} ${user.last}`) : 'Admin'}</h1>
+                    <h1 className="text-sm font-semibold cursor-default text-blue-900 ml-2 mr-3">{role === 'patient' ?(user.lname ?(`${user.name} ${user.lname}`):(user.name)) : role === 'doctor' ? (`${user.name} ${user.last}`) : 'Admin'}</h1>
                     <h1 className='text-xs ml-2 cursor-default text-slate-400'>
                         {role === 'patient' ? 'Patient' :
                             role === 'doctor' ? 'Doctor' :

@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 
-import Sidebar from './components/Sidebar';
+import Sidebar from '../Patient/components/Sidebar';
 import SidebarDoctor from '../Doctor/component/Sidebar';
-import Navbar from '../common/Navbar';
-import NavbarMobile from '../common/NavbarMobile';
+import Navbar from './Navbar';
+import NavbarMobile from './NavbarMobile';
 import profile from '../images/profile.png';
 
 import { IoSend } from "react-icons/io5";
-import { IoMdClose } from "react-icons/io";
 import { Card } from "@material-tailwind/react";
 // import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -49,11 +48,8 @@ const Message = ({ children }) => {
                 const response = await dispatch(allchats(token));
                 setDoctor(response.uniqueChats)
                 if (doctor.length == 0) {
-                    const response = await dispatch(alldoctorchat(search,token));
+                    const response = await dispatch(alldoctorchat(search, token));
                     setAlldoctor(response.doctor)
-                    // setAvailable(true);
-                } else {
-                    setAvailable(false);
                 }
             }
             if (role == 'doctor') {
@@ -65,7 +61,7 @@ const Message = ({ children }) => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
-    }, [search,doctordata]);
+    }, [search, doctordata]);
     const handleTyping = (e) => {
         if (!doctorid) {
             return toast.error("Select Chats")
@@ -137,26 +133,26 @@ const Message = ({ children }) => {
                     {doctor.length == 0 ? (
                         <div className=' lg:ml-60 mt-1 ml-4 me-3 md:w-2/5'>
                             <div className='overflow-y-auto h-full md:h-96 bg-white w-full rounded-lg text-center justify-center mb-1 pb-4' style={{ height: '480px' }}>
-                                    <div className=" items-center justify-center">
-                                        <div className="relative w-full px-8 ">
-                                            <input type="text" className="pl-8 w-full h-6 text-xs mt-4 rounded-lg bg-[#E2F1FF] outline-none" placeholder="Search"
-                                                onChange={e => setSearch(e.target.value)} />
-                                            <CiSearch className="absolute mt-3 left-10 top-2" />
-                                        </div><hr className='mt-4' />
-                                        {alldoctor.map((chat, index) => (
-                                            <><div key={index} className={`flex items-center p-2 md:pl-5 cursor-pointer hover:bg-blue-100 ${chat?.doctor_id === doctorid ? 'bg-blue-300' : ''}`} onClick={e => clickdoctor(chat.doctor_id)}>
-                                                {role == 'patient' ? (<img src={`${BASE_URL}/doctors/${chat?.image}`} alt="Doctor Photo" className="h-9 w-10 rounded-full mr-3" />) : (<img src={`${BASE_URL}/users/${chat?.image}`} alt="Doctor Photo" className="h-9 w-10 rounded-full mr-3" />)}
-                                                <div className="w-full py-1">
-                                                    <div className="flex items-center justify-between">
-                                                        <p className="text-sm font-semibold text-slate-600">
-                                                            {role == 'patient' ? (`${chat?.first_name} ${chat?.last_name}`) : (`${chat?.name} ${chat?.last_name}`)}
-                                                        </p>
-                                                    </div>
-
+                                <div className=" items-center justify-center">
+                                    <div className="relative w-full px-8 ">
+                                        <input type="text" className="pl-8 w-full h-6 text-xs mt-4 rounded-lg bg-[#E2F1FF] outline-none" placeholder="Search"
+                                            onChange={e => setSearch(e.target.value)} />
+                                        <CiSearch className="absolute mt-3 left-10 top-2" />
+                                    </div><hr className='mt-4' />
+                                    {alldoctor.map((chat, index) => (
+                                        <><div key={index} className={`flex items-center p-2 md:pl-5 cursor-pointer hover:bg-blue-100 ${chat?.doctor_id === doctorid ? 'bg-blue-300' : ''}`} onClick={e => clickdoctor(chat.doctor_id)}>
+                                            {role == 'patient' ? (<img src={`${BASE_URL}/doctors/${chat?.image}`} alt="Doctor Photo" className="h-9 w-10 rounded-full mr-3" />) : (<img src={`${BASE_URL}/users/${chat?.image}`} alt="Doctor Photo" className="h-9 w-10 rounded-full mr-3" />)}
+                                            <div className="w-full py-1">
+                                                <div className="flex items-center justify-between">
+                                                    <p className="text-sm font-semibold text-slate-600">
+                                                        {role == 'patient' ? (`${chat?.first_name} ${chat?.last_name}`) : (`${chat?.name} ${chat?.last_name}`)}
+                                                    </p>
                                                 </div>
-                                            </div> <hr className='mx-5' /></>
-                                        ))}
-                                    </div>
+
+                                            </div>
+                                        </div> <hr className='mx-5' /></>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     ) : (
@@ -170,11 +166,11 @@ const Message = ({ children }) => {
                                     </div><hr className='mt-4' />
                                     {doctor.map((chat, index) => (
                                         <><div key={index} className={`flex items-center p-2 md:pl-5 cursor-pointer hover:bg-blue-100 ${chat?.receiverId === doctorid ? 'bg-blue-300' : ''}`} onClick={e => clickdoctor(chat.receiverId)}>
-                                            {role == 'patient' ? (<img src={`${BASE_URL}/doctors/${chat?.ReceiverDoctor?.image}`} alt="Doctor Photo" className="h-9 w-10 rounded-full mr-3" />) : (<img src={`${BASE_URL}/users/${chat?.ReceiverUser?.image}`} alt="Doctor Photo" className="h-9 w-10 rounded-full mr-3" />)}
+                                            {role == 'patient' ? (<img src={`${BASE_URL}/doctors/${chat?.ReceiverDoctor?.image}`} alt="Doctor Photo" className="h-9 w-10 rounded-full mr-3" />) : (chat?.ReceiverUser?.image ? (<img src={`${BASE_URL}/users/${chat?.ReceiverUser?.image}`} alt="Doctor Photo" className="h-9 w-10 rounded-full mr-3" />) : (<img src={profile} className="h-9 w-10 rounded-full mr-3"></img>))}
                                             <div className="w-full py-1">
                                                 <div className="flex items-center justify-between">
                                                     <p className="text-sm font-semibold text-slate-600">
-                                                        {role == 'patient' ? (`${chat?.ReceiverDoctor?.first_name} ${chat?.ReceiverDoctor?.last_name}`) : (`${chat?.ReceiverUser?.name} ${chat?.ReceiverUser?.last_name}`)}
+                                                        {role == 'patient' ? (`${chat?.ReceiverDoctor?.first_name} ${chat?.ReceiverDoctor?.last_name}`) : (chat?.ReceiverUser?.last_name ? (`${chat?.ReceiverUser?.name} ${chat?.ReceiverUser?.last_name}`) : (`${chat?.ReceiverUser?.name}`))}
                                                     </p>
                                                     <p className="text-xs text-slate-400">{new Date(chat.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</p>
                                                 </div>
@@ -189,10 +185,6 @@ const Message = ({ children }) => {
                             </div>
                         </div>
                     )}
-
-
-
-
                     <div className=' lg:me-8 mt-1 h-full pb-5 me-3 ml-3 md:ml-1 rounded-lg md:w-3/4'>
                         <Card className="bg-rose-100 h-full md:h-96 w-full shadow-none" style={{ height: '480px' }}>
                             <div className="flex items-center p-2 md:pl-5 bg-blue-500 rounded-lg">
@@ -205,7 +197,7 @@ const Message = ({ children }) => {
                                     : role === 'doctor'
                                         ? (
                                             doctordata
-                                                ? `${BASE_URL}/users/${doctordata.image}` // Image path for doctor when doctordata exists
+                                                ? (doctordata.image ? (`${BASE_URL}/users/${doctordata.image}`) : (profile)) // Image path for doctor when doctordata exists
                                                 : `${BASE_URL}/doctors/${user.img}` // Default image path for doctor when doctordata doesn't exist
                                         )
                                         : user.role === 'admin'
@@ -221,11 +213,11 @@ const Message = ({ children }) => {
                                                 doctordata ? (
                                                     `${doctordata.first_name} ${doctordata.last_name}`
                                                 ) : (
-                                                    user.lname ? (`{${user.name} ${user.lname}}`) : (user.name)
+                                                    user.lname ? (`${user.name} ${user.lname}`) : (user.name)
                                                 )
                                             ) : role === 'doctor' ? (
-                                                doctordata ? (
-                                                    `${doctordata.name} ${doctordata.last_name}`
+                                                doctordata ? (doctordata.last_name ? (`${doctordata.name} ${doctordata.last_name}`) : (`${doctordata.name}`)
+
                                                 ) : (
                                                     `${user.name} ${user.last}`
                                                 )
@@ -234,7 +226,6 @@ const Message = ({ children }) => {
                                             )}
 
                                         </p>
-                                        {/* <IoMdClose className=' text-white me-3 w-6 h-6' /> */}
                                     </div>
                                     <div className="flex items-center">
                                         {status && status.userId === doctorid && status.status == 'online' ?
@@ -246,11 +237,8 @@ const Message = ({ children }) => {
                                                 <p className="text-white text-xs">Offline</p>
                                             </>)}
                                     </div>
-
-
                                 </div>
                             </div><hr className='mx-5' />
-
                             <div className="p-4 h-80 overflow-y-auto" ref={chatContainerRef}>
                                 <div className='mb-0'>
                                     {messages.map((chat, index) => (
