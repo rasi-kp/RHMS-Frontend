@@ -40,9 +40,10 @@ const Main = () => {
             navigate('/login')
         }
     }, []);
-
+    const not=async(e)=>{
+        toast.error("not setup google login")
+    }
     const handleClick = async (e) => {
-        console.log(tokenredux);
         e.preventDefault()
         setError('');
         setPerror('');
@@ -170,7 +171,7 @@ const Main = () => {
                                                 OR
                                             </p>
                                         </div>
-                                        <button className="text-blue-900 font-semibold mb-4 w-full px-4 py-2 rounded-full bg-transparent border-2 border-blue-900 shadow-[0_10px_20px_-2px_#38488f]">
+                                        <button onClick={not} className="text-blue-900 font-semibold mb-4 w-full px-4 py-2 rounded-full bg-transparent border-2 border-blue-900 shadow-[0_10px_20px_-2px_#38488f]">
                                             <FcGoogle className="absolute h-7 w-8" />Login With Google</button>
                                     </form>
                                 </div>
