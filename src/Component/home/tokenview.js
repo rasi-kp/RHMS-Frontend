@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import back from '../images/hero-bg1.png';
 import { ToastContainer, toast } from 'react-toastify';
-import { IoMdClose } from "react-icons/io";
-import { GiConfirmed } from "react-icons/gi";
 
-import { addappoinment,viewtoken } from "../../services/patient";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from 'react-router-dom';
 const BASE_URL = require('../../apiconfig').BASE_URL;
@@ -47,18 +44,18 @@ for (let i = 0; i < 7; i++) {
 }
 
 function Tokenview() {
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const location = useLocation()
-    const {doctorid=null}= location.state || {}
+    const { doctorid = null } = location.state || {}
     const token = useSelector(state => state.auth.token); // Move useSelector inside the function
     const dispatch = useDispatch();
 
     const [selectedTokens, setSelectedTokens] = useState('');
-    const [availabletoken,setAvailabletoken] =useState([])
+    const [availabletoken, setAvailabletoken] = useState([])
     const [selectedDate, setSelectedDate] = useState('');
 
     useEffect(() => {
-        if(!doctorid){
+        if (!doctorid) {
             navigate('/doctors')
         }
     }, []);
@@ -72,8 +69,8 @@ function Tokenview() {
             setSelectedTokens(null);
         }
     };
-    const handleDateClick = async(date) => {
-        if(!doctorid){
+    const handleDateClick = async (date) => {
+        if (!doctorid) {
             return toast.error("Pls select Doctor")
         }
         setSelectedTokens('')
@@ -82,32 +79,32 @@ function Tokenview() {
         const response = await fetch(`${BASE_URL}/user/viewtoken?date=${date.date}&doctorid=${doctorid}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
-          });
-          const Data = await response.json();
-          setAvailabletoken(Data.tokens);
-          if(Data.tokens.length==0){
-              return toast.error( "No Tokens Available for this date.")
-          }
+        });
+        const Data = await response.json();
+        setAvailabletoken(Data.tokens);
+        if (Data.tokens.length == 0) {
+            return toast.error("No Tokens Available for this date.")
+        }
     };
-    const submitted=(e)=>{
+    const submitted = (e) => {
         navigate('/login')
     }
 
     return (
         <div>
-            <section className="relative md:py-10 xxl:py-8 pb-0">
+            <section className=" h-auto relative md:py-10 xxl:py-8 pb-0">
                 <div
-                    className="absolute left-0 inset-0 bg-cover bg-center z-0"
+                    className="absolute left-0 top-0 inset-0 bg-cover bg-center z-0"
                     style={{ backgroundImage: `url("${back}")` }}
                 />
-                <div className="container mx-auto relative px-10 mt-12">
-                    <h1 className='p-1 text-xl pl-3 mt-3 text-blue-900 font-bold '>Choose Date</h1>
+                <div className="container mx-auto relative px-5 ">
+                    
+                    <h1 className='pt-24 md:pt-10 text-xl pl-3 mt-3 text-blue-900 font-bold '>Choose Date</h1>
                     <div className="mx-3 flex overflow-x-auto whitespace-nowrap">
                         {dates.map((date, index) => (
                             <button
                                 key={index}
-                                className={`w-full text-xs p-1 ml-1 me-1 mt-2 border-2 border-blue-800   ${selectedDate == date ? 'bg-blue-600 text-white' : 'text-blue-900 rounded hover:bg-blue-400'
-                                    }`}
+                                className={`w-full text-xs p-1 ml-1 me-1 mt-2 border-2 border-blue-800   ${selectedDate == date ? 'bg-blue-600 text-white' : 'text-blue-900 rounded hover:bg-blue-400'}`}
                                 onClick={() => handleDateClick(date)} >
                                 <div className="font-bold text-sm">{date.day}</div>
                                 <div className='font-semibold'>{date.date}</div>
@@ -118,14 +115,14 @@ function Tokenview() {
 
                     <div className='flex pl-5'>
                         <div className=' text-xs font-semibold text-slate-900 '>
-                        <div className="flex items-center mb-1">
+                            <div className="flex items-center mb-1">
                                 <div className=" ml-4 rounded-full h-2 w-2 bg-green-500 mr-1"></div>
                                 <p>Available</p>
                                 <div className=" ml-4 rounded-full h-2 w-2 bg-slate-400 mr-1"></div>
                                 <p>Not Available</p>
                                 <div className="ml-4 rounded-full h-2 w-2 bg-red-500 mr-1"></div>
                                 <p>Selected</p>
-                            </div>    
+                            </div>
                         </div>
                     </div>
                     <div className='flex flex-wrap overflow-x-auto whitespace-nowrap mx-2 mt-3'>
@@ -140,14 +137,13 @@ function Tokenview() {
                         ))}
                     </div>
 
-                    <hr className='mx-5 mt-6 border-t-2 border-black'/>
+                    <hr className='mx-5 mt-6 border-t-2 border-black' />
                     <div className='flex justify-end'>
-                            <button onClick={submitted} className='bg-[#3497F9] me-2 md:me-14 mt-2  text-center text-white font-semibold text-xs rounded px-2 p-1.5 hover:bg-blue-600'>LOGIN NOW</button>
-                        </div>
+                        <button onClick={submitted} className='bg-[#3497F9] me-2 md:me-14 my-4  text-center text-white font-semibold text-xs rounded px-2 p-1.5 hover:bg-blue-600'>LOGIN NOW</button>
+                    </div>
                 </div>
-                
             </section>
-            <ToastContainer/>
+            <ToastContainer />
         </div>
     )
 }
