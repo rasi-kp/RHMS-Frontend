@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import logo from '../images/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
+  const [navbarShrink, setNavbarShrink] = useState(false);
   const handleNav = () => {
     setNav(!nav);
   };
 
+  const handleScroll = () => {
+    if (window.scrollY > 0) {
+      setNavbarShrink(true);
+    } else {
+      setNavbarShrink(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <div className='fixed z-10 w-full flex justify-between items-center h-20 mx-auto px-12 text-blue-900 '>
+    <div id="mainNav" className={`fixed z-10 w-full flex justify-between items-center h-20 mx-auto px-12 text-blue-900 transition-bg duration-1000 ease-in-out ${navbarShrink ? 'bg-[#ffffff]' : ''}`}>
       <Link to="/"> <img className='' src={logo} width="118" alt="logo" /></Link>
 
       <ul className='hidden md:flex'>

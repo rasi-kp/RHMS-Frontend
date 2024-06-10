@@ -40,7 +40,9 @@ const Main = () => {
             navigate('/login')
         }
     }, []);
+    
     const not=async(e)=>{
+        e.preventDefault();
         toast.error("not setup google login")
     }
     const handleClick = async (e) => {
