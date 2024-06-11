@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Sidebar from './component/Sidebar';
 import Report from './component/reports'
 import Appointments from './component/Appointments';
-import Navbar from './component/Navbar';
+import Navbar from '../common/Navbar';
 import Graph from './component/graph';
 import Newmessage from './component/newmessage';
 

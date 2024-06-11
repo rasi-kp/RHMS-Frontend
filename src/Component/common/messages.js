@@ -154,7 +154,7 @@ const Message = ({ children }) => {
                         </div>
                     ) : (
                         <div className=' lg:ml-60 mt-1 ml-4 me-3 md:w-2/5'>
-                            <div className=' h-full md:h-96 bg-white w-full rounded-lg text-center justify-center mb-1 pb-4' style={{ height: '480px' }}>
+                            <div className='overflow-y-auto h-full md:h-96 bg-white w-full rounded-lg text-center justify-center mb-1 pb-4' style={{ height: '480px' }}>
                                 <div className=" items-center justify-center">
                                     <div className="relative w-full px-8 ">
                                         <input type="text" className="pl-8 w-full h-6 text-xs mt-4 rounded-lg bg-[#E2F1FF] outline-none" placeholder="Search"

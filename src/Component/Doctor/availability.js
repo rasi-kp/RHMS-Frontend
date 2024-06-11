@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { IoMdClose } from "react-icons/io";
 import { GiConfirmed } from "react-icons/gi";
 import Sidebar from './component/Sidebar';
-import Navbar from './component/Navbar';
+import Navbar from '../common/Navbar';
 import { addtokens,viewtoken } from "../../services/doctor";
 import { useDispatch, useSelector } from "react-redux";
 const tokens = [

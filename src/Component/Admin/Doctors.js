@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import Sidebar from './component/Sidebar';
-import Navbar from './component/Navbar';
+import Navbar from '../common/Navbar';
 import Doctor from './component/doctorcom'
 
 const DashboardLayout = ({ children }) => {

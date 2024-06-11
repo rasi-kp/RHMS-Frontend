@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Sidebar from './component/Sidebar';
-import Navbar from './component/Navbar';
+import Navbar from '../common/Navbar';
 import man from '../images/profile.png'
 import girl from '../images/girl.jpg'
 

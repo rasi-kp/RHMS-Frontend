@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Patient from './component/patientcom'
 import Sidebar from './component/Sidebar';
-import Navbar from './component/Navbar';
+import Navbar from '../common/Navbar';
 
 const DashboardLayout = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false);
