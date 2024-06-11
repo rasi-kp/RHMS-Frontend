@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Patient from './components/patientcom'
 import Sidebar from './components/Sidebar';
 import Navbar from '../common/Navbar';
-import NavbarMobile from '../common/NavbarMobile';
 import { ToastContainer } from 'react-toastify';
 
 
@@ -16,11 +15,10 @@ const DashboardLayout = ({ children }) => {
 
     return (
         <div className='bg-[#E2F1FF] h-screen'>
-            <NavbarMobile toggle={toggleSidebar} />
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Patient Details</h1>
-                <Navbar />
+                <Navbar toggle={toggleSidebar}/>
                 <Patient />
             </div>
             <ToastContainer/>

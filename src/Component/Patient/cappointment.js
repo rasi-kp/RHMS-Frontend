@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import Sidebar from './components/Sidebar';
 import Navbar from '../common/Navbar';
-import NavbarMobile from '../common/NavbarMobile';
 import man from '../images/profile.png'
 import girl from '../images/girl.jpg'
 
@@ -13,7 +12,7 @@ import { LiaPrescriptionBottleAltSolid } from "react-icons/lia";
 import { RiDownload2Fill } from "react-icons/ri";
 
 import { Card, Typography, CardBody, } from "@material-tailwind/react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { completedappoinment } from "../../services/patient";
 import PrescriptionPage from './components/prescription';
@@ -24,13 +23,14 @@ const TABLE_HEAD = ["Time", "Date", "Patient Name", "Age", "Doctor", "Fee Status
 
 const DashboardLayout = ({ children }) => {
 
+    const location = useLocation();
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
-    const [available,setAvailable]=useState(false)
+    const [available, setAvailable] = useState(false)
     const [addappointment, setAddappointment] = useState(false);
     const [deleteAppointment, setDeleteappointment] = useState(false);
-    const [appointmentid,setAppointmentid]=useState('')
+    const [appointmentid, setAppointmentid] = useState('')
     const [isOpen, setIsOpen] = useState(false);
 
     const [p, setp] = useState(false)
@@ -43,9 +43,12 @@ const DashboardLayout = ({ children }) => {
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+    const isActive = (path) => {
+        return location.pathname === path;
+    };
     useEffect(() => {
         const fetchData = async () => {
-            const data = await dispatch(completedappoinment(page,date, search, token));
+            const data = await dispatch(completedappoinment(page, date, search, token));
             setAllappointment(data.appointment);
             setTotalPages(data.totalPages)
             if (data.appointment.length == 0) {
@@ -55,7 +58,7 @@ const DashboardLayout = ({ children }) => {
             }
         };
         fetchData();
-    }, [page,date, search, deleteAppointment, addappointment]);
+    }, [page, date, search, deleteAppointment, addappointment]);
 
     const prescription = (appointmentId) => {
         setAppointmentid(appointmentId)
@@ -92,24 +95,30 @@ const DashboardLayout = ({ children }) => {
 
     return (
         <div className='bg-[#E2F1FF] h-screen'>
-            <NavbarMobile toggle={toggleSidebar} />
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Appointment Details</h1>
-                <Navbar />
-
+                <Navbar toggle={toggleSidebar} />
                 <div className='bg-white lg:ml-60 ml-6 me-6 lg:me-8 mt-1 h-full pb-5 rounded-lg'>
-                    <Card className="h-full w-full">
+                    <Card className="h-full w-full shadow-none">
                         <div className='flex justify-between pt-5 pl-5 md:pe-5'>
                             <div className='hidden sm:flex'>
-                                <h5 className='text-xs font-bold cursor-pointer text-slate-400'><Link to="/patient/appointments"> UPCOMING APPOINTMENTS </Link></h5>
-                                <h1 className='text-xs cursor-pointer pl-5 md:pr-5 underline underline-offset-8 decoration-blue-700 font-bold'>COMPLETED APPOINTMENTS</h1>
+                            <h5 className="text-xs text-gray-400 font-bold cursor-pointer pr-1 md:pr-5">
+                                    <Link to="/patient/appointments">UPCOMING APPOINTMENTS</Link>
+                                </h5>
+                                <h1 className={`text-xs cursor-pointer font-bold text-black ${isActive('/patient/appointments/complete') ? 'underline underline-offset-8 decoration-blue-700 text-black' : ''}`}>
+                                    <Link to="/patient/appointments/complete">COMPLETED APPOINTMENTS</Link>
+                                </h1>
                             </div>
                             <div className='sm:hidden flex'>
-                                <h5 className='text-xs font-bold cursor-pointer pr-1 md:pr-5 underline underline-offset-8 decoration-blue-700 hover:font-bold'><Link to="/patient/appointments">UPCOMING</Link></h5>
-                                <h1 className='text-xs cursor-pointer text-slate-400 font-bold'>COMPLETED </h1>
+                                <h5 className="text-xs font-bold text-gray-400 cursor-pointer pr-1 md:pr-5 ">
+                                    <Link to="/patient/appointments">UPCOMING</Link>
+                                </h5>
+                                <h1 className={`text-xs cursor-pointer font-bold text-black ml-1 ${isActive('/patient/appointments/complete') ? 'underline underline-offset-8 decoration-blue-700 text-black' : ' hover:text-blue-900'}`}>
+                                    <Link to="/patient/appointments/complete">COMPLETED</Link>
+                                </h1>
                             </div>
-                            <button className='sm:hidden bg-[#3497F9] text-white text-xs rounded-xl mb-1 me-3 px-2 p-1.5'>new appointment</button>
+                            {/* <button className='sm:hidden bg-[#3497F9] text-white text-xs rounded-xl mb-1 me-3 px-2 p-1.5'>new appointment</button> */}
                         </div>
                         <div className='flex mb-3 ml-6 mt-3'>
                             <div className="relative">
@@ -118,7 +127,7 @@ const DashboardLayout = ({ children }) => {
                                     className="pl-8 w-32 h-6 text-xs mt-3 rounded-full bg-[#E2F1FF] outline-none"
                                     placeholder="Search"
                                     value={search}
-                                    onChange={e=>setSearch(e.target.value)}
+                                    onChange={e => setSearch(e.target.value)}
                                 />
                                 <CiSearch className="absolute mt-2 left-2 top-2" />
                             </div>

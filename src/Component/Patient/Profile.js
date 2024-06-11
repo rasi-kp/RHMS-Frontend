@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import Sidebar from './components/Sidebar';
 import Navbar from '../common/Navbar';
-import NavbarMobile from '../common/NavbarMobile';
 import man from '../images/profile.png'
 import { RxCross2 } from "react-icons/rx";
 
@@ -85,11 +84,10 @@ const DashboardLayout = ({ children }) => {
     };
     return (
         <div className='bg-[#E2F1FF] h-screen'>
-            <NavbarMobile toggle={toggleSidebar} />
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Profile</h1>
-                <Navbar />
+                <Navbar toggle={toggleSidebar}/>
                 <div className='flex h-full flex-col md:flex-row md:flex-nowrap w-full'>
                     <div className=' lg:ml-60 mt-1 ml-4 me-3 md:w-2/5'>
                         <div className=' bg-white w-full rounded-lg text-center justify-center mb-1 pb-4'>

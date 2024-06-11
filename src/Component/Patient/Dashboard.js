@@ -5,7 +5,6 @@ import Sidebar from './components/Sidebar';
 import Report from './components/reports'
 import Appointments from './components/Appointments';
 import Navbar from '../common/Navbar';
-import NavbarMobile from '../common/NavbarMobile';
 import Recent from './components/recentactivity'
 import Subscription from './components/Subscription';
 
@@ -51,11 +50,10 @@ const DashboardLayout = ({ children }) => {
     }, []);
     return (
         <div className='bg-[#E2F1FF] h-full sm:h-screen'>
-            <NavbarMobile toggle={toggleSidebar} />
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Dashboard</h1>
-                    <Navbar />
+                    <Navbar toggle={toggleSidebar}/>
                 <div className='sm:flex h-full'>
                     <Report appcount={data ? data.appointmentcount : 0} bg={data?data.subscription.blood_group:''}  memcount= {data ? data.totalMembers : 0} subscription={data && data.subscription ? data.subscription.subscription : false}  />
                     <div className='md:w-3/4 '>

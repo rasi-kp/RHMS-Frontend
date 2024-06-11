@@ -108,95 +108,97 @@ function Patientcom() {
                     className=" pl-4 ml-5 w-32 h-6 mt-3 rounded-full bg-[#E2F1FF] outline-none "
                     placeholder="Search" />
                 <CardBody className=" overflow-x-hidden mt-3 px-2 pt-0">
-                    <table className=" w-full min-w-max table-auto text-left">
-                        <thead>
-                            <tr>
-                                {TABLE_HEAD.map((head, index) => (
-                                    <th
-                                        key={head}
-                                        className="cursor-pointer p-2 pl-4 pb-3 border-b-2 border-blue-gray-50" >
-                                        <Typography className="flex gap-2 text-xs font-semibold leading-none ">
-                                            {head}{" "}
-                                            {index !== TABLE_HEAD.length && (
-                                                <ChevronUpDownIcon strokeWidth={2} className="h-3 w-3" />
-                                            )}
+                    <div className="overflow-x-auto">
+                        <table className=" w-full min-w-max table-auto text-left">
+                            <thead>
+                                <tr>
+                                    {TABLE_HEAD.map((head, index) => (
+                                        <th
+                                            key={head}
+                                            className="cursor-pointer p-2 pl-4 pb-3 border-b-2 border-blue-gray-50" >
+                                            <Typography className="flex gap-2 text-xs font-semibold leading-none ">
+                                                {head}{" "}
+                                                {index !== TABLE_HEAD.length && (
+                                                    <ChevronUpDownIcon strokeWidth={2} className="h-3 w-3" />
+                                                )}
 
-                                        </Typography>
+                                            </Typography>
 
-                                    </th>
-                                ))}
-                            </tr>
+                                        </th>
+                                    ))}
+                                </tr>
 
-                        </thead>
-                        <tbody>
-                            {userdata.map(
-                                ({ img, patient_id, first_name, last_name, age, blood_group, height, weight, gender }, index) => {
-                                    const isLast = index === userdata.length - 1;
-                                    const classes = isLast ? "pl-3 border-b border-blue-gray-50" : "pl-3 border-b border-blue-gray-50";
-                                    return (
-                                        <tr key={patient_id} className=' h-12'>
-                                            <td className={classes} >
-                                                <div className="flex items-center ">
-                                                    {gender == 'male' ? (<img src={man} alt={first_name} className="w-7 h-7 rounded-full mr-2" />) : (<img src={girl} alt={first_name} className="w-7 h-7 rounded-full mr-2" />)}
-                                                    <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{first_name} {last_name}</Typography>
-                                                </div>
-                                            </td>
-                                            <td className={classes}>
-                                                <div className="flex items-center p-3">
-                                                    <Typography className=" font-semibold text-xs text-slate-500" >
-                                                        {gender}
-                                                    </Typography>
-                                                </div>
-                                            </td>
-                                            <td className={classes}>
-                                                <div className="flex items-center">
-                                                    <Typography className="pl-8 font-semibold text-xs text-slate-500" >
-                                                        {blood_group}
-                                                    </Typography>
-                                                </div>
-                                            </td>
+                            </thead>
+                            <tbody>
+                                {userdata.map(
+                                    ({ img, patient_id, first_name, last_name, age, blood_group, height, weight, gender }, index) => {
+                                        const isLast = index === userdata.length - 1;
+                                        const classes = isLast ? "pl-3 border-b border-blue-gray-50" : "pl-3 border-b border-blue-gray-50";
+                                        return (
+                                            <tr key={patient_id} className=' h-12'>
+                                                <td className={classes} >
+                                                    <div className="flex items-center ">
+                                                        {gender == 'male' ? (<img src={man} alt={first_name} className="w-7 h-7 rounded-full mr-2" />) : (<img src={girl} alt={first_name} className="w-7 h-7 rounded-full mr-2" />)}
+                                                        <Typography className="font-semibold text-xs pb-2 pl-0 text-slate-500">{first_name} {last_name}</Typography>
+                                                    </div>
+                                                </td>
+                                                <td className={classes}>
+                                                    <div className="flex items-center p-3">
+                                                        <Typography className=" font-semibold text-xs text-slate-500" >
+                                                            {gender}
+                                                        </Typography>
+                                                    </div>
+                                                </td>
+                                                <td className={classes}>
+                                                    <div className="flex items-center">
+                                                        <Typography className="pl-8 font-semibold text-xs text-slate-500" >
+                                                            {blood_group}
+                                                        </Typography>
+                                                    </div>
+                                                </td>
 
-                                            <td className={classes}>
-                                                <div className="flex items-center">
-                                                    <Typography className="pl-3 font-semibold text-xs text-slate-500" >
-                                                        {age}
-                                                    </Typography>
-                                                </div>
-                                            </td>
-                                            <td className={classes}>
-                                                <div className="flex items-center">
-                                                    <Typography className="pl-4 font-semibold text-xs text-slate-500" >
-                                                        {weight}
-                                                    </Typography>
-                                                </div>
-                                            </td>
-                                            <td className={classes}>
-                                                <div className="flex items-center">
-                                                    <Typography className="pl-4 font-semibold text-xs text-slate-500" >
-                                                        {height}
-                                                    </Typography>
-                                                </div>
+                                                <td className={classes}>
+                                                    <div className="flex items-center">
+                                                        <Typography className="pl-3 font-semibold text-xs text-slate-500" >
+                                                            {age}
+                                                        </Typography>
+                                                    </div>
+                                                </td>
+                                                <td className={classes}>
+                                                    <div className="flex items-center">
+                                                        <Typography className="pl-4 font-semibold text-xs text-slate-500" >
+                                                            {weight}
+                                                        </Typography>
+                                                    </div>
+                                                </td>
+                                                <td className={classes}>
+                                                    <div className="flex items-center">
+                                                        <Typography className="pl-4 font-semibold text-xs text-slate-500" >
+                                                            {height}
+                                                        </Typography>
+                                                    </div>
 
-                                            </td>
-                                            <td className={classes}>
-                                                <div className="flex items-center">
-                                                    <button className="border border-red-500 rounded-lg p-1 flex items-center justify-center"
-                                                        onClick={() => handleDelete(patient_id)}>
-                                                        <RxCross2 className="w-3 h-3 text-red-500" />
-                                                    </button>
-                                                    <button className="ml-3 border border-blue-500 rounded-lg p-1 flex items-center justify-center"
-                                                        onClick={() => handleEdit(patient_id)}>
-                                                        <MdModeEditOutline className="w-3 h-3 text-blue-500" />
-                                                    </button>
+                                                </td>
+                                                <td className={classes}>
+                                                    <div className="flex items-center">
+                                                        <button className="border border-red-500 rounded-lg p-1 flex items-center justify-center"
+                                                            onClick={() => handleDelete(patient_id)}>
+                                                            <RxCross2 className="w-3 h-3 text-red-500" />
+                                                        </button>
+                                                        <button className="ml-3 border border-blue-500 rounded-lg p-1 flex items-center justify-center"
+                                                            onClick={() => handleEdit(patient_id)}>
+                                                            <MdModeEditOutline className="w-3 h-3 text-blue-500" />
+                                                        </button>
 
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                },
-                            )}
-                        </tbody>
-                    </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    },
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </CardBody>
                 {available && (
                     <div className="flex flex-col md:flex-row justify-center items-center">

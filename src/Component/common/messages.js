@@ -4,12 +4,10 @@ import io from 'socket.io-client';
 import Sidebar from '../Patient/components/Sidebar';
 import SidebarDoctor from '../Doctor/component/Sidebar';
 import Navbar from './Navbar';
-import NavbarMobile from './NavbarMobile';
 import profile from '../images/profile.png';
 
 import { IoSend } from "react-icons/io5";
 import { Card } from "@material-tailwind/react";
-// import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { CiSearch } from 'react-icons/ci';
 import { allchats, alldoctorchat, message } from '../../services/patient';
@@ -124,11 +122,10 @@ const Message = ({ children }) => {
     };
     return (
         <div className='bg-[#E2F1FF] h-screen'>
-            <NavbarMobile toggle={toggleSidebar} />
             <div>
                 {role === 'patient' ? (<Sidebar isOpen={isOpen} toggle={toggleSidebar} />) : (<SidebarDoctor isOpen={isOpen} toggle={toggleSidebar} />)}
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Messages</h1>
-                <Navbar />
+                <Navbar toggle={toggleSidebar}/>
                 <div className='flex flex-col md:flex-row md:flex-nowrap w-full'>
                     {doctor.length == 0 ? (
                         <div className=' lg:ml-60 mt-1 ml-4 me-3 md:w-2/5'>
@@ -305,7 +302,6 @@ const Message = ({ children }) => {
                                                                 {role == 'patient' ? (`${doctor?.first_name} ${doctor?.last_name}`) : (`${doctor?.name} ${doctor?.last_name}`)}
                                                             </p>
                                                         </div>
-
                                                     </div>
                                                 </div> <hr className='mx-5' /></>
                                             ))}
@@ -315,7 +311,6 @@ const Message = ({ children }) => {
                             </div>
                         </div>
                         <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-
                     </>
                 }
             </div>

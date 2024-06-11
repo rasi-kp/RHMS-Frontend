@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import Sidebar from './components/Sidebar';
 import Navbar from '../common/Navbar';
-import NavbarMobile from '../common/NavbarMobile';
 import man from '../images/profile.png'
 import girl from '../images/girl.jpg'
 
@@ -131,14 +130,12 @@ const DashboardLayout = ({ children }) => {
     //*************************************************** */
     return (
         <div className='bg-[#E2F1FF] h-screen'>
-            <NavbarMobile toggle={toggleSidebar} />
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Appointment Details</h1>
-                <Navbar />
-
+                <Navbar toggle={toggleSidebar}/>
                 <div className='bg-white lg:ml-60 ml-6 me-6 lg:me-8 mt-1 h-full pb-5 rounded-lg'>
-                    <Card className="h-full w-full">
+                    <Card className="h-full w-full shadow-none">
                         <div className='flex justify-between pt-5 pl-5 md:pe-5'>
                             <div className='hidden sm:flex'>
                                 <h5 className='text-xs font-bold cursor-pointer pr-1 md:pr-5 underline underline-offset-8 decoration-blue-700 '>UPCOMING APPOINTMENTS</h5>
@@ -147,7 +144,7 @@ const DashboardLayout = ({ children }) => {
                             <button className='hidden sm:inline bg-[#3497F9] text-white text-xs rounded-xl mb-0 mt-0 px-2 p-1.5' onClick={Addappointment}>New Appointment</button>
                             <div className='sm:hidden flex'>
                                 <h5 className='text-xs font-bold cursor-pointer pr-1 md:pr-5 underline underline-offset-8 decoration-blue-700 hover:font-bold'>UPCOMING</h5>
-                                <h1 className='text-xs cursor-pointer text-slate-400 font-bold'><Link to="/patient/appointments/complete">COMPLETED </Link></h1>
+                                <h1 className='text-xs cursor-pointer text-slate-400 font-bold ml-1'><Link to="/patient/appointments/complete">COMPLETED </Link></h1>
                             </div>
                             <button className='sm:hidden bg-[#3497F9] text-white text-xs rounded-xl mb-1 me-3 px-2 p-1.5' onClick={Addappointment}>new appointment</button>
                         </div>{available ? (<div className='mt-6'></div>) : (<div className='flex mb-3 ml-6 mt-0'>
@@ -169,7 +166,7 @@ const DashboardLayout = ({ children }) => {
 
 
                         <CardBody className="overflow-x-hidden  px-3 pt-2">
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto ">
                                 <table className=" w-full min-w-max table-auto text-left">
                                     <thead>
                                         <tr>

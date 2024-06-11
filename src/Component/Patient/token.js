@@ -5,7 +5,6 @@ import { GiConfirmed } from "react-icons/gi";
 
 import Sidebar from './components/Sidebar';
 import Navbar from '../common/Navbar';
-import NavbarMobile from '../common/NavbarMobile';
 import { addappoinment,viewtoken } from "../../services/patient";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -118,11 +117,10 @@ const DashboardLayout = ({ children }) => {
     
     return (
         <div className='bg-[#E2F1FF] h-screen'>
-            <NavbarMobile toggle={toggleSidebar} />
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Select Token</h1>
-                <Navbar />
+                <Navbar toggle={toggleSidebar}/>
                 <div className='bg-white lg:ml-60 ml-6 me-6 lg:me-8 mt-1 h-full pb-5 rounded-lg'>
                     <h1 className='p-1 text-xs pl-3 mt-3 text-slate-500 font-bold '>Choose date</h1>
                     <div className="mx-3 flex overflow-x-auto whitespace-nowrap">

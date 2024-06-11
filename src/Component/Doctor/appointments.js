@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import Sidebar from './component/Sidebar';
 import Navbar from './component/Navbar';
-import NavbarMobile from './component/NavbarMobile';
 import man from '../images/profile.png'
 import girl from '../images/girl.jpg'
 
@@ -137,11 +136,10 @@ const DashboardLayout = ({ children }) => {
     }
     return (
         <div className='bg-[#E2F1FF] h-screen'>
-            <NavbarMobile toggle={toggleSidebar} />
             <div>
                 <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
                 <h1 className='absolute lg:ml-52 p-7 pt-6 font-semibold hidden lg:block'>Appointment Details</h1>
-                <Navbar />
+                <Navbar toggle={toggleSidebar}/>
 
                 <div className='bg-white lg:ml-60 ml-6 me-6 lg:me-8 mt-1 h-full pb-5 rounded-lg'>
                     <Card className="h-full w-full">

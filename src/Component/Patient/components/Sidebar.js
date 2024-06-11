@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import logo from '../../images/logo.png'
 import { AiFillDashboard } from "react-icons/ai";
 import { FaUsers } from "react-icons/fa";
@@ -20,6 +20,26 @@ const Sidebar = ({ isOpen, toggle }) => {
   const [activeLink, setActiveLink] = useState(null);
   const navigate = useNavigate()
   const dispatch = useDispatch();
+
+  const sidebarRef = useRef(null);
+
+  const handleClickOutside = (event) => {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      toggle();
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   const logoutonclick = async (e) => {
     dispatch(logout());
     navigate('/')
@@ -38,7 +58,7 @@ const Sidebar = ({ isOpen, toggle }) => {
   }, [location.pathname]);
 
   return (
-    <nav className={`${isOpen ? 'block' : 'hidden'} lg:block lg:w-52 bg-white h-screen fixed top-0 left-0 z-50`}>
+    <nav ref={sidebarRef} className={`${isOpen ? 'block' : 'hidden'} lg:block lg:w-52 bg-white h-screen fixed top-0 left-0 z-50`}>
       <div className="p-4 text-white flex">
         <Link to="/patient"> <img className='ml-5 ' src={logo} width="118" alt="logo" /></Link>
         <AiOutlineClose className='text-black w-5 h-5 ml-8 cursor-pointer md:hidden' onClick={toggle} />
@@ -94,8 +114,6 @@ const Sidebar = ({ isOpen, toggle }) => {
         </li>
         {/* <li className="pl-6 p-2 flex"><MdMore className="w-5 h-5 mr-3"/>Others</li> */}
       </ul>
-
-
       <div className="absolute bottom-0 pl-6 p-6 text-[#7F8F98]">
 
         <button onClick={logoutonclick} className="flex hover:text-[#3497F9]"><IoLogOutSharp className="w-5 h-6 mr-3" />Logout</button>
